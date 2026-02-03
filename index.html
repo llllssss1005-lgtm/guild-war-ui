@@ -273,6 +273,63 @@
       font-size: 12px;
       border-top: 1px dashed var(--line);
     }
+    /* 모달 헤더 여백 */
+.modalHeader{
+  padding: 14px 16px !important;
+}
+.modalHeader .title{
+  margin-left: 4px;
+}
+
+/* 유닛 목록: 그리드 형태 */
+#unitList{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px 12px 14px;
+}
+
+@media (min-width: 520px){
+  #unitList{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (min-width: 720px){
+  #unitList{ grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+#unitList .item{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 8px;
+  border-radius: 14px;
+  border: 1px solid #e8eef7;
+  background: #fff;
+  cursor: pointer;
+}
+
+#unitList .thumb{
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+#unitList .thumb img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#unitList .name{
+  font-weight: 800;
+  font-size: 13px;
+  text-align: center;
+}
+
+#unitList .sub{
+  display: none;
+}
+
   </style>
 </head>
 
@@ -416,12 +473,11 @@
         row.className = "item";
 
         row.innerHTML = `
-          <div class="thumb"><img src="${u.image_url}" alt="${u.name}"></div>
-          <div>
-            <div class="nm">${u.name}</div>
-            <div class="sub">탭해서 선택</div>
-          </div>
-        `;
+  <div class="thumb"><img src="${u.image_url}" alt="${u.name}"></div>
+  <div class="name">${u.name}</div>
+  <div class="sub">탭해서 선택</div>
+`;
+
 
         row.addEventListener("click", () => {
           setSlot(activeSlotIndex, u);
@@ -542,3 +598,4 @@
   </script>
 </body>
 </html>
+
