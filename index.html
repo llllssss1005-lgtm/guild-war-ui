@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>길드전 - 방어 유닛 선택</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --blue:#3b82f6;
+      --sky:#bfe2ff;
+      --table:#1d4ed8;
+    }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{
+      max-width:420px;
+      margin:0 auto;
+      padding:18px 16px 28px;
+    }
+    h1{
+      margin:4px 0 6px;
+      font-size:22px;
+      font-weight:800;
+    }
+    .desc{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .label{
+      font-size:13px;
+      font-weight:700;
+      margin:0 0 10px;
+    }
+
+    .slots{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .slot{
+      position:relative;
+      width:100%;
+      aspect-ratio: 1 / 1;
+      border:2px dashed var(--line);
+      border-radius:14px;
+      background:#fafafa;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      user-select:none;
+      overflow:hidden;
+    }
+    .slot:hover{ border-color:#cbd5e1; }
+    .plus{
+      font-size:34px;
+      line-height:1;
+      color:var(--blue);
+      font-weight:800;
+    }
+    .slot.filled{
+      border-style:solid;
+      border-color:#dbeafe;
+      background:#ffffff;
+    }
+    .slot img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .slot .name{
+      position:absolute;
+      left:8px;
+      right:8px;
+      bottom:8px;
+      padding:6px 8px;
+      border-radius:10px;
+      font-size:12px;
+      font-weight:800;
+      color:white;
+      background:rgba(29,78,216,.88);
+      text-align:center;
+      backdrop-filter: blur(6px);
+    }
+    .slot .remove{
+      position:absolute;
+      top:8px;
+      right:8px;
+      width:28px;
+      height:28px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.08);
+      background:rgba(255,255,255,.92);
+      font-weight:900;
+      cursor:pointer;
+      display:none;
+      align-items:center;
+      justify-content:center;
+    }
+    .slot.filled .remove{ display:flex; }
+
+    .btnRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-bottom:16px;
+    }
+    .btn{
+      height:44px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-weight:800;
+      cursor:pointer;
+      background:#fff;
+    }
+    .btn.primary{
+      background:var(--sky);
+      border-color:#93c5fd;
+      color:#0b3b8a;
+    }
+
+    .resultHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-top:4px;
+      padding-top:10px;
+      border-top:1px solid var(--line);
+    }
+    .resultHead .left{
+      font-weight:900;
+      font-size:14px;
+    }
+    .resultHead .right{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+    }
+    .resultBox{
+      margin-top:10px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      font-size:13px;
+      color:var(--muted);
+      min-height:52px;
+    }
+
+    /* Modal */
+    .modalBack{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.35);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding:12px;
+    }
+    .modal{
+      width:min(420px, 100%);
+      background:#fff;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,.06);
+      box-shadow:0 18px 50px rgba(0,0,0,.18);
+    }
+    .modalHeader{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .modalHeader strong{ font-size:14px; }
+    .close{
+      border:none;
+      background:transparent;
+      font-size:20px;
+      cursor:pointer;
+      padding:4px 8px;
+    }
+    .search{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+    }
+    .search input{
+      width:100%;
+      height:40px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      padding:0 12px;
+      font-size:14px;
+      outline:none;
+    }
+    .list{
+      max-height:52vh;
+      overflow:auto;
+      padding:8px 10px 12px;
+    }
+    .item{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:10px;
+      border-radius:14px;
+      cursor:pointer;
+    }
+    .item:hover{ background:#f3f4f6; }
+    .thumb{
+      width:42px;
+      height:42px;
+      border-radius:12px;
+      background:#eef2ff;
+      overflow:hidden;
+      flex:0 0 auto;
+    }
+    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .item .nm{ font-weight:900; }
+    .item .sub{ font-size:12px; color:var(--muted); }
+
+    .hint{
+      padding:10px 14px 14px;
+      color:var(--muted);
+      font-size:12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>길드전</h1>
+    <p class="desc">방어 유닛 3명을 선택하면 해당 구성에 대한 결과를 조회합니다</p>
+
+    <div class="label">방어 유닛 선택</div>
+
+    <div class="slots">
+      <div class="slot" data-slot="0" aria-label="slot 1">
+        <div class="plus">+</div>
+        <button class="remove" title="제거" aria-label="remove">×</button>
+      </div>
+      <div class="slot" data-slot="1" aria-label="slot 2">
+        <div class="plus">+</div>
+        <button class="remove" title="제거" aria-label="remove">×</button>
+      </div>
+      <div class="slot" data-slot="2" aria-label="slot 3">
+        <div class="plus">+</div>
+        <button class="remove" title="제거" aria-label="remove">×</button>
+      </div>
+    </div>
+
+    <div class="btnRow">
+      <button class="btn" id="btnReset">초기화</button>
+      <button class="btn primary" id="btnSearch">검색</button>
+    </div>
+
+    <div class="resultHead">
+      <div class="left">결과</div>
+      <div class="right" id="statusText">검색 전</div>
+    </div>
+    <div class="resultBox" id="resultBox">
+      방어 유닛 3명을 선택해 주세요
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modalBack" id="modalBack" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modalHeader">
+        <strong>유닛 선택</strong>
+        <button class="close" id="btnClose" aria-label="닫기">×</button>
+      </div>
+      <div class="search">
+        <input id="searchInput" placeholder="이름 검색 (예: 루디)" />
+      </div>
+      <div class="list" id="unitList"></div>
+      <div class="hint">* 지금은 샘플 목록입니다. 다음 단계에서 Supabase units 테이블과 연결합니다.</div>
+    </div>
+  </div>
+
+  <script>
+    // ✅ 지금은 샘플 데이터(나중에 Supabase units 테이블에서 가져오면 됨)
+    const SAMPLE_UNITS = [
+      { name: "루디", image_url: "https://via.placeholder.com/300?text=%EB%A3%A8%EB%94%94" },
+      { name: "레이첼", image_url: "https://via.placeholder.com/300?text=%EB%A0%88%EC%9D%B4%EC%B2%BC" },
+      { name: "제이브", image_url: "https://via.placeholder.com/300?text=%EC%A0%9C%EC%9D%B4%EB%B8%8C" },
+      { name: "스파이크", image_url: "https://via.placeholder.com/300?text=%EC%8A%A4%ED%8C%8C%EC%9D%B4%ED%81%AC" },
+      { name: "델론즈", image_url: "https://via.placeholder.com/300?text=%EB%8D%B8%EB%A1%A0%EC%A6%88" },
+      { name: "아일린", image_url: "https://via.placeholder.com/300?text=%EC%95%84%EC%9D%BC%EB%A6%B0" },
+    ];
+
+    const slots = [null, null, null]; // {name, image_url}
+    let activeSlotIndex = 0;
+
+    const modalBack = document.getElementById("modalBack");
+    const unitListEl = document.getElementById("unitList");
+    const searchInput = document.getElementById("searchInput");
+    const statusText = document.getElementById("statusText");
+    const resultBox = document.getElementById("resultBox");
+
+    function openModal(slotIndex){
+      activeSlotIndex = slotIndex;
+      modalBack.style.display = "flex";
+      searchInput.value = "";
+      renderUnitList(SAMPLE_UNITS);
+      setTimeout(()=>searchInput.focus(), 50);
+    }
+    function closeModal(){
+      modalBack.style.display = "none";
+    }
+
+    function renderUnitList(list){
+      unitListEl.innerHTML = "";
+      list.forEach(u => {
+        const row = document.createElement("div");
+        row.className = "item";
+        row.innerHTML = `
+          <div class="thumb"><img src="${u.image_url}" alt="${u.name}"></div>
+          <div>
+            <div class="nm">${u.name}</div>
+            <div class="sub">탭해서 선택</div>
+          </div>
+        `;
+        row.addEventListener("click", () => {
+          setSlot(activeSlotIndex, u);
+          closeModal();
+        });
+        unitListEl.appendChild(row);
+      });
+
+      if(list.length === 0){
+        unitListEl.innerHTML = `<div style="padding:14px;color:#6b7280;font-size:13px;">검색 결과가 없습니다</div>`;
+      }
+    }
+
+    function setSlot(i, unit){
+      // 중복 선택 방지(같은 유닛을 2번 못 넣게)
+      const already = slots.findIndex(s => s && s.name === unit.name);
+      if(already !== -1 && already !== i){
+        alert("이미 선택된 유닛입니다.");
+        return;
+      }
+      slots[i] = { name: unit.name, image_url: unit.image_url };
+      renderSlots();
+      updateResultHint();
+    }
+
+    function clearSlot(i){
+      slots[i] = null;
+      renderSlots();
+      updateResultHint();
+    }
+
+    function renderSlots(){
+      document.querySelectorAll(".slot").forEach((el) => {
+        const idx = Number(el.dataset.slot);
+        const s = slots[idx];
+
+        // remove 버튼
+        const removeBtn = el.querySelector(".remove");
+        removeBtn.onclick = (e) => { e.stopPropagation(); clearSlot(idx); };
+
+        if(!s){
+          el.classList.remove("filled");
+          el.innerHTML = `<div class="plus">+</div><button class="remove" title="제거" aria-label="remove">×</button>`;
+        }else{
+          el.classList.add("filled");
+          el.innerHTML = `
+            <img src="${s.image_url}" alt="${s.name}" />
+            <div class="name">${s.name}</div>
+            <button class="remove" title="제거" aria-label="remove">×</button>
+          `;
+          el.querySelector(".remove").onclick = (e) => { e.stopPropagation(); clearSlot(idx); };
+        }
+      });
+    }
+
+    function updateResultHint(){
+      const selected = slots.filter(Boolean);
+      if(selected.length < 3){
+        statusText.textContent = "검색 전";
+        resultBox.textContent = "방어 유닛 3명을 선택해 주세요";
+        return;
+      }
+      statusText.textContent = "준비됨";
+      resultBox.textContent = `선택 완료: ${selected.map(x=>x.name).join(", ")} (검색을 누르세요)`;
+    }
+
+    // Slot click -> open modal
+    document.querySelectorAll(".slot").forEach(el => {
+      el.addEventListener("click", () => openModal(Number(el.dataset.slot)));
+    });
+
+    // Search filtering
+    searchInput.addEventListener("input", () => {
+      const q = searchInput.value.trim();
+      const filtered = SAMPLE_UNITS.filter(u => u.name.includes(q));
+      renderUnitList(filtered);
+    });
+
+    // Close modal
+    document.getElementById("btnClose").addEventListener("click", closeModal);
+    modalBack.addEventListener("click", (e) => {
+      if(e.target === modalBack) closeModal();
+    });
+
+    // Reset
+    document.getElementById("btnReset").addEventListener("click", () => {
+      slots[0]=slots[1]=slots[2]=null;
+      renderSlots();
+      updateResultHint();
+    });
+
+    // Search (for now)
+    document.getElementById("btnSearch").addEventListener("click", () => {
+      const selected = slots.filter(Boolean);
+      if(selected.length < 3){
+        alert("방어 유닛 3명을 먼저 선택해 주세요.");
+        return;
+      }
+      statusText.textContent = "검색됨(샘플)";
+      resultBox.textContent =
+        `검색 요청(샘플): 방어 = ${selected.map(x=>x.name).join(", ")}\n` +
+        `다음 단계에서 이 값으로 Supabase guild_war를 조회합니다.`;
+    });
+
+    // init
+    renderSlots();
+    updateResultHint();
+  </script>
+</body>
+</html>
