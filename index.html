@@ -298,6 +298,30 @@
       { name: "델론즈", image_url: "https://via.placeholder.com/300?text=%EB%8D%B8%EB%A1%A0%EC%A6%88" },
       { name: "아일린", image_url: "https://via.placeholder.com/300?text=%EC%95%84%EC%9D%BC%EB%A6%B0" },
     ];
+<script>
+  // Supabase에서 유닛 목록 불러오기
+  let UNITS = [];
+
+  async function loadUnits() {
+    const { data, error } = await supabaseClient
+      .from("units")
+      .select("unit_name, image_url")
+      .order("unit_name", { ascending: true });
+
+    if (error) {
+      console.error("[loadUnits] error:", error);
+      alert("유닛을 불러오지 못했습니다. (RLS/정책 또는 키 확인)");
+      return;
+    }
+
+    UNITS = (data ?? []).map(u => ({
+      name: u.unit_name,
+      image_url: u.image_url,
+    }));
+
+    renderUnitList(UNITS);
+  }
+</script>
 
     const slots = [null, null, null]; // {name, image_url}
     let activeSlotIndex = 0;
@@ -312,7 +336,7 @@
       activeSlotIndex = slotIndex;
       modalBack.style.display = "flex";
       searchInput.value = "";
-      renderUnitList(SAMPLE_UNITS);
+      renderUnitList(UNITS);
       setTimeout(()=>searchInput.focus(), 50);
     }
     function closeModal(){
@@ -353,6 +377,7 @@
       slots[i] = { name: unit.name, image_url: unit.image_url };
       renderSlots();
       updateResultHint();
+  loadUnits();
     }
 
     function clearSlot(i){
@@ -438,5 +463,20 @@
     renderSlots();
     updateResultHint();
   </script>
+<!-- Supabase JS 라이브러리 -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Supabase 설정 -->
+<script>
+  const SUPABASE_URL = "https://rtlkthadgfyszawgbevk.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_Vsr12aXc5r8kCnjBnpvrcQ_4Enqbi3F";
+
+  const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+</script>
+
 </body>
 </html>
+
