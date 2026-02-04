@@ -169,6 +169,83 @@
       color: var(--muted);
       background:#fff;
     }
+/* 결과 카드 */
+.card{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:10px;
+  background:#fff;
+}
+.cardTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:26px;
+  padding:0 10px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:12px;
+  color:#fff;
+}
+.badge.red{ background:#ef4444; }
+.badge.blue{ background:#3b82f6; }
+.pet{
+  font-size:12px;
+  font-weight:800;
+  color:#111827;
+  background:#f3f4f6;
+  padding:6px 10px;
+  border-radius:999px;
+}
+.rowTitle{
+  font-size:12px;
+  font-weight:900;
+  color:#111827;
+  margin:10px 0 6px;
+}
+.rowIcons{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.ico{
+  width:64px;
+  text-align:center;
+}
+.ico.small{ width:54px; }
+.ico img{
+  width:54px;
+  height:54px;
+  border-radius:14px;
+  object-fit:cover;
+  border:1px solid rgba(0,0,0,.06);
+}
+.ico .cap{
+  margin-top:4px;
+  font-size:11px;
+  font-weight:800;
+  color:#374151;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.noteBox{
+  margin-top:10px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+  font-size:12px;
+  color:#111827;
+  background:#fafafa;
+  white-space:pre-wrap;
+}
 
     /* modal */
     .modalBack{
@@ -522,7 +599,8 @@
         alert("이미 선택된 유닛입니다.");
         return;
       }
-      slots[i] = { name: unit.name, image_url: unit.image_url };
+      slots[i] = { id: unit.id, name: unit.name, image_url: unit.image_url };
+
       renderSlots();
       updateResultHint();
     }
@@ -566,17 +644,100 @@
       updateResultHint();
     });
 
-    document.getElementById("btnSearch").addEventListener("click", () => {
-      const selected = slots.filter(Boolean);
-      if(selected.length < 3){
-        alert("방어 유닛 3명을 먼저 선택해 주세요.");
-        return;
-      }
-      statusText.textContent = "검색(샘플)";
-      resultBox.textContent =
-        `검색 요청(샘플): 방어 = ${selected.map(x=>x.name).join(", ")}\n` +
-        `다음 단계에서 Supabase guild_war를 조회합니다.`;
+    document.getElementById("btnSearch").addEventListener("click", async () => {
+  const selected = slots.filter(Boolean);
+  if(selected.length < 3){
+    alert("방어 유닛 3명을 먼저 선택해 주세요.");
+    return;
+  }
+
+  // def_key 생성: u005|u035|u036 (정렬 후 |로 연결)
+  const defKey = selected
+    .map(s => s.id)
+    .sort()
+    .join("|");
+
+  statusText.textContent = "검색중...";
+  resultBox.textContent = "잠시만...";
+
+  // guild_war_results 조회
+  const { data: rows, error } = await supabaseClient
+    .from("guild_war_results")
+    .select("result_id, atk_1, atk_2, atk_3, skill_1, skill_2, skill_3, pet, first, note, def_key")
+    .eq("def_key", defKey)
+    .order("result_id", { ascending: true });
+
+  if(error){
+    console.error(error);
+    statusText.textContent = "에러";
+    resultBox.textContent = "조회 실패(콘솔 확인)";
+    return;
+  }
+
+  if(!rows || rows.length === 0){
+    statusText.textContent = "결과 없음";
+    resultBox.textContent = "해당 방어 조합 결과가 없습니다.";
+    return;
+  }
+
+  // 결과에 필요한 유닛/스킬/펫 id들 모아서 한번에 units 조회
+  const ids = new Set();
+  rows.forEach(r => {
+    [r.atk_1,r.atk_2,r.atk_3,r.skill_1,r.skill_2,r.skill_3,r.pet].forEach(x => {
+      if(x) ids.add(x);
     });
+  });
+
+  const { data: unitRows, error: unitErr } = await supabaseClient
+    .from("units")
+    .select("id, name, image_url")
+    .in("id", Array.from(ids));
+
+  if(unitErr) console.error(unitErr);
+
+  const unitMap = new Map((unitRows || []).map(u => [u.id, u]));
+
+  // 렌더
+  statusText.textContent = `결과 ${rows.length}개`;
+  resultBox.innerHTML = rows.map(r => {
+    const badgeClass = r.first === "선공" ? "badge red" : "badge blue";
+
+    const pet = unitMap.get(r.pet);
+    const atk = [r.atk_1,r.atk_2,r.atk_3].map(id => unitMap.get(id)).filter(Boolean);
+    const sk  = [r.skill_1,r.skill_2,r.skill_3].map(id => unitMap.get(id)).filter(Boolean);
+
+    return `
+      <div class="card">
+        <div class="cardTop">
+          <span class="${badgeClass}">${r.first ?? ""}</span>
+          ${pet ? `<span class="pet">🐾 ${pet.name}</span>` : ``}
+        </div>
+
+        <div class="rowTitle">공격 유닛</div>
+        <div class="rowIcons">
+          ${atk.map(u => `
+            <div class="ico">
+              <img src="${u.image_url}" alt="${u.name}">
+              <div class="cap">${u.name}</div>
+            </div>
+          `).join("")}
+        </div>
+
+        <div class="rowTitle">스킬 순서</div>
+        <div class="rowIcons">
+          ${sk.map(u => `
+            <div class="ico small">
+              <img src="${u.image_url}" alt="${u.name}">
+              <div class="cap">${u.name}</div>
+            </div>
+          `).join("")}
+        </div>
+
+        ${r.note ? `<div class="noteBox">${r.note}</div>` : ``}
+      </div>
+    `;
+  }).join("");
+});
 
     // 검색 입력 필터
     searchInput.addEventListener("input", () => {
@@ -593,21 +754,23 @@
     async function loadUnits(){
       statusText.textContent = "유닛 로딩중...";
       const { data, error } = await supabaseClient
-        .from("units")
-        .select("unit_name, image_url")
-        .order("unit_name", { ascending: true });
+  .from("units")
+  .select("id, name, image_url")
+  .order("name", { ascending: true });
 
-      if(error){
-        console.error(error);
-        statusText.textContent = "유닛 로드 실패";
-        resultBox.textContent = "유닛을 불러오지 못했습니다. (RLS/정책 또는 컬럼명 확인 필요)";
-        return;
-      }
+if(error){
+  console.error(error);
+  statusText.textContent = "유닛 로드 실패";
+  resultBox.textContent = "유닛을 불러오지 못했습니다. (RLS/정책 또는 컬럼명 확인 필요)";
+  return;
+}
 
-      UNITS = (data || []).map(u => ({
-        name: u.unit_name,
-        image_url: u.image_url
-      }));
+UNITS = (data || []).map(u => ({
+  id: u.id,
+  name: u.name,
+  image_url: u.image_url
+}));
+
 
       statusText.textContent = `유닛 ${UNITS.length}개 로드됨`;
       updateResultHint();
@@ -620,5 +783,6 @@
   </script>
 </body>
 </html>
+
 
 
