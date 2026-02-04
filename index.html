@@ -959,83 +959,74 @@ const defNames = selected.map(s => s.name).join(" · ");
   const unitMap = new Map((unitRows || []).map(u => [u.id, u]));
 
   // 렌더
-  statusText.textContent = `결과 ${rows.length}개`;
-  resultBox.innerHTML = rows.map(r => {
-    const badgeClass = r.first === "선공" ? "badge red" : "badge blue";
+ // ✅ 결과 렌더링 (NEW)
+statusText.textContent = `결과 ${rows.length}개`;
 
-    const pet = unitMap.get(r.pet);
-    const atk = [r.atk_1,r.atk_2,r.atk_3].map(id => unitMap.get(id)).filter(Boolean);
-    const sk  = [r.skill_1,r.skill_2,r.skill_3].map(id => unitMap.get(id)).filter(Boolean);
+resultBox.innerHTML = rows.map((r) => {
+  const badgeClass = r.first === "선공" ? "badge red" : "badge blue";
 
-      return `
-    <div class="card">
+  const pet = unitMap.get(r.pet);
 
-      <div class="cardHeader">
-  
+  const atk = [r.atk_1, r.atk_2, r.atk_3]
+    .map(id => unitMap.get(id))
+    .filter(Boolean);
+
+  const sk = [r.skill_1, r.skill_2, r.skill_3]
+    .map(id => unitMap.get(id))
+    .filter(Boolean);
+
+  return `
+  <div class="card">
+    <div class="mainGrid">
+
+      <!-- 좌측 큰 박스 (공격 유닛 + 스킬 순서) -->
+      <div class="panel big">
+
+        <!-- 공격 유닛 -->
+        <div class="panelTitle">공격 유닛</div>
+        <div class="grid3 units">
+          ${atk.map(u => `
+            <div class="cell">
+              <img src="${u.image_url}" alt="${u.name}">
+              <div class="cap">${u.name}</div>
+            </div>
+          `).join("")}
+        </div>
+
+        <!-- 스킬 순서 -->
+        <div class="panelTitle">스킬 순서</div>
+        <div class="grid3 skills">
+          ${sk.map((s, i) => `
+            <div class="cell">
+              <img src="${s.image_url}" alt="${s.name}">
+              <div class="cap">${s.name}</div>
+            </div>
+            ${i < sk.length - 1 ? `<div class="arrow">➜</div>` : ``}
+          `).join("")}
+        </div>
       </div>
 
-      <div class="mainGrid">
-        <div class="panel">
-          <div class="panelTitle">공격 유닛</div>
-        <div class="grid2x2">
+      <!-- 우측 작은 박스 (추천 펫 + 선/후) -->
+      <div class="panel small">
 
-  <!-- 1행 왼쪽: 공격 유닛 (큰 박스) -->
-  <div class="panel big">
-    <div class="panelTitle">공격 유닛</div>
-
-    <div class="grid3 units">
-      ${atk.map(u => `
-        <div class="cell">
-          <img src="${u.image_url}" alt="${u.name}">
-          <div class="cap">${u.name}</div>
-        </div>
-      `).join("")}
-    </div>
-  </div>
-
-  <!-- 1행 오른쪽: 추천 펫 (작은 박스) -->
-  <div class="panel small">
-    <div class="panelTitle">추천 펫</div>
-
-    ${
-      pet
-        ? `
+        <div class="panelTitle">추천 펫</div>
+        ${pet ? `
           <div class="cell">
             <img src="${pet.image_url}" alt="${pet.name}">
             <div class="cap">${pet.name}</div>
           </div>
-        `
-        : `<div class="cap muted">없음</div>`
-    }
-  </div>
+        ` : `<div class="cap muted">없음</div>`}
 
-  <!-- 2행 왼쪽: 스킬 순서 (큰 박스) -->
-  <div class="panel big">
-    <div class="panelTitle">스킬 순서</div>
+        <div class="panelTitle">선 / 후</div>
+        <span class="${badgeClass}">${r.first}</span>
 
-    <div class="grid3 skills">
-      ${sk.map((u, i) => `
-        <div class="cell">
-          <img src="${u.image_url}" alt="${u.name}">
-          <div class="cap">${u.name}</div>
-        </div>
-        ${i < 2 ? `<div class="arrow">→</div>` : ``}
-      `).join("")}
+      </div>
+
     </div>
   </div>
+  `;
+}).join("");
 
-  <!-- 2행 오른쪽: 선/후 (작은 박스) -->
-  <div class="panel small center">
-    <div class="panelTitle">선 / 후</div>
-    <span class="${badgeClass}">${r.first ?? ""}</span>
-  </div>
-
-</div>
-
-${r.note ? `<div class="noteBox">${r.note}</div>` : ``}
-  
-
-  }).join("");
 });
 
     // 검색 입력 필터
@@ -1085,6 +1076,7 @@ UNITS = (data || []).map(u => ({
   </script>
 </body>
 </html>
+
 
 
 
