@@ -170,6 +170,173 @@
       background:#fff;
     }
 /* 결과 카드 */
+    /* ✅ 결과 카드 레이아웃 업그레이드 (기존 UI 영향 없음) */
+    .cardHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+.defSummary{
+  font-size:12px;
+  font-weight:800;
+  color:#374151;
+  max-width:260px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.mainGrid{
+  display:grid;
+  grid-template-columns: 1fr 96px;
+  gap:12px;
+}
+.panel{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+  background:#fff;
+}
+.panelTitle{
+  font-size:12px;
+  font-weight:900;
+  color:#111827;
+  margin-bottom:8px;
+}
+.unitRow{
+  display:flex;
+  gap:10px;
+}
+.petBox{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  background:#f8fafc;
+}
+.petName{
+  font-size:12px;
+  font-weight:900;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  width:100%;
+}
+.divLine{
+  margin:12px 0;
+  border-top:1px solid #eef2f7;
+}
+.skillRow{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  flex-wrap:nowrap;
+}
+.arrow{
+  margin-top:18px;
+  font-weight:900;
+  color:#cbd5e1;
+}
+
+.card{
+  padding:14px;
+  margin-bottom:12px;
+}
+
+.cardHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+/* 헤더 왼쪽(방어 요약) */
+.defSummary{
+  font-size:12px;
+  font-weight:800;
+  color:#374151;
+  max-width: 260px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* 메인 그리드: 공격유닛(좌) + 추천펫(우) */
+.mainGrid{
+  display:grid;
+  grid-template-columns: 1fr 96px;
+  gap:12px;
+  align-items:stretch;
+}
+
+.panel{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+  background:#fff;
+}
+
+.panelTitle{
+  font-size:12px;
+  font-weight:900;
+  color:#111827;
+  margin-bottom:8px;
+}
+
+/* 공격 유닛: 3개 고정 가로 */
+.unitRow{
+  display:flex;
+  gap:10px;
+}
+
+/* 추천펫 박스 */
+.petBox{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  background:#f8fafc;
+}
+
+.petBox .petName{
+  font-size:12px;
+  font-weight:900;
+  color:#111827;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  width:100%;
+}
+
+/* 섹션 구분선 */
+.divLine{
+  margin:12px 0;
+  border-top:1px solid #eef2f7;
+}
+
+/* 스킬 순서: 3개 + 화살표 */
+.skillRow{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  flex-wrap:nowrap;
+}
+
+.arrow{
+  margin-top:18px;
+  font-weight:900;
+  color:#cbd5e1; /* 연한 회색 */
+}
+
+/* 기존 ico 재활용하되 카드 안에서는 크기 살짝 통일 */
+.ico{ width:70px; }
+.ico img{ width:54px; height:54px; border-radius:14px; }
+.ico .cap{ font-size:11px; }
+
 .card{
   border:1px solid var(--line);
   border-radius:14px;
@@ -656,6 +823,7 @@
     .map(s => s.id)
     .sort()
     .join("|");
+const defNames = selected.map(s => s.name).join(" · ");
 
   statusText.textContent = "검색중...";
   resultBox.textContent = "잠시만...";
@@ -706,36 +874,59 @@
     const atk = [r.atk_1,r.atk_2,r.atk_3].map(id => unitMap.get(id)).filter(Boolean);
     const sk  = [r.skill_1,r.skill_2,r.skill_3].map(id => unitMap.get(id)).filter(Boolean);
 
-    return `
-      <div class="card">
-        <div class="cardTop">
-          <span class="${badgeClass}">${r.first ?? ""}</span>
-          ${pet ? `<span class="pet">🐾 ${pet.name}</span>` : ``}
-        </div>
+      return `
+    <div class="card">
 
-        <div class="rowTitle">공격 유닛</div>
-        <div class="rowIcons">
-          ${atk.map(u => `
-            <div class="ico">
-              <img src="${u.image_url}" alt="${u.name}">
-              <div class="cap">${u.name}</div>
-            </div>
-          `).join("")}
-        </div>
-
-        <div class="rowTitle">스킬 순서</div>
-        <div class="rowIcons">
-          ${sk.map(u => `
-            <div class="ico small">
-              <img src="${u.image_url}" alt="${u.name}">
-              <div class="cap">${u.name}</div>
-            </div>
-          `).join("")}
-        </div>
-
-        ${r.note ? `<div class="noteBox">${r.note}</div>` : ``}
+      <div class="cardHeader">
+        <div class="defSummary">방어: ${defNames}</div>
+        <span class="${badgeClass}">${r.first ?? ""}</span>
       </div>
-    `;
+
+      <div class="mainGrid">
+        <div class="panel">
+          <div class="panelTitle">공격 유닛</div>
+          <div class="unitRow">
+            ${atk.map(u => `
+              <div class="ico">
+                <img src="${u.image_url}" alt="${u.name}">
+                <div class="cap">${u.name}</div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+
+        <div class="panel petBox">
+          <div class="panelTitle" style="margin-bottom:0;">추천 펫</div>
+          ${
+            pet
+            ? `
+              <div class="ico small">
+                <img src="${pet.image_url}" alt="${pet.name}">
+              </div>
+              <div class="petName">${pet.name}</div>
+            `
+            : `<div style="font-size:12px;color:#6b7280;">없음</div>`
+          }
+        </div>
+      </div>
+
+      <div class="divLine"></div>
+
+      <div class="panelTitle">스킬 순서</div>
+      <div class="skillRow">
+        ${sk.map((u, i) => `
+          ${i>0 ? `<div class="arrow">→</div>` : ``}
+          <div class="ico small">
+            <img src="${u.image_url}" alt="${u.name}">
+            <div class="cap">${u.name}</div>
+          </div>
+        `).join("")}
+      </div>
+
+      ${r.note ? `<div class="noteBox">${r.note}</div>` : ``}
+    </div>
+  `;
+
   }).join("");
 });
 
@@ -786,6 +977,7 @@ UNITS = (data || []).map(u => ({
   </script>
 </body>
 </html>
+
 
 
 
