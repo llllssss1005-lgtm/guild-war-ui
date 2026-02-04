@@ -173,30 +173,6 @@
     /* ✅ 결과 카드 레이아웃 업그레이드 (기존 UI 영향 없음) */
     /* 아이콘 라인 공통 */
     /* ✅ 하단 추천펫 + 선공/후공 2칸 레이아웃 */
-.petBottomRow{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap:12px;
-  margin-top:14px;
-}
-
-.firstBox{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-}
-
-.firstBox .badge{
-  margin-top:6px;
-}
-
-.unitRow,
-.skillRow{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-}
 
 /* 아이콘 공통 사이즈 */
 .ico{
@@ -645,6 +621,73 @@
   gap: 12px !important;
   padding: 14px 14px 16px !important;
 }
+ /* ===== 결과 카드 2x2 메인 그리드 ===== */
+.grid2x2{
+  display:grid;
+  grid-template-columns: 1fr 110px;
+  gap:12px;
+}
+
+/* 왼쪽 큰 박스들 */
+.panel.big{
+  min-height:150px;
+}
+
+/* 오른쪽 작은 박스들 */
+.panel.small{
+  min-height:150px;
+}
+
+/* 공격 유닛 3칸 */
+.grid3.units{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+/* 스킬 순서 (아이콘-화살표-아이콘-화살표-아이콘) */
+.grid3.skills{
+  display:grid;
+  grid-template-columns:1fr 18px 1fr 18px 1fr;
+  gap:10px;
+  align-items:center;
+}
+
+/* 공통 셀 */
+.cell{
+  text-align:center;
+}
+.cell img{
+  width:56px;
+  height:56px;
+}
+.cell .cap{
+  font-size:12px;
+  margin-top:4px;
+}
+
+/* 화살표 */
+.arrow{
+  text-align:center;
+  font-weight:900;
+  font-size:18px;
+  color:#3b82f6;
+}
+
+/* 중앙 정렬 박스 (추천펫/선후) */
+.panel.small.center{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:6px;
+}
+
+/* 보조 텍스트 */
+.cap.muted{
+  font-size:12px;
+  color:#94a3b8;
+}
 
   </style>
 </head>
@@ -934,69 +977,63 @@ const defNames = selected.map(s => s.name).join(" · ");
       <div class="mainGrid">
         <div class="panel">
           <div class="panelTitle">공격 유닛</div>
-          <div class="unitRow">
-            ${atk.map(u => `
-              <div class="ico">
-                <img src="${u.image_url}" alt="${u.name}">
-                <div class="cap">${u.name}</div>
-              </div>
-            `).join("")}
-          </div>
+        <div class="grid2x2">
+
+  <!-- 1행 왼쪽: 공격 유닛 (큰 박스) -->
+  <div class="panel big">
+    <div class="panelTitle">공격 유닛</div>
+
+    <div class="grid3 units">
+      ${atk.map(u => `
+        <div class="cell">
+          <img src="${u.image_url}" alt="${u.name}">
+          <div class="cap">${u.name}</div>
         </div>
+      `).join("")}
+    </div>
+  </div>
 
-        <div class="panel petBox">
-          <div class="panelTitle" style="margin-bottom:0;">추천 펫</div>
-          ${
-            pet
-            ? `
-              <div class="ico small">
-                <img src="${pet.image_url}" alt="${pet.name}">
-              </div>
-              <div class="petName">${pet.name}</div>
-            `
-            : `<div style="font-size:12px;color:#6b7280;">없음</div>`
-          }
-        </div>
-      </div>
-
-      <div class="divLine"></div>
-
-      <div class="panelTitle">스킬 순서</div>
-      <div class="skillRow">
-      
-
-        ${sk.map((u, i) => `
-          ${i>0 ? `<div class="arrow">→</div>` : ``}
-          <div class="ico small">
-            <img src="${u.image_url}" alt="${u.name}">
-            <div class="cap">${u.name}</div>
-          </div>
-        `).join("")}
-      </div>
-<div class="petBottomRow">
-  <div class="panel petBox">
+  <!-- 1행 오른쪽: 추천 펫 (작은 박스) -->
+  <div class="panel small">
     <div class="panelTitle">추천 펫</div>
+
     ${
       pet
         ? `
-          <div class="ico small">
+          <div class="cell">
             <img src="${pet.image_url}" alt="${pet.name}">
             <div class="cap">${pet.name}</div>
           </div>
         `
-        : `<div class="cap" style="color:#94a3b8;">없음</div>`
+        : `<div class="cap muted">없음</div>`
     }
   </div>
 
-  <div class="panel firstBox">
+  <!-- 2행 왼쪽: 스킬 순서 (큰 박스) -->
+  <div class="panel big">
+    <div class="panelTitle">스킬 순서</div>
+
+    <div class="grid3 skills">
+      ${sk.map((u, i) => `
+        <div class="cell">
+          <img src="${u.image_url}" alt="${u.name}">
+          <div class="cap">${u.name}</div>
+        </div>
+        ${i < 2 ? `<div class="arrow">→</div>` : ``}
+      `).join("")}
+    </div>
+  </div>
+
+  <!-- 2행 오른쪽: 선/후 (작은 박스) -->
+  <div class="panel small center">
     <div class="panelTitle">선 / 후</div>
     <span class="${badgeClass}">${r.first ?? ""}</span>
   </div>
+
 </div>
 
-      ${r.note ? `<div class="noteBox">${r.note}</div>` : ``}
-    </div>
-  `;
+${r.note ? `<div class="noteBox">${r.note}</div>` : ``}
+  
 
   }).join("");
 });
@@ -1048,6 +1085,7 @@ UNITS = (data || []).map(u => ({
   </script>
 </body>
 </html>
+
 
 
 
