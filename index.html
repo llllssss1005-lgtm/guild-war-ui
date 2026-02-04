@@ -171,6 +171,54 @@
     }
 /* 결과 카드 */
     /* ✅ 결과 카드 레이아웃 업그레이드 (기존 UI 영향 없음) */
+    /* 아이콘 라인 공통 */
+    /* ✅ 하단 추천펫 + 선공/후공 2칸 레이아웃 */
+.petBottomRow{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+  margin-top:14px;
+}
+
+.firstBox{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.firstBox .badge{
+  margin-top:6px;
+}
+
+.unitRow,
+.skillRow{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+}
+
+/* 아이콘 공통 사이즈 */
+.ico{
+  width:72px;
+  text-align:center;
+}
+.ico img{
+  width:56px;
+  height:56px;
+  border-radius:14px;
+}
+.ico .cap{
+  margin-top:6px;
+  font-size:12px;
+  font-weight:800;
+}
+
+/* 스킬 아이콘도 동일 사이즈 사용 */
+.skillRow .ico{
+  width:72px;
+}
+
     .cardHeader{
   display:flex;
   justify-content:space-between;
@@ -235,10 +283,12 @@
   flex-wrap:nowrap;
 }
 .arrow{
-  margin-top:18px;
+  margin-top:20px;
+  font-size:16px;
   font-weight:900;
-  color:#cbd5e1;
+  color:#475569; /* 훨씬 진한 회색 */
 }
+
 
 .card{
   padding:14px;
@@ -878,8 +928,7 @@ const defNames = selected.map(s => s.name).join(" · ");
     <div class="card">
 
       <div class="cardHeader">
-        <div class="defSummary">방어: ${defNames}</div>
-        <span class="${badgeClass}">${r.first ?? ""}</span>
+  
       </div>
 
       <div class="mainGrid">
@@ -914,6 +963,8 @@ const defNames = selected.map(s => s.name).join(" · ");
 
       <div class="panelTitle">스킬 순서</div>
       <div class="skillRow">
+      
+
         ${sk.map((u, i) => `
           ${i>0 ? `<div class="arrow">→</div>` : ``}
           <div class="ico small">
@@ -922,6 +973,26 @@ const defNames = selected.map(s => s.name).join(" · ");
           </div>
         `).join("")}
       </div>
+<div class="petBottomRow">
+  <div class="panel petBox">
+    <div class="panelTitle">추천 펫</div>
+    ${
+      pet
+        ? `
+          <div class="ico small">
+            <img src="${pet.image_url}" alt="${pet.name}">
+            <div class="cap">${pet.name}</div>
+          </div>
+        `
+        : `<div class="cap" style="color:#94a3b8;">없음</div>`
+    }
+  </div>
+
+  <div class="panel firstBox">
+    <div class="panelTitle">선 / 후</div>
+    <span class="${badgeClass}">${r.first ?? ""}</span>
+  </div>
+</div>
 
       ${r.note ? `<div class="noteBox">${r.note}</div>` : ``}
     </div>
@@ -977,6 +1048,7 @@ UNITS = (data || []).map(u => ({
   </script>
 </body>
 </html>
+
 
 
 
