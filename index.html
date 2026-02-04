@@ -755,8 +755,10 @@
       statusText.textContent = "유닛 로딩중...";
       const { data, error } = await supabaseClient
   .from("units")
-  .select("id, name, image_url")
-  .order("name", { ascending: true });
+  .select("id, unit_name, image_url")
+  .eq("kind", "unit")        // ⭐ 이 줄이 핵심
+  .order("unit_name", { ascending: true });
+
 
 if(error){
   console.error(error);
@@ -783,6 +785,7 @@ UNITS = (data || []).map(u => ({
   </script>
 </body>
 </html>
+
 
 
 
