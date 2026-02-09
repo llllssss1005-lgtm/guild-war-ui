@@ -208,13 +208,7 @@
       text-align:center;
     }
 
-    /* =========================================================
-       ✅ 결과 카드 UI (빨간 5박스 구성)
-       - 오른쪽 폭 줄임
-       - 오른쪽 제목 중앙 정렬
-       - 이미지/폰트 소폭 축소
-       - 화살표 제거
-       ========================================================= */
+    /* ===== 결과 카드 UI ===== */
     .card{
       border:1px solid var(--line);
       border-radius:14px;
@@ -225,7 +219,7 @@
 
     .gridLayout{
       display:grid;
-      grid-template-columns: 1fr 104px; /* ✅ 오른쪽 폭 축소(120→104) */
+      grid-template-columns: 1fr 104px;
       gap:12px;
       align-items:stretch;
     }
@@ -244,11 +238,10 @@
       margin-bottom:8px;
     }
 
-    /* 공격/스킬: 3칸 고정 */
     .grid3{
       display:grid;
       grid-template-columns: repeat(3, 1fr);
-      gap:8px; /* ✅ 살짝 촘촘하게 */
+      gap:8px;
     }
 
     .cell{
@@ -256,7 +249,6 @@
       min-width:0;
     }
 
-    /* ✅ 이미지 크기 소폭 축소 (56→48) */
     .cell img{
       width:48px;
       height:48px;
@@ -268,7 +260,6 @@
       margin:0 auto;
     }
 
-    /* ✅ 캡션 폰트 소폭 축소 */
     .cap{
       margin-top:4px;
       font-size:11px;
@@ -279,7 +270,6 @@
       text-overflow:ellipsis;
     }
 
-    /* 없을 때도 자리 유지 */
     .emptyBox{
       width:48px;
       height:48px;
@@ -295,7 +285,6 @@
       font-size:11px;
     }
 
-    /* 오른쪽 작은 박스: 중앙 정렬 */
     .centerCol{
       display:flex;
       flex-direction:column;
@@ -304,7 +293,6 @@
       text-align:center;
     }
 
-    /* ✅ 오른쪽 제목도 박스 기준 중앙 정렬 */
     .centerCol .panelTitle{
       width:100%;
       text-align:center;
@@ -313,7 +301,7 @@
 
     .petName{
       margin-top:6px;
-      font-size:11px; /* ✅ 소폭 축소 */
+      font-size:11px;
       font-weight:900;
       color:#111827;
       white-space:nowrap;
@@ -338,7 +326,6 @@
     .badge.blue{ background:#3b82f6; }
     .badge.gray{ background:#9ca3af; }
 
-    /* 노트(아래 full) */
     .notePanel{
       grid-column: 1 / -1;
     }
@@ -357,7 +344,7 @@
       white-space: pre-wrap;
       font-size:12px;
       line-height:1.4;
-      max-height: 4.2em;   /* 약 3줄 */
+      max-height: 4.2em;
       overflow-y:auto;
       padding-right:6px;
       color:#111827;
@@ -484,7 +471,6 @@
       background:#fff;
     }
 
-    /* ✅ 모바일에서 추가로 살짝 더 타이트하게(선택적) */
     @media (max-width: 360px){
       .gridLayout{ grid-template-columns: 1fr 96px; }
       .cell img, .emptyBox{ width:46px; height:46px; }
@@ -496,31 +482,31 @@
 
 <body>
   <!-- ✅ 로그인 UI (추가) -->
-<div id="loginBox" style="max-width:520px;margin:16px auto;padding:16px;border:1px solid #eaeaea;border-radius:12px;">
-  <h3 style="margin:0 0 10px;">이메일 인증 로그인</h3>
+  <div id="loginBox" style="max-width:520px;margin:16px auto;padding:16px;border:1px solid #eaeaea;border-radius:12px;">
+    <h3 style="margin:0 0 10px;">이메일 인증 로그인</h3>
 
-  <div style="margin:8px 0;">
-    <div style="font-size:12px;color:#555;margin-bottom:6px;">이메일</div>
-    <input id="email" type="email" placeholder="example@naver.com" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;">
+    <div style="margin:8px 0;">
+      <div style="font-size:12px;color:#555;margin-bottom:6px;">이메일</div>
+      <input id="email" type="email" placeholder="example@naver.com" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;">
+    </div>
+
+    <div style="margin:8px 0;">
+      <div style="font-size:12px;color:#555;margin-bottom:6px;">닉네임</div>
+      <input id="nickname" type="text" placeholder="길드 닉네임" maxlength="20" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;">
+    </div>
+
+    <button id="sendBtn" style="width:100%;padding:12px;border:0;border-radius:10px;background:#3B82F6;color:white;font-weight:700;cursor:pointer;">
+      인증 메일 보내기
+    </button>
+
+    <div id="loginMsg" style="margin-top:10px;font-size:13px;color:#666;"></div>
   </div>
 
-  <div style="margin:8px 0;">
-    <div style="font-size:12px;color:#555;margin-bottom:6px;">닉네임</div>
-    <input id="nickname" type="text" placeholder="길드 닉네임" maxlength="20" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;">
+  <!-- ✅ 차단 UI (추가) -->
+  <div id="blockedBox" style="display:none;max-width:520px;margin:16px auto;padding:16px;border:1px solid #ffd4d4;border-radius:12px;background:#fff5f5;">
+    <h3 style="margin:0 0 10px;color:#c00;">접근 불가</h3>
+    <div style="font-size:13px;color:#900;">길드 권한이 없습니다. (status가 active가 아님)</div>
   </div>
-
-  <button id="sendBtn" style="width:100%;padding:12px;border:0;border-radius:10px;background:#3B82F6;color:white;font-weight:700;cursor:pointer;">
-    인증 메일 보내기
-  </button>
-
-  <div id="loginMsg" style="margin-top:10px;font-size:13px;color:#666;"></div>
-</div>
-
-<!-- ✅ 차단 UI (추가) -->
-<div id="blockedBox" style="display:none;max-width:520px;margin:16px auto;padding:16px;border:1px solid #ffd4d4;border-radius:12px;background:#fff5f5;">
-  <h3 style="margin:0 0 10px;color:#c00;">접근 불가</h3>
-  <div style="font-size:13px;color:#900;">길드 권한이 없습니다. (status가 active가 아님)</div>
-</div>
 
   <div class="wrap">
     <h1>길드전</h1>
@@ -576,174 +562,152 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
+    // =========================================================
+    // ✅ 0) 사이트 URL (메일 인증 복귀 주소) - 반드시 먼저 선언
+    // =========================================================
+    const SITE_URL = "https://llssss1005-lgtm.github.io/guild-war-ui/";
+
+    // =========================================================
+    // ✅ 1) Supabase 연결
+    // =========================================================
     const SUPABASE_URL = "https://rtlkthadgfyszawgbevk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_Vsr12aXc5r8kCnjBnpvrcQ_4Enqbi3F";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    // ✅ 버튼 연결 (이게 없으면 메일 발송이 안 됨)
-const sendBtn = document.getElementById("sendBtn");
-const loginMsg = document.getElementById("loginMsg");
-const loginBox = document.getElementById("loginBox");
-const blockedBox = document.getElementById("blockedBox");
 
-if (sendBtn) {
-  sendBtn.addEventListener("click", async () => {
-    try {
-      loginMsg.textContent = "인증 메일 보내는 중...";
-      await sendLoginEmail(
-        document.getElementById("email").value,
-        document.getElementById("nickname").value
-      );
-      loginMsg.textContent = "메일 보냈어! 받은 편지함에서 링크를 눌러줘 ✅";
-    } catch (e) {
-      console.error(e);
-      loginMsg.textContent = "실패: " + (e?.message || e);
-    }
-  });
-}
+    // =========================================================
+    // ✅ 2) RLS 대응: 로그인/권한 확인 로직 (정리본)
+    // =========================================================
 
-// ✅ 권한 체크 결과에 따라 UI 표시
-async function renderGate() {
-  try {
-    const res = await ensureMemberRow();
+    // 이메일 인증 메일 보내기 (닉네임 포함)
+    async function sendLoginEmail(email, nickname) {
+      if (!email || !nickname) {
+        alert("이메일과 닉네임을 입력해줘.");
+        throw new Error("email/nickname required");
+      }
 
-    // 로그인 안 됨 → 로그인 박스 보여줌
-    if (!res.ok && res.reason === "not_logged_in") {
-      if (loginBox) loginBox.style.display = "block";
-      if (blockedBox) blockedBox.style.display = "none";
-      return;
-    }
+      localStorage.setItem("pending_nickname", nickname.trim());
 
-    // 차단 → 차단 박스 보여줌
-    if (!res.ok && res.reason === "not_active") {
-      if (loginBox) loginBox.style.display = "none";
-      if (blockedBox) blockedBox.style.display = "block";
-      return;
-    }
-
-    // active → 로그인 박스 숨기고 (여기서부터 기존 길드전 UI 사용)
-    if (res.ok) {
-      if (loginBox) loginBox.style.display = "none";
-      if (blockedBox) blockedBox.style.display = "none";
-      console.log("ACTIVE OK:", res.row);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-// 기존 checkAuthOnLoad 대신 이것만 호출해도 됨
-renderGate();
-supabaseClient.auth.onAuthStateChange(() => renderGate());
-
-// ================================
-// RLS 대응: 로그인/권한 확인 로직
-// ================================
-
-// 이메일 인증 메일 보내기 (닉네임 포함)
-async function sendLoginEmail(email, nickname) {
-  if (!email || !nickname) {
-    alert("이메일과 닉네임을 입력해줘.");
-    return;
-  }
-
-  localStorage.setItem("pending_nickname", nickname.trim());
-
-  const { error } = await supabaseClient.auth.signInWithOtp({
-    email: email.trim(),
-    options: {
-      emailRedirectTo: SITE_URL,
-    },
-  });
-
-  if (error) {
-    console.error(error);
-    alert("인증 메일 전송 실패");
-    return;
-  }
-
-  alert("인증 메일을 보냈어! 메일에서 링크를 눌러줘.");
-}
-
-// members 자동 생성 + active 판정
-async function ensureMemberRow() {
-  const {
-    data: { user },
-    error: userErr,
-  } = await supabaseClient.auth.getUser();
-
-  if (userErr) throw userErr;
-  if (!user) return { ok: false, reason: "not_logged_in" };
-
-  const pendingNickname = (localStorage.getItem("pending_nickname") || "").trim();
-
-  // 신규면 members row 생성 시도 (중복이면 무시)
-  if (pendingNickname) {
-    const { error: upErr } = await supabaseClient
-      .from("members")
-      .upsert(
-        {
-          id: user.id,
-          email: user.email,
-          nickname: pendingNickname,
-          status: "active",
+      const { error } = await supabaseClient.auth.signInWithOtp({
+        email: email.trim(),
+        options: {
+          emailRedirectTo: SITE_URL, // ✅ 여기로 고정
         },
-        {
-          onConflict: "id",
-          ignoreDuplicates: true,
+      });
+
+      if (error) {
+        console.error(error);
+        throw error;
+      }
+
+      alert("인증 메일을 보냈어! 메일에서 링크를 눌러줘.");
+    }
+
+    // members 자동 생성 + active 판정
+    async function ensureMemberRow() {
+      const { data: { user }, error: userErr } = await supabaseClient.auth.getUser();
+      if (userErr) throw userErr;
+      if (!user) return { ok: false, reason: "not_logged_in" };
+
+      const pendingNickname = (localStorage.getItem("pending_nickname") || "").trim();
+
+      // 신규면 members row 생성 시도(중복이면 무시)
+      if (pendingNickname) {
+        const { error: upErr } = await supabaseClient
+          .from("members")
+          .upsert(
+            {
+              id: user.id,
+              email: user.email,
+              nickname: pendingNickname,
+              status: "active",
+            },
+            {
+              onConflict: "id",
+              ignoreDuplicates: true,
+            }
+          );
+
+        if (upErr) throw upErr;
+        localStorage.removeItem("pending_nickname");
+      }
+
+      // 🔑 active 여부는 DB 함수로 확정 판정
+      const { data: isActive, error: rpcErr } = await supabaseClient.rpc("is_active_member");
+      if (rpcErr) throw rpcErr;
+      if (!isActive) return { ok: false, reason: "not_active" };
+
+      // active면 members row 조회 가능
+      const { data: row, error: selErr } = await supabaseClient
+        .from("members")
+        .select("id, email, nickname, status")
+        .eq("id", user.id)
+        .single();
+
+      if (selErr) throw selErr;
+      return { ok: true, row };
+    }
+
+    // ✅ 권한 체크 결과에 따라 UI 표시
+    const sendBtn = document.getElementById("sendBtn");
+    const loginMsg = document.getElementById("loginMsg");
+    const loginBox = document.getElementById("loginBox");
+    const blockedBox = document.getElementById("blockedBox");
+
+    async function renderGate() {
+      try {
+        const res = await ensureMemberRow();
+
+        // 로그인 안 됨 → 로그인 박스
+        if (!res.ok && res.reason === "not_logged_in") {
+          if (loginBox) loginBox.style.display = "block";
+          if (blockedBox) blockedBox.style.display = "none";
+          return;
         }
-      );
 
-    if (upErr) throw upErr;
-    localStorage.removeItem("pending_nickname");
-  }
+        // 차단 → 차단 박스
+        if (!res.ok && res.reason === "not_active") {
+          if (loginBox) loginBox.style.display = "none";
+          if (blockedBox) blockedBox.style.display = "block";
+          return;
+        }
 
-  // 🔑 active 여부는 DB 함수로 확정 판정
-  const { data: isActive, error: rpcErr } =
-    await supabaseClient.rpc("is_active_member");
-
-  if (rpcErr) throw rpcErr;
-  if (!isActive) return { ok: false, reason: "not_active" };
-
-  // active면 members row 조회 가능
-  const { data: row, error: selErr } = await supabaseClient
-    .from("members")
-    .select("id, email, nickname, status")
-    .eq("id", user.id)
-    .single();
-
-  if (selErr) throw selErr;
-
-  return { ok: true, row };
-}
-
-// 페이지 로드 시 권한 체크
-async function checkAuthOnLoad() {
-  try {
-    const res = await ensureMemberRow();
-
-    if (!res.ok && res.reason === "not_active") {
-      alert("길드 권한이 없습니다.");
-      return;
+        // active → 둘 다 숨김
+        if (res.ok) {
+          if (loginBox) loginBox.style.display = "none";
+          if (blockedBox) blockedBox.style.display = "none";
+          console.log("ACTIVE OK:", res.row);
+        }
+      } catch (e) {
+        console.error(e);
+        // 문제가 생기면 로그아웃 유도
+        try { await supabaseClient.auth.signOut(); } catch(_) {}
+      }
     }
 
-    if (res.ok) {
-      console.log("ACTIVE MEMBER:", res.row);
-      // 👉 여기 아래부터 기존 길드전 검색 로직 실행하면 됨
+    // 버튼 연결
+    if (sendBtn) {
+      sendBtn.addEventListener("click", async () => {
+        try {
+          loginMsg.textContent = "인증 메일 보내는 중...";
+          await sendLoginEmail(
+            document.getElementById("email").value,
+            document.getElementById("nickname").value
+          );
+          loginMsg.textContent = "메일 보냈어! 받은 편지함에서 링크를 눌러줘 ✅";
+        } catch (e) {
+          console.error(e);
+          loginMsg.textContent = "실패: " + (e?.message || e);
+        }
+      });
     }
-  } catch (e) {
-    console.error(e);
-    await supabaseClient.auth.signOut();
-  }
-}
 
-// 최초 실행
-checkAuthOnLoad();
+    // 최초 1회 + 상태변경 감지(중복 호출 제거)
+    renderGate();
+    supabaseClient.auth.onAuthStateChange(() => renderGate());
 
-// 로그인 상태 변경 감지
-supabaseClient.auth.onAuthStateChange(() => {
-  checkAuthOnLoad();
-});
-
+    // =========================================================
+    // ✅ 3) 기존 길드전 코드(그대로)
+    // =========================================================
     const slots = [null, null, null];
     let activeSlotIndex = 0;
 
@@ -766,7 +730,6 @@ supabaseClient.auth.onAuthStateChange(() => {
         .replaceAll("'", "&#039;");
     }
 
-    /* ===== 슬롯 렌더 ===== */
     function renderSlots(){
       document.querySelectorAll(".slot").forEach((el) => {
         const idx = Number(el.dataset.slot);
@@ -822,7 +785,6 @@ supabaseClient.auth.onAuthStateChange(() => {
       resultBox.textContent = `선택됨: ${chosen.map(x=>x.name).join(", ")}`;
     }
 
-    /* ===== 유닛 리스트 ===== */
     function renderUnitList(list){
       unitListEl.innerHTML = "";
       list.forEach((u) => {
@@ -861,7 +823,6 @@ supabaseClient.auth.onAuthStateChange(() => {
       updateResultHint();
     }
 
-    /* ===== 모달 ===== */
     function openModal(slotIndex){
       activeSlotIndex = slotIndex;
       modalBack.style.display = "flex";
@@ -881,7 +842,6 @@ supabaseClient.auth.onAuthStateChange(() => {
       el.addEventListener("click", () => openModal(Number(el.dataset.slot)));
     });
 
-    /* ===== 결과 렌더 도우미 ===== */
     function cellHtml(unit){
       if(!unit){
         return `
@@ -933,7 +893,6 @@ supabaseClient.auth.onAuthStateChange(() => {
 
         <div class="card">
           <div class="gridLayout">
-            <!-- 1) 공격 유닛 -->
             <div class="panel">
               <div class="panelTitle">공격 유닛</div>
               <div class="grid3">
@@ -943,7 +902,6 @@ supabaseClient.auth.onAuthStateChange(() => {
               </div>
             </div>
 
-            <!-- 2) 추천 펫(중앙정렬) -->
             <div class="panel centerCol">
               <div class="panelTitle">추천 펫</div>
               ${pet ? `
@@ -959,7 +917,6 @@ supabaseClient.auth.onAuthStateChange(() => {
               `}
             </div>
 
-            <!-- 3) 스킬 순서 (화살표 제거, 3칸 고정) -->
             <div class="panel">
               <div class="panelTitle">스킬 순서</div>
               <div class="grid3">
@@ -969,13 +926,11 @@ supabaseClient.auth.onAuthStateChange(() => {
               </div>
             </div>
 
-            <!-- 4) 선/후(중앙정렬) -->
             <div class="panel centerCol">
               <div class="panelTitle">선 / 후</div>
               <span class="${badgeClass}">${escapeHtml(firstText)}</span>
             </div>
 
-            <!-- 5) 노트(full) -->
             <div class="panel notePanel">
               <div class="noteHead">📌 노트</div>
               <div class="noteText">${escapeHtml(noteText || "없음")}</div>
@@ -1001,7 +956,6 @@ supabaseClient.auth.onAuthStateChange(() => {
       });
     }
 
-    /* ===== 버튼 ===== */
     document.getElementById("btnReset").addEventListener("click", () => {
       slots[0]=slots[1]=slots[2]=null;
       RESULTS = [];
@@ -1081,7 +1035,6 @@ supabaseClient.auth.onAuthStateChange(() => {
       renderSingleResult();
     });
 
-    /* ===== 모달 검색 필터 ===== */
     searchInput.addEventListener("input", () => {
       const q = searchInput.value.trim().toLowerCase();
       if(!q){
@@ -1092,7 +1045,6 @@ supabaseClient.auth.onAuthStateChange(() => {
       renderUnitList(filtered);
     });
 
-    /* ===== units 로드 ===== */
     async function loadUnits(){
       statusText.textContent = "유닛 로딩중...";
       const { data, error } = await supabaseClient
@@ -1118,13 +1070,9 @@ supabaseClient.auth.onAuthStateChange(() => {
       updateResultHint();
     }
 
-    /* init */
     renderSlots();
     updateResultHint();
     loadUnits();
   </script>
 </body>
 </html>
-
-
-
