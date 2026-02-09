@@ -100,31 +100,42 @@
       align-items:center;
       justify-content:center;
     }
+
+    /* ✅ 겹침 방지: 기본은 2열, 좁으면 세로로 자동 전환 */
     .gateRow{
       display:flex;
       gap:10px;
       margin-top: 12px;
+      flex-wrap: wrap;              /* 핵심: 줄바꿈 허용 */
     }
-    .gateRow > div{ flex:1; }
+    .gateRow > div{
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
     .gateLabel{
       font-size: 12px;
       color: var(--muted);
       font-weight: 800;
       margin: 10px 0 6px;
     }
+
+    /* ✅ 입력창 크기 약간 축소 + box-sizing 강제 */
     .gateInput{
       width:100%;
-      height: 42px;
+      height: 40px;
       border-radius: 12px;
       border: 1px solid #dbeafe;
       padding: 0 12px;
       font-size: 14px;
       outline:none;
+      box-sizing: border-box;
     }
     .gateInput:focus{
       border-color:#93c5fd;
       box-shadow: 0 0 0 4px rgba(59,130,246,.12);
     }
+
     .gateBtn.primary{
       margin-top: 12px;
       background: var(--sky);
@@ -155,6 +166,13 @@
       text-decoration:none;
     }
     .gateHelp a:hover{ text-decoration:underline; }
+
+    /* ✅ 아주 좁은 화면에서는 입력칸을 세로로(겹침 완전 방지) */
+    @media (max-width: 420px){
+      .gateRow > div{
+        flex: 1 1 100%;
+      }
+    }
 
     /* ===== 상단 3칸 슬롯 ===== */
     .slots{
@@ -591,7 +609,9 @@
   <!-- ✅ 1) 게이트 화면 -->
   <div id="gate" class="gateWrap">
     <div class="gateCard">
-      <div class="gateTitle">길드전 열람 코드 입력</div>
+      <!-- ✅ 문구 변경 -->
+      <div class="gateTitle">VLRT길드 열람 코드 입력</div>
+
       <div class="gateDesc">
         먼저 카카오톡으로 연락해 <b>아이디 + 코드번호</b>를 받으세요.<br/>
         받은 뒤 아래에 입력하면 열람 가능합니다.
@@ -609,12 +629,16 @@
 
       <div class="gateRow">
         <div>
-          <div class="gateLabel">아이디 (1~40)</div>
-          <input id="gateId" class="gateInput" inputmode="numeric" placeholder="예: 7" />
+          <!-- ✅ 라벨 변경 -->
+          <div class="gateLabel">아이디</div>
+          <!-- ✅ placeholder 변경 -->
+          <input id="gateId" class="gateInput" inputmode="numeric" placeholder="입력:" />
         </div>
         <div>
-          <div class="gateLabel">코드번호 (1001~1040)</div>
-          <input id="gateCode" class="gateInput" inputmode="numeric" placeholder="예: 1007" />
+          <!-- ✅ 라벨 변경 -->
+          <div class="gateLabel">코드</div>
+          <!-- ✅ placeholder 변경 -->
+          <input id="gateCode" class="gateInput" inputmode="numeric" placeholder="입력:" />
         </div>
       </div>
 
@@ -691,7 +715,7 @@
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // =========================================================
-    // ✅ 2) 게이트(아이디+코드번호) 로직 (추가)
+    // ✅ 2) 게이트(아이디+코드번호) 로직 (기존 그대로)
     // =========================================================
     const KAKAO_LINK = "https://open.kakao.com/o/smXJOCfi";
     const SESSION_KEY = "guild_gate_ok_v1";
@@ -768,7 +792,7 @@
     }
 
     // =========================================================
-    // ✅ 3) 기존 길드전 코드(그대로) — initGuildWar로 감쌈(추가된 부분)
+    // ✅ 3) 기존 길드전 코드(그대로) — initGuildWar로 감쌈(기존 유지)
     // =========================================================
     function initGuildWar(){
       // 중복 실행 방지
