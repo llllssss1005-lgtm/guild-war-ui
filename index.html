@@ -572,7 +572,14 @@
     // =========================================================
     const SUPABASE_URL = "https://rtlkthadgfyszawgbevk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_Vsr12aXc5r8kCnjBnpvrcQ_4Enqbi3F";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    detectSessionInUrl: true,  // ✅ #access_token 읽어서 세션 저장
+    persistSession: true,      // ✅ localStorage에 저장
+    autoRefreshToken: true
+  }
+});
+
 
     // =========================================================
     // ✅ 2) RLS 대응: 로그인/권한 확인 로직 (정리본)
@@ -623,8 +630,7 @@
               status: "active",
             },
             {
-              onConflict: "id",
-              ignoreDuplicates: true,
+              onConflict: "id"
             }
           );
 
@@ -704,7 +710,16 @@
 
     // 최초 1회 + 상태변경 감지(중복 호출 제거)
     renderGate();
-    supabaseClient.auth.onAuthStateChange(() => renderGate());
+supabaseClient.auth.onAuthStateChange((event) => {
+  // ✅ 세션 복원/로그인 완료 시점에만 게이트 실행
+  if (event === "INITIAL_SESSION" || event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+    renderGate();
+  }
+});
+
+// ✅ 혹시 INITIAL_SESSION이 안 오거나 타이밍 꼬일 때를 대비한 안전장치(한 번만)
+setTimeout(() => renderGate(), 400);
+
 
     // =========================================================
     // ✅ 3) 기존 길드전 코드(그대로)
@@ -1077,5 +1092,6 @@
   </script>
 </body>
 </html>
+
 
 
