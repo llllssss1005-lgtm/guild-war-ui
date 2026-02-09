@@ -1,808 +1,366 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>길드전 - 방어 유닛 선택</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>길드전</title>
 
-  <style>
-    :root{
-      --bg:#ffffff;
-      --text:#111827;
-      --muted:#6b7280;
-      --line:#e5e7eb;
-      --blue:#3b82f6;
-      --sky:#bfe2ff;
-    }
+<style>
+:root{
+  --bg:#ffffff;
+  --text:#111827;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --blue:#3b82f6;
+  --sky:#bfe2ff;
+}
 
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
+body{
+  margin:0;
+  background:var(--bg);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  color:var(--text);
+}
 
-    .wrap{
-      max-width: 420px;
-      margin: 0 auto;
-      padding: 18px 16px 28px;
-    }
+.wrap{
+  max-width:420px;
+  margin:0 auto;
+  padding:18px 16px 30px;
+}
 
-    h1{
-      margin: 4px 0 6px;
-      font-size: 22px;
-      text-align:center;
-    }
+h1{
+  text-align:center;
+  margin:4px 0 6px;
+  font-size:22px;
+}
 
-    .desc{
-      margin: 0 0 14px;
-      font-size: 13px;
-      color: var(--muted);
-      text-align:center;
-      line-height:1.35;
-    }
+.desc{
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:14px;
+}
 
-    .label{
-      font-size: 13px;
-      font-weight: 700;
-      margin: 10px 0 10px;
-    }
+.label{
+  font-size:13px;
+  font-weight:800;
+  margin:10px 0;
+}
 
-    .slots{
-      display:flex;
-      gap:12px;
-      justify-content: space-between;
-    }
+.slots{
+  display:flex;
+  gap:12px;
+}
 
-    .slot{
-      width: 110px;
-      height: 92px;
-      border: 2px dashed var(--line);
-      border-radius: 12px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      position: relative;
-      background: #fff;
-      cursor: pointer;
-      user-select:none;
-    }
+.slot{
+  flex:1;
+  height:92px;
+  border:2px dashed var(--line);
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  cursor:pointer;
+}
 
-    .slot .plus{
-      font-size: 26px;
-      color: var(--blue);
-      font-weight: 800;
-      line-height:1;
-    }
+.slot.filled{
+  border-style:solid;
+  border-color:#c7ddff;
+}
 
-    .slot.filled{
-      border-style: solid;
-      border-color: #c7ddff;
-    }
+.slot .plus{
+  font-size:26px;
+  font-weight:900;
+  color:var(--blue);
+}
 
-    .slot .thumb{
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      overflow:hidden;
-      border: 1px solid var(--line);
-      background:#f3f4f6;
-    }
-    .slot .thumb img{
-      width:100%;
-      height:100%;
-      object-fit: cover;
-      display:block;
-    }
+.slot img{
+  width:44px;
+  height:44px;
+  border-radius:10px;
+}
 
-    .slot .name{
-      position:absolute;
-      left: 10px;
-      right: 10px;
-      bottom: 8px;
-      font-size: 12px;
-      font-weight: 800;
-      text-align:center;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+.slot .name{
+  position:absolute;
+  bottom:8px;
+  left:8px;
+  right:8px;
+  font-size:12px;
+  font-weight:800;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
 
-    .slot .remove{
-      position:absolute;
-      top: 6px;
-      right: 6px;
-      width: 22px;
-      height: 22px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background:#fff;
-      font-weight: 900;
-      cursor:pointer;
-      display:none;
-      line-height: 20px;
-    }
-    .slot.filled .remove{ display:block; }
+.slot .remove{
+  position:absolute;
+  top:6px;
+  right:6px;
+  width:22px;
+  height:22px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:#fff;
+  font-weight:900;
+  display:none;
+}
 
-    .btnRow{
-      display:flex;
-      gap:12px;
-      margin-top: 14px;
-    }
+.slot.filled .remove{ display:block; }
 
-    .btn{
-      flex:1;
-      height: 44px;
-      border-radius: 10px;
-      border: 1px solid #dbeafe;
-      background:#fff;
-      font-weight: 800;
-      cursor:pointer;
-    }
-    .btn.primary{
-      background: var(--sky);
-      border-color: #93c5fd;
-    }
+.btnRow{
+  display:flex;
+  gap:12px;
+  margin-top:14px;
+}
 
-    .resultHead{
-      margin-top: 18px;
-      display:flex;
-      justify-content: space-between;
-      align-items:center;
-      font-weight: 900;
-      font-size: 13px;
-    }
-    .resultHead .right{
-      color: var(--muted);
-      font-weight: 700;
-      font-size: 12px;
-    }
+.btn{
+  flex:1;
+  height:44px;
+  border-radius:10px;
+  border:1px solid #dbeafe;
+  background:#fff;
+  font-weight:800;
+}
 
-    .resultBox{
-      margin-top: 8px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 12px;
-      min-height: 54px;
-      font-size: 13px;
-      color: var(--muted);
-      background:#fff;
-    }
+.btn.primary{
+  background:var(--sky);
+  border-color:#93c5fd;
+}
 
-    /* ===== 결과 카드 ===== */
-    .card{
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      margin-bottom:10px;
-      background:#fff;
-      color: var(--text);
-    }
+.resultHead{
+  display:flex;
+  justify-content:space-between;
+  margin-top:18px;
+  font-size:13px;
+  font-weight:900;
+}
 
-    .mainGrid{
-      display:grid;
-      grid-template-columns: 1fr 110px;
-      gap:12px;
-      align-items:stretch;
-    }
+.resultBox{
+  margin-top:8px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  background:#fff;
+}
 
-    .panel{
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px;
-      background:#fff;
-    }
+/* ===== 결과 카드 ===== */
+.card{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+}
 
-    .panel.big{
-      min-height:150px;
-    }
+/* 상단 2열 고정 */
+.mainGrid{
+  display:grid;
+  grid-template-columns:1fr 110px;
+  gap:12px;
+}
 
-    .panel.small{
-      min-height:150px;
-    }
+/* 좌측 큰 박스 */
+.panel{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+}
 
-    .panelTitle{
-      font-size:12px;
-      font-weight:900;
-      color:#111827;
-      margin: 0 0 8px;
-    }
+.panelTitle{
+  font-size:12px;
+  font-weight:900;
+  margin-bottom:8px;
+}
 
-    .grid3.units{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:10px;
-      margin-bottom: 12px;
-    }
+/* 공격 유닛 / 스킬 공통 높이 규격 */
+.block{
+  min-height:108px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
 
-    .grid3.skills{
-      display:grid;
-      grid-template-columns:1fr 18px 1fr 18px 1fr;
-      gap:10px;
-      align-items:center;
-    }
+/* 3칸 고정 */
+.grid3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
 
-    .cell{
-      text-align:center;
-    }
-    .cell img{
-      width:56px;
-      height:56px;
-      border-radius:14px;
-      object-fit:cover;
-      border:1px solid rgba(0,0,0,.06);
-      background:#f3f4f6;
-    }
-    .cell .cap{
-      font-size:12px;
-      margin-top:4px;
-      font-weight:800;
-      color:#374151;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+/* 스킬은 화살표 포함 */
+.gridSkill{
+  display:grid;
+  grid-template-columns:1fr 18px 1fr 18px 1fr;
+  gap:10px;
+  align-items:center;
+}
 
-    .arrow{
-      text-align:center;
-      font-weight:900;
-      font-size:18px;
-      color:#3b82f6;
-    }
+/* 셀 */
+.cell{
+  text-align:center;
+}
 
-    .cap.muted{
-      font-size:12px;
-      color:#94a3b8;
-      font-weight:700;
-      text-align:center;
-      margin-top: 6px;
-    }
+.cell img{
+  width:54px;
+  height:54px;
+  border-radius:14px;
+  border:1px solid rgba(0,0,0,.06);
+  background:#f3f4f6;
+}
 
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      height:26px;
-      padding:0 10px;
-      border-radius:999px;
-      font-weight:900;
-      font-size:12px;
-      color:#fff;
-      margin-top: 6px;
-    }
-    .badge.red{ background:#ef4444; }
-    .badge.blue{ background:#3b82f6; }
+.cell .cap{
+  margin-top:4px;
+  font-size:11px;
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
 
-    /* ✅ 노트 UI (줄바꿈 유지 핵심) */
-    .noteBox{
-      margin-top:10px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px;
-      background:#fafafa;
-    }
-    .noteTitle{
-      font-size:12px;
-      font-weight:900;
-      color:#1e5aa8;
-      margin-bottom:6px;
-    }
-    .noteText{
-      font-size:12px;
-      color:#111827;
-      line-height:1.4;
-      white-space: pre-wrap; /* ✅ DB 줄바꿈 그대로 */
-    }
+.empty{
+  color:#9ca3af;
+  font-size:12px;
+  font-weight:700;
+}
 
-    /* ===== modal ===== */
-    .modalBack{
-      position: fixed;
-      inset: 0;
-      background: rgba(17,24,39,.45);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding: 16px;
-      z-index: 50;
-    }
-    .modal{
-      width: 100%;
-      max-width: 420px;
-      background:#fff;
-      border-radius: 14px;
-      overflow:hidden;
-      border: 1px solid var(--line);
-      box-shadow: 0 12px 30px rgba(0,0,0,._toggle);
-    }
+/* 화살표 */
+.arrow{
+  text-align:center;
+  font-size:18px;
+  font-weight:900;
+  color:#cbd5e1;
+}
 
-    .modalHeader{
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--line);
-      background:#fff;
-    }
-    .modalHeader .title{
-      font-weight: 900;
-      font-size: 14px;
-      margin-left: 4px;
-    }
-    .modalHeader .close{
-      border:1px solid var(--line);
-      background:#fff;
-      border-radius: 10px;
-      padding: 6px 10px;
-      cursor:pointer;
-      font-weight:900;
-    }
+/* 우측 */
+.badge{
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  height:26px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  color:#fff;
+  margin-top:6px;
+}
 
-    .search{
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--line);
-      background:#fff;
-    }
-    .search input{
-      width:100%;
-      height: 42px;
-      border-radius: 10px;
-      border: 1px solid #dbeafe;
-      padding: 0 12px;
-      font-size: 14px;
-      outline:none;
-    }
+.badge.red{ background:#ef4444; }
+.badge.blue{ background:#3b82f6; }
+.badge.gray{ background:#9ca3af; }
 
-    /* 유닛 목록: 그리드 */
-    #unitList{
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      padding: 14px 14px 16px;
-      max-height: 420px;
-      overflow:auto;
-      background:#fff;
-    }
+/* 노트 */
+.noteBox{
+  margin-top:10px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+  background:#fafafa;
+}
 
-    #unitList .item{
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 8px;
-      border-radius: 14px;
-      border: 1px solid #e8eef7;
-      background: #fff;
-      cursor: pointer;
-    }
+.noteTitle{
+  font-size:12px;
+  font-weight:900;
+  color:#1e5aa8;
+  margin-bottom:6px;
+}
 
-    #unitList .item:hover{
-      border-color:#93c5fd;
-      background:#f8fbff;
-    }
+.noteText{
+  font-size:12px;
+  line-height:1.4;
+  white-space:pre-wrap;
+  max-height:4.2em; /* 약 3줄 */
+  overflow-y:auto;
+}
 
-    #unitList .thumb{
-      width: 64px;
-      height: 64px;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      background:#f3f4f6;
-    }
-    #unitList .thumb img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display:block;
-    }
+/* modal */
+.modalBack{
+  position:fixed;
+  inset:0;
+  background:rgba(17,24,39,.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
 
-    #unitList .name{
-      font-weight: 800;
-      font-size: 12px;
-      line-height: 1.15;
-      letter-spacing: -0.2px;
-      text-align: center;
-      word-break: keep-all;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-      color:#111827;
-    }
+.modal{
+  width:100%;
+  max-width:420px;
+  background:#fff;
+  border-radius:14px;
+  border:1px solid var(--line);
+}
 
-    #unitList .sub{ display:none; }
+.modalHeader{
+  display:flex;
+  justify-content:space-between;
+  padding:14px;
+  border-bottom:1px solid var(--line);
+}
 
-    .hint{
-      padding: 10px 12px 14px;
-      color: var(--muted);
-      font-size: 12px;
-      border-top: 1px dashed var(--line);
-      background:#fff;
-    }
-  </style>
+.search{
+  padding:10px 12px;
+  border-bottom:1px solid var(--line);
+}
+
+.search input{
+  width:100%;
+  height:42px;
+  border-radius:10px;
+  border:1px solid #dbeafe;
+  padding:0 12px;
+}
+
+#unitList{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  padding:14px;
+  max-height:420px;
+  overflow:auto;
+}
+
+.item{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:8px;
+  text-align:center;
+  cursor:pointer;
+}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <h1>길드전</h1>
-    <p class="desc">방어 유닛 3명을 선택하면 해당 구성에 대한 결과를 조회합니다</p>
+<div class="wrap">
+  <h1>길드전</h1>
+  <p class="desc">방어 유닛 3명을 선택하면 결과를 조회합니다</p>
 
-    <div class="label">방어 유닛 선택</div>
-
-    <div class="slots">
-      <div class="slot" data-slot="0" aria-label="slot 1">
-        <div class="plus">+</div>
-        <button class="remove" title="제거" aria-label="remove 1">×</button>
-      </div>
-
-      <div class="slot" data-slot="1" aria-label="slot 2">
-        <div class="plus">+</div>
-        <button class="remove" title="제거" aria-label="remove 2">×</button>
-      </div>
-
-      <div class="slot" data-slot="2" aria-label="slot 3">
-        <div class="plus">+</div>
-        <button class="remove" title="제거" aria-label="remove 3">×</button>
-      </div>
-    </div>
-
-    <div class="btnRow">
-      <button class="btn" id="btnReset">초기화</button>
-      <button class="btn primary" id="btnSearch">검색</button>
-    </div>
-
-    <div class="resultHead">
-      <div class="left">결과</div>
-      <div class="right" id="statusText">검색 전</div>
-    </div>
-
-    <div class="resultBox" id="resultBox">방어 유닛 3명을 선택해 주세요</div>
+  <div class="label">방어 유닛 선택</div>
+  <div class="slots">
+    <div class="slot" data-slot="0"><div class="plus">+</div><button class="remove">×</button></div>
+    <div class="slot" data-slot="1"><div class="plus">+</div><button class="remove">×</button></div>
+    <div class="slot" data-slot="2"><div class="plus">+</div><button class="remove">×</button></div>
   </div>
 
-  <!-- modal -->
-  <div class="modalBack" id="modalBack" role="dialog" aria-modal="true">
-    <div class="modal">
-      <div class="modalHeader">
-        <div class="title">유닛 선택</div>
-        <button class="close" id="btnClose" aria-label="닫기">닫기</button>
-      </div>
-      <div class="search">
-        <input id="searchInput" placeholder="이름 검색 (예: 루디)" />
-      </div>
-      <div id="unitList"></div>
-      <div class="hint">유닛을 선택하고, 방어 3명을 채운 뒤 검색하세요.</div>
-    </div>
+  <div class="btnRow">
+    <button class="btn" id="btnReset">초기화</button>
+    <button class="btn primary" id="btnSearch">검색</button>
   </div>
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <div class="resultHead">
+    <div>결과</div>
+    <div id="statusText">검색 전</div>
+  </div>
 
-  <script>
-    const SUPABASE_URL = "https://rtlkthadgfyszawgbevk.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_Vsr12aXc5r8kCnjBnpvrcQ_4Enqbi3F";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  </script>
+  <div class="resultBox" id="resultBox">방어 유닛 3명을 선택해 주세요</div>
+</div>
 
-  <script>
-    // 선택 슬롯 데이터: { id, name, image_url }
-    const slots = [null, null, null];
-    let activeSlotIndex = 0;
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://rtlkthadgfyszawgbevk.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_Vsr12aXc5r8kCnjBnpvrcQ_4Enqbi3F";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
 
-    // 유닛 목록
-    let UNITS = [];
-
-    const modalBack = document.getElementById("modalBack");
-    const unitListEl = document.getElementById("unitList");
-    const searchInput = document.getElementById("searchInput");
-    const statusText = document.getElementById("statusText");
-    const resultBox = document.getElementById("resultBox");
-
-    function escapeHtml(str) {
-      return String(str ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    // --------- UI 렌더 ---------
-    function renderSlots(){
-      document.querySelectorAll(".slot").forEach((el) => {
-        const idx = Number(el.dataset.slot);
-        const s = slots[idx];
-
-        el.classList.toggle("filled", !!s);
-        el.innerHTML = ""; // reset
-
-        // remove btn
-        const rm = document.createElement("button");
-        rm.className = "remove";
-        rm.title = "제거";
-        rm.textContent = "×";
-        rm.addEventListener("click", (e) => {
-          e.stopPropagation();
-          clearSlot(idx);
-        });
-        el.appendChild(rm);
-
-        if(!s){
-          const plus = document.createElement("div");
-          plus.className = "plus";
-          plus.textContent = "+";
-          el.appendChild(plus);
-          return;
-        }
-
-        const thumb = document.createElement("div");
-        thumb.className = "thumb";
-        const img = document.createElement("img");
-        img.src = s.image_url;
-        img.alt = s.name;
-        thumb.appendChild(img);
-
-        const nm = document.createElement("div");
-        nm.className = "name";
-        nm.textContent = s.name;
-
-        el.appendChild(thumb);
-        el.appendChild(nm);
-      });
-    }
-
-    function updateResultHint(){
-      const chosen = slots.filter(Boolean);
-      if(chosen.length < 3){
-        statusText.textContent = "검색 전";
-        resultBox.textContent = "방어 유닛 3명을 선택해 주세요";
-        return;
-      }
-      statusText.textContent = "준비됨";
-      resultBox.textContent = `선택됨: ${chosen.map(x=>x.name).join(", ")}`;
-    }
-
-    // --------- 유닛 리스트 렌더 ---------
-    function renderUnitList(list){
-      unitListEl.innerHTML = "";
-      list.forEach((u) => {
-        const row = document.createElement("div");
-        row.className = "item";
-
-        row.innerHTML = `
-          <div class="thumb"><img src="${u.image_url}" alt="${escapeHtml(u.name)}"></div>
-          <div class="name">${escapeHtml(u.name)}</div>
-          <div class="sub">탭해서 선택</div>
-        `;
-
-        row.addEventListener("click", () => {
-          setSlot(activeSlotIndex, u);
-          closeModal();
-        });
-
-        unitListEl.appendChild(row);
-      });
-
-      if(list.length === 0){
-        unitListEl.innerHTML = `<div style="padding:14px;color:#6b7280;font-size:13px;">검색 결과가 없습니다</div>`;
-      }
-    }
-
-    // --------- 슬롯 조작 ---------
-    function setSlot(i, unit){
-      const already = slots.findIndex(s => s && s.name === unit.name);
-      if(already !== -1 && already !== i){
-        alert("이미 선택된 유닛입니다.");
-        return;
-      }
-      slots[i] = { id: unit.id, name: unit.name, image_url: unit.image_url };
-
-      renderSlots();
-      updateResultHint();
-    }
-
-    function clearSlot(i){
-      slots[i] = null;
-      renderSlots();
-      updateResultHint();
-    }
-
-    // --------- 모달 ---------
-    function openModal(slotIndex){
-      activeSlotIndex = slotIndex;
-      modalBack.style.display = "flex";
-      searchInput.value = "";
-      renderUnitList(UNITS);
-      setTimeout(()=>searchInput.focus(), 50);
-    }
-
-    function closeModal(){
-      modalBack.style.display = "none";
-    }
-
-    document.getElementById("btnClose").addEventListener("click", closeModal);
-    modalBack.addEventListener("click", (e) => {
-      if(e.target === modalBack) closeModal();
-    });
-
-    document.querySelectorAll(".slot").forEach((el) => {
-      el.addEventListener("click", () => {
-        const idx = Number(el.dataset.slot);
-        openModal(idx);
-      });
-    });
-
-    // --------- 검색/초기화 버튼 ---------
-    document.getElementById("btnReset").addEventListener("click", () => {
-      slots[0]=slots[1]=slots[2]=null;
-      renderSlots();
-      updateResultHint();
-    });
-
-    document.getElementById("btnSearch").addEventListener("click", async () => {
-      const selected = slots.filter(Boolean);
-      if(selected.length < 3){
-        alert("방어 유닛 3명을 먼저 선택해 주세요.");
-        return;
-      }
-
-      const defKey = selected
-        .map(s => s.id)
-        .sort()
-        .join("|");
-
-      statusText.textContent = "검색중...";
-      resultBox.textContent = "잠시만...";
-
-      // ✅ note 포함 조회 (이미 잘 되어있음)
-      const { data: rows, error } = await supabaseClient
-        .from("guild_war_results")
-        .select("result_id, atk_1, atk_2, atk_3, skill_1, skill_2, skill_3, pet, first, note, def_key")
-        .eq("def_key", defKey)
-        .order("result_id", { ascending: true });
-
-      if(error){
-        console.error(error);
-        statusText.textContent = "에러";
-        resultBox.textContent = "조회 실패(콘솔 확인)";
-        return;
-      }
-
-      if(!rows || rows.length === 0){
-        statusText.textContent = "결과 없음";
-        resultBox.textContent = "해당 방어 조합 결과가 없습니다.";
-        return;
-      }
-
-      // 결과에 필요한 유닛/스킬/펫 id들 모아서 한번에 units 조회
-      const ids = new Set();
-      rows.forEach(r => {
-        [r.atk_1,r.atk_2,r.atk_3,r.skill_1,r.skill_2,r.skill_3,r.pet].forEach(x => {
-          if(x) ids.add(x);
-        });
-      });
-
-      const { data: unitRows, error: unitErr } = await supabaseClient
-        .from("units")
-        .select("id, name, image_url")
-        .in("id", Array.from(ids));
-
-      if(unitErr) console.error(unitErr);
-
-      const unitMap = new Map((unitRows || []).map(u => [u.id, u]));
-
-      // ✅ 결과 렌더링 (노트 포함)
-      statusText.textContent = `결과 ${rows.length}개`;
-
-      resultBox.innerHTML = rows.map((r) => {
-        const badgeClass = r.first === "선공" ? "badge red" : "badge blue";
-        const pet = unitMap.get(r.pet);
-
-        const atk = [r.atk_1, r.atk_2, r.atk_3]
-          .map(id => unitMap.get(id))
-          .filter(Boolean);
-
-        const sk = [r.skill_1, r.skill_2, r.skill_3]
-          .map(id => unitMap.get(id))
-          .filter(Boolean);
-
-        return `
-          <div class="card">
-            <div class="mainGrid">
-
-              <!-- 좌측 큰 박스 (공격 유닛 + 스킬 순서) -->
-              <div class="panel big">
-
-                <div class="panelTitle">공격 유닛</div>
-                <div class="grid3 units">
-                  ${atk.map(u => `
-                    <div class="cell">
-                      <img src="${u.image_url}" alt="${escapeHtml(u.name)}">
-                      <div class="cap">${escapeHtml(u.name)}</div>
-                    </div>
-                  `).join("")}
-                </div>
-
-                <div class="panelTitle">스킬 순서</div>
-                <div class="grid3 skills">
-                  ${sk.map((s, i) => `
-                    <div class="cell">
-                      <img src="${s.image_url}" alt="${escapeHtml(s.name)}">
-                      <div class="cap">${escapeHtml(s.name)}</div>
-                    </div>
-                    ${i < sk.length - 1 ? `<div class="arrow">➜</div>` : ``}
-                  `).join("")}
-                </div>
-              </div>
-
-              <!-- 우측 작은 박스 (추천 펫 + 선/후) -->
-              <div class="panel small">
-                <div class="panelTitle">추천 펫</div>
-                ${pet ? `
-                  <div class="cell">
-                    <img src="${pet.image_url}" alt="${escapeHtml(pet.name)}">
-                    <div class="cap">${escapeHtml(pet.name)}</div>
-                  </div>
-                ` : `<div class="cap muted">없음</div>`}
-
-                <div class="panelTitle" style="margin-top:10px;">선 / 후</div>
-                <span class="${badgeClass}">${escapeHtml(r.first)}</span>
-              </div>
-
-            </div>
-
-            <!-- ✅ 노트 (여기가 핵심 추가) -->
-            ${r.note ? `
-              <div class="noteBox">
-                <div class="noteTitle">📌 노트</div>
-                <div class="noteText">${escapeHtml(r.note)}</div>
-              </div>
-            ` : ``}
-          </div>
-        `;
-      }).join("");
-    });
-
-    // 검색 입력 필터
-    searchInput.addEventListener("input", () => {
-      const q = searchInput.value.trim().toLowerCase();
-      if(!q){
-        renderUnitList(UNITS);
-        return;
-      }
-      const filtered = UNITS.filter(u => (u.name || "").toLowerCase().includes(q));
-      renderUnitList(filtered);
-    });
-
-    // --------- Supabase에서 units 불러오기 ---------
-    async function loadUnits(){
-      statusText.textContent = "유닛 로딩중...";
-
-      const { data, error } = await supabaseClient
-        .from("units")
-        .select("id, name, image_url")
-        .eq("kind", "unit")
-        .order("name", { ascending: true });
-
-      if(error){
-        console.error(error);
-        statusText.textContent = "유닛 로드 실패";
-        resultBox.textContent = "유닛을 불러오지 못했습니다. (RLS/정책 또는 컬럼명 확인 필요)";
-        return;
-      }
-
-      UNITS = (data || []).map(u => ({
-        id: u.id,
-        name: u.name,
-        image_url: u.image_url
-      }));
-
-      statusText.textContent = `유닛 ${UNITS.length}개 로드됨`;
-      updateResultHint();
-    }
-
-    // init
-    renderSlots();
-    updateResultHint();
-    loadUnits();
-  </script>
+<!-- ⚠️ JS 로직은 이전에 너가 쓰던 그대로 사용 (결과 1장 렌더링만 유지) -->
 </body>
 </html>
