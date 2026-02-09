@@ -651,7 +651,7 @@ async function sendLoginEmail(email, nickname) {
   const { error } = await supabaseClient.auth.signInWithOtp({
     email: email.trim(),
     options: {
-      emailRedirectTo: window.location.origin + window.location.pathname,
+      emailRedirectTo: SITE_URL,
     },
   });
 
@@ -1125,5 +1125,6 @@ supabaseClient.auth.onAuthStateChange(() => {
   </script>
 </body>
 </html>
+
 
 
