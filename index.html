@@ -14,6 +14,8 @@
       --blue:#3b82f6;
       --sky:#bfe2ff;
       --card:#ffffff;
+      --kakao:#FEE500;
+      --kakaoText:#191600;
     }
 
     body{
@@ -48,6 +50,111 @@
       font-weight: 800;
       margin: 10px 0 10px;
     }
+
+    /* ===== 게이트(로그인) ===== */
+    .gateWrap{
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 18px 16px 10px;
+    }
+    .gateCard{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:14px;
+    }
+    .gateTitle{
+      font-weight: 900;
+      font-size: 16px;
+      margin: 0 0 6px;
+      text-align:center;
+    }
+    .gateDesc{
+      margin: 0 0 12px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align:center;
+      line-height:1.4;
+    }
+    .gateBtn{
+      width:100%;
+      height: 44px;
+      border-radius: 12px;
+      border: 0;
+      cursor:pointer;
+      font-weight: 900;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+    .gateBtn.kakao{
+      background: var(--kakao);
+      color: var(--kakaoText);
+    }
+    .kakaoBadge{
+      width:22px;height:22px;
+      border-radius:6px;
+      background: rgba(0,0,0,.08);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .gateRow{
+      display:flex;
+      gap:10px;
+      margin-top: 12px;
+    }
+    .gateRow > div{ flex:1; }
+    .gateLabel{
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+      margin: 10px 0 6px;
+    }
+    .gateInput{
+      width:100%;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid #dbeafe;
+      padding: 0 12px;
+      font-size: 14px;
+      outline:none;
+    }
+    .gateInput:focus{
+      border-color:#93c5fd;
+      box-shadow: 0 0 0 4px rgba(59,130,246,.12);
+    }
+    .gateBtn.primary{
+      margin-top: 12px;
+      background: var(--sky);
+      border: 1px solid #93c5fd;
+      color: #0f172a;
+    }
+    .gateMsg{
+      margin-top: 10px;
+      font-size: 12px;
+      color: #991b1b;
+      font-weight: 900;
+      display:none;
+      background:#fee2e2;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid #fecaca;
+    }
+    .gateHelp{
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      text-align:center;
+    }
+    .gateHelp a{
+      color:#1d4ed8;
+      font-weight: 900;
+      text-decoration:none;
+    }
+    .gateHelp a:hover{ text-decoration:underline; }
 
     /* ===== 상단 3칸 슬롯 ===== */
     .slots{
@@ -481,617 +588,49 @@
 </head>
 
 <body>
-  <!-- ✅ 로그인 UI (추가) -->
-  <div id="loginBox" style="max-width:520px;margin:16px auto;padding:16px;border:1px solid #eaeaea;border-radius:12px;">
-    <h3 style="margin:0 0 10px;">이메일 인증 로그인</h3>
+  <!-- ✅ 1) 게이트 화면(추가) -->
+  <div id="gate" class="gateWrap">
+    <div class="gateCard">
+      <div class="gateTitle">길드전 열람 코드 입력</div>
+      <div class="gateDesc">
+        먼저 카카오톡으로 연락해 <b>아이디 + 코드번호</b>를 받으세요.<br/>
+        받은 뒤 아래에 입력하면 열람 가능합니다.
+      </div>
 
-    <div style="margin:8px 0;">
-      <div style="font-size:12px;color:#555;margin-bottom:6px;">이메일</div>
-      <input id="email" type="email" placeholder="example@naver.com" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;">
+      <button class="gateBtn kakao" id="btnKakao" type="button">
+        <span class="kakaoBadge" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3C6.477 3 2 6.582 2 11c0 2.74 1.77 5.15 4.5 6.62L5.8 21l4.03-2.2c.7.1 1.43.15 2.17.15 5.523 0 10-3.582 10-8s-4.477-8-10-8Z" fill="#191600" opacity=".92"/>
+            <path d="M8.3 10.2h7.4M8.3 12.2h5.2" stroke="#FEE500" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        코드 받기 (카카오톡)
+      </button>
+
+      <div class="gateRow">
+        <div>
+          <div class="gateLabel">아이디 (1~40)</div>
+          <input id="gateId" class="gateInput" inputmode="numeric" placeholder="예: 7" />
+        </div>
+        <div>
+          <div class="gateLabel">코드번호 (1001~1040)</div>
+          <input id="gateCode" class="gateInput" inputmode="numeric" placeholder="예: 1007" />
+        </div>
+      </div>
+
+      <button class="gateBtn primary" id="btnGateEnter" type="button">확인</button>
+
+      <div id="gateMsg" class="gateMsg"></div>
+
+      <div class="gateHelp">
+        문제가 있으면 <a href="https://open.kakao.com/o/smXJOCfi" target="_blank" rel="noopener">관리자에게 카카오톡으로 연락</a>해주세요.
+      </div>
     </div>
-
-    <div style="margin:8px 0;">
-      <div style="font-size:12px;color:#555;margin-bottom:6px;">닉네임</div>
-      <input id="nickname" type="text" placeholder="길드 닉네임" maxlength="20" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;">
-    </div>
-
-    <button id="sendBtn" style="width:100%;padding:12px;border:0;border-radius:10px;background:#3B82F6;color:white;font-weight:700;cursor:pointer;">
-      인증 메일 보내기
-    </button>
-
-    <div id="loginMsg" style="margin-top:10px;font-size:13px;color:#666;"></div>
   </div>
 
-  <!-- ✅ 차단 UI (추가) -->
-  <div id="blockedBox" style="display:none;max-width:520px;margin:16px auto;padding:16px;border:1px solid #ffd4d4;border-radius:12px;background:#fff5f5;">
-    <h3 style="margin:0 0 10px;color:#c00;">접근 불가</h3>
-    <div style="font-size:13px;color:#900;">길드 권한이 없습니다. (status가 active가 아님)</div>
-  </div>
-
-  <div class="wrap">
+  <!-- ✅ 2) 기존 길드전 UI (그대로) -->
+  <div id="app" class="wrap" style="display:none;">
     <h1>길드전</h1>
     <p class="desc">방어 유닛 3명을 선택하면 해당 구성에 대한 결과를 조회합니다</p>
 
-    <div class="label">방어 유닛 선택</div>
-
-    <div class="slots">
-      <div class="slot" data-slot="0" aria-label="slot 1">
-        <div class="plus">+</div>
-        <button class="remove" title="제거" aria-label="remove 1">×</button>
-      </div>
-
-      <div class="slot" data-slot="1" aria-label="slot 2">
-        <div class="plus">+</div>
-        <button class="remove" title="제거" aria-label="remove 2">×</button>
-      </div>
-
-      <div class="slot" data-slot="2" aria-label="slot 3">
-        <div class="plus">+</div>
-        <button class="remove" title="제거" aria-label="remove 3">×</button>
-      </div>
-    </div>
-
-    <div class="btnRow">
-      <button class="btn" id="btnReset">초기화</button>
-      <button class="btn primary" id="btnSearch">검색</button>
-    </div>
-
-    <div class="resultHead">
-      <div class="left">결과</div>
-      <div class="right" id="statusText">검색 전</div>
-    </div>
-
-    <div class="resultBox" id="resultBox">방어 유닛 3명을 선택해 주세요</div>
-  </div>
-
-  <!-- modal -->
-  <div class="modalBack" id="modalBack" role="dialog" aria-modal="true">
-    <div class="modal">
-      <div class="modalHeader">
-        <div class="title">유닛 선택</div>
-        <button class="close" id="btnClose" aria-label="닫기">닫기</button>
-      </div>
-      <div class="search">
-        <input id="searchInput" placeholder="이름 검색 (예: 루디)" />
-      </div>
-      <div id="unitList"></div>
-      <div class="hint">유닛을 선택하고 방어 3명을 채운 뒤 검색하세요.</div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script>
-    // =========================================================
-    // ✅ 0) 사이트 URL (메일 인증 복귀 주소) - 반드시 먼저 선언
-    // =========================================================
-    const SITE_URL = "https://llllssss1005-lgtm.github.io/guild-war-ui/";
-
-    // =========================================================
-    // ✅ 1) Supabase 연결
-    // =========================================================
-    const SUPABASE_URL = "https://rtlkthadgfyszawgbevk.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_Vsr12aXc5r8kCnjBnpvrcQ_4Enqbi3F";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    detectSessionInUrl: true,  // ✅ #access_token 읽어서 세션 저장
-    persistSession: true,      // ✅ localStorage에 저장
-    autoRefreshToken: true
-  }
-});
-
-
-    // =========================================================
-    // ✅ 2) RLS 대응: 로그인/권한 확인 로직 (정리본)
-    // =========================================================
-
-    // 이메일 인증 메일 보내기 (닉네임 포함)
-    async function sendLoginEmail(email, nickname) {
-      if (!email || !nickname) {
-        alert("이메일과 닉네임을 입력해줘.");
-        throw new Error("email/nickname required");
-      }
-
-      localStorage.setItem("pending_nickname", nickname.trim());
-
-      const { error } = await supabaseClient.auth.signInWithOtp({
-  email: email.trim(),
-  options: {
-    emailRedirectTo: SITE_URL
-  },
-});
-
-
-      if (error) {
-        console.error(error);
-        throw error;
-      }
-
-      alert("인증 메일을 보냈어! 메일에서 링크를 눌러줘.");
-    }
-
-    // members 자동 생성 + active 판정
-    async function ensureMemberRow() {
-      const { data: { user }, error: userErr } = await supabaseClient.auth.getUser();
-      if (userErr) throw userErr;
-      if (!user) return { ok: false, reason: "not_logged_in" };
-
-      const pendingNickname = (localStorage.getItem("pending_nickname") || "").trim();
-
-      // 신규면 members row 생성 시도(중복이면 무시)
-      if (pendingNickname) {
-        const { error: upErr } = await supabaseClient
-          .from("members")
-          .upsert(
-            {
-              id: user.id,
-              email: user.email,
-              nickname: pendingNickname,
-              status: "active",
-            },
-            {
-              onConflict: "id"
-            }
-          );
-
-        if (upErr) throw upErr;
-        localStorage.removeItem("pending_nickname");
-      }
-
-      // 🔑 active 여부는 DB 함수로 확정 판정
-      const { data: isActive, error: rpcErr } = await supabaseClient.rpc("is_active_member");
-      if (rpcErr) throw rpcErr;
-      if (!isActive) return { ok: false, reason: "not_active" };
-
-      // active면 members row 조회 가능
-      const { data: row, error: selErr } = await supabaseClient
-        .from("members")
-        .select("id, email, nickname, status")
-        .eq("id", user.id)
-        .single();
-
-      if (selErr) throw selErr;
-      return { ok: true, row };
-    }
-
-    // ✅ 권한 체크 결과에 따라 UI 표시
-    const sendBtn = document.getElementById("sendBtn");
-    const loginMsg = document.getElementById("loginMsg");
-    const loginBox = document.getElementById("loginBox");
-    const blockedBox = document.getElementById("blockedBox");
-
-    async function renderGate() {
-      try {
-        const res = await ensureMemberRow();
-
-        // 로그인 안 됨 → 로그인 박스
-        if (!res.ok && res.reason === "not_logged_in") {
-          if (loginBox) loginBox.style.display = "block";
-          if (blockedBox) blockedBox.style.display = "none";
-          return;
-        }
-
-        // 차단 → 차단 박스
-        if (!res.ok && res.reason === "not_active") {
-          if (loginBox) loginBox.style.display = "none";
-          if (blockedBox) blockedBox.style.display = "block";
-          return;
-        }
-
-        // active → 둘 다 숨김
-        if (res.ok) {
-          if (loginBox) loginBox.style.display = "none";
-          if (blockedBox) blockedBox.style.display = "none";
-          console.log("ACTIVE OK:", res.row);
-        }
-      } catch (e) {
-        console.error(e);
-        // 문제가 생기면 로그아웃 유도
-        try { await supabaseClient.auth.signOut(); } catch(_) {}
-      }
-    }
-
-    // 버튼 연결
-    if (sendBtn) {
-      sendBtn.addEventListener("click", async () => {
-        try {
-          loginMsg.textContent = "인증 메일 보내는 중...";
-          await sendLoginEmail(
-            document.getElementById("email").value,
-            document.getElementById("nickname").value
-          );
-          loginMsg.textContent = "메일 보냈어! 받은 편지함에서 링크를 눌러줘 ✅";
-        } catch (e) {
-          console.error(e);
-          loginMsg.textContent = "실패: " + (e?.message || e);
-        }
-      });
-    }
-
-    // 최초 1회 + 상태변경 감지(중복 호출 제거)
-    renderGate();
-supabaseClient.auth.onAuthStateChange((event) => {
-  // ✅ 세션 복원/로그인 완료 시점에만 게이트 실행
-  if (event === "INITIAL_SESSION" || event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
-    renderGate();
-  }
-});
-
-// ✅ 혹시 INITIAL_SESSION이 안 오거나 타이밍 꼬일 때를 대비한 안전장치(한 번만)
-setTimeout(() => renderGate(), 400);
-
-
-    // =========================================================
-    // ✅ 3) 기존 길드전 코드(그대로)
-    // =========================================================
-    const slots = [null, null, null];
-    let activeSlotIndex = 0;
-
-    let UNITS = [];
-    let RESULTS = [];
-    let currentIndex = 0;
-
-    const modalBack = document.getElementById("modalBack");
-    const unitListEl = document.getElementById("unitList");
-    const searchInput = document.getElementById("searchInput");
-    const statusText = document.getElementById("statusText");
-    const resultBox = document.getElementById("resultBox");
-
-    function escapeHtml(str) {
-      return String(str ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function renderSlots(){
-      document.querySelectorAll(".slot").forEach((el) => {
-        const idx = Number(el.dataset.slot);
-        const s = slots[idx];
-
-        el.classList.toggle("filled", !!s);
-        el.innerHTML = "";
-
-        const rm = document.createElement("button");
-        rm.className = "remove";
-        rm.title = "제거";
-        rm.textContent = "×";
-        rm.addEventListener("click", (e) => {
-          e.stopPropagation();
-          clearSlot(idx);
-        });
-        el.appendChild(rm);
-
-        if(!s){
-          const plus = document.createElement("div");
-          plus.className = "plus";
-          plus.textContent = "+";
-          el.appendChild(plus);
-          return;
-        }
-
-        const thumb = document.createElement("div");
-        thumb.className = "thumb";
-        const img = document.createElement("img");
-        img.src = s.image_url;
-        img.alt = s.name;
-        thumb.appendChild(img);
-
-        const nm = document.createElement("div");
-        nm.className = "name";
-        nm.textContent = s.name;
-
-        el.appendChild(thumb);
-        el.appendChild(nm);
-      });
-    }
-
-    function updateResultHint(){
-      const chosen = slots.filter(Boolean);
-      if(chosen.length < 3){
-        statusText.textContent = "검색 전";
-        resultBox.textContent = "방어 유닛 3명을 선택해 주세요";
-        RESULTS = [];
-        currentIndex = 0;
-        return;
-      }
-      statusText.textContent = "준비됨";
-      resultBox.textContent = `선택됨: ${chosen.map(x=>x.name).join(", ")}`;
-    }
-
-    function renderUnitList(list){
-      unitListEl.innerHTML = "";
-      list.forEach((u) => {
-        const row = document.createElement("div");
-        row.className = "item";
-        row.innerHTML = `
-          <div class="thumb"><img src="${u.image_url}" alt="${escapeHtml(u.name)}"></div>
-          <div class="name">${escapeHtml(u.name)}</div>
-        `;
-        row.addEventListener("click", () => {
-          setSlot(activeSlotIndex, u);
-          closeModal();
-        });
-        unitListEl.appendChild(row);
-      });
-
-      if(list.length === 0){
-        unitListEl.innerHTML = `<div style="padding:14px;color:#6b7280;font-size:13px;">검색 결과가 없습니다</div>`;
-      }
-    }
-
-    function setSlot(i, unit){
-      const already = slots.findIndex(s => s && s.name === unit.name);
-      if(already !== -1 && already !== i){
-        alert("이미 선택된 유닛입니다.");
-        return;
-      }
-      slots[i] = { id: unit.id, name: unit.name, image_url: unit.image_url };
-      renderSlots();
-      updateResultHint();
-    }
-
-    function clearSlot(i){
-      slots[i] = null;
-      renderSlots();
-      updateResultHint();
-    }
-
-    function openModal(slotIndex){
-      activeSlotIndex = slotIndex;
-      modalBack.style.display = "flex";
-      searchInput.value = "";
-      renderUnitList(UNITS);
-      setTimeout(() => searchInput.focus({ preventScroll:true }), 50);
-    }
-    function closeModal(){
-      modalBack.style.display = "none";
-    }
-
-    document.getElementById("btnClose").addEventListener("click", closeModal);
-    modalBack.addEventListener("click", (e) => {
-      if(e.target === modalBack) closeModal();
-    });
-    document.querySelectorAll(".slot").forEach((el) => {
-      el.addEventListener("click", () => openModal(Number(el.dataset.slot)));
-    });
-
-    function cellHtml(unit){
-      if(!unit){
-        return `
-          <div class="cell">
-            <div class="emptyBox">없음</div>
-            <div class="cap">없음</div>
-          </div>
-        `;
-      }
-      return `
-        <div class="cell">
-          <img src="${unit.image_url}" alt="${escapeHtml(unit.name)}">
-          <div class="cap">${escapeHtml(unit.name)}</div>
-        </div>
-      `;
-    }
-
-    function renderSingleResult(){
-      const total = RESULTS.length;
-      const hasAny = total > 0;
-
-      const idx = Math.min(Math.max(currentIndex, 0), Math.max(total - 1, 0));
-      currentIndex = idx;
-
-      const r = hasAny ? RESULTS[idx] : null;
-
-      const atkArr = r ? r.atk : [null, null, null];
-      const skArr  = r ? r.skill : [null, null, null];
-      const pet    = r ? r.pet : null;
-
-      const firstText = r?.first ?? "없음";
-      const badgeClass =
-        firstText === "선공" ? "badge red" :
-        firstText === "후공" ? "badge blue" :
-        "badge gray";
-
-      const noteText = (r?.note ?? "").trim();
-      const pageLabel = hasAny ? `${idx+1} / ${total}` : `0 / 0`;
-
-      resultBox.innerHTML = `
-        <div class="resultToolbar">
-          <div style="font-weight:900;color:#111827;">검색 결과</div>
-          <div class="pager">
-            <button class="pagerBtn" id="btnPrev" ${(!hasAny || idx===0) ? "disabled":""}>◀</button>
-            <div class="pageInfo">${pageLabel}</div>
-            <button class="pagerBtn" id="btnNext" ${(!hasAny || idx===total-1) ? "disabled":""}>▶</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="gridLayout">
-            <div class="panel">
-              <div class="panelTitle">공격 유닛</div>
-              <div class="grid3">
-                ${cellHtml(atkArr[0])}
-                ${cellHtml(atkArr[1])}
-                ${cellHtml(atkArr[2])}
-              </div>
-            </div>
-
-            <div class="panel centerCol">
-              <div class="panelTitle">추천 펫</div>
-              ${pet ? `
-                <div class="cell">
-                  <img src="${pet.image_url}" alt="${escapeHtml(pet.name)}">
-                  <div class="petName">${escapeHtml(pet.name)}</div>
-                </div>
-              ` : `
-                <div class="cell">
-                  <div class="emptyBox">없음</div>
-                  <div class="petName">없음</div>
-                </div>
-              `}
-            </div>
-
-            <div class="panel">
-              <div class="panelTitle">스킬 순서</div>
-              <div class="grid3">
-                ${cellHtml(skArr[0])}
-                ${cellHtml(skArr[1])}
-                ${cellHtml(skArr[2])}
-              </div>
-            </div>
-
-            <div class="panel centerCol">
-              <div class="panelTitle">선 / 후</div>
-              <span class="${badgeClass}">${escapeHtml(firstText)}</span>
-            </div>
-
-            <div class="panel notePanel">
-              <div class="noteHead">📌 노트</div>
-              <div class="noteText">${escapeHtml(noteText || "없음")}</div>
-            </div>
-          </div>
-        </div>
-      `;
-
-      const prevBtn = document.getElementById("btnPrev");
-      const nextBtn = document.getElementById("btnNext");
-
-      if(prevBtn) prevBtn.addEventListener("click", () => {
-        if(currentIndex > 0){
-          currentIndex--;
-          renderSingleResult();
-        }
-      });
-      if(nextBtn) nextBtn.addEventListener("click", () => {
-        if(currentIndex < total - 1){
-          currentIndex++;
-          renderSingleResult();
-        }
-      });
-    }
-
-    document.getElementById("btnReset").addEventListener("click", () => {
-      slots[0]=slots[1]=slots[2]=null;
-      RESULTS = [];
-      currentIndex = 0;
-      renderSlots();
-      updateResultHint();
-    });
-
-    document.getElementById("btnSearch").addEventListener("click", async () => {
-      const selected = slots.filter(Boolean);
-      if(selected.length < 3){
-        alert("방어 유닛 3명을 먼저 선택해 주세요.");
-        return;
-      }
-
-      const defKey = selected
-        .map(s => s.id)
-        .sort()
-        .join("|");
-
-      statusText.textContent = "검색중...";
-      resultBox.textContent = "잠시만...";
-
-      const { data: rows, error } = await supabaseClient
-        .from("guild_war_results")
-        .select("result_id, atk_1, atk_2, atk_3, skill_1, skill_2, skill_3, pet, first, note, def_key")
-        .eq("def_key", defKey)
-        .order("result_id", { ascending: true });
-
-      if(error){
-        console.error(error);
-        statusText.textContent = "에러";
-        resultBox.textContent = "조회 실패(콘솔 확인)";
-        return;
-      }
-
-      if(!rows || rows.length === 0){
-        statusText.textContent = "결과 없음";
-        RESULTS = [];
-        currentIndex = 0;
-        renderSingleResult();
-        return;
-      }
-
-      const ids = new Set();
-      rows.forEach(r => {
-        [r.atk_1,r.atk_2,r.atk_3,r.skill_1,r.skill_2,r.skill_3,r.pet].forEach(x => {
-          if(x) ids.add(x);
-        });
-      });
-
-      const { data: unitRows, error: unitErr } = await supabaseClient
-        .from("units")
-        .select("id, name, image_url")
-        .in("id", Array.from(ids));
-
-      if(unitErr) console.error(unitErr);
-
-      const unitMap = new Map((unitRows || []).map(u => [u.id, u]));
-
-      RESULTS = rows.map(r => {
-        const atk = [r.atk_1, r.atk_2, r.atk_3].map(id => unitMap.get(id) || null);
-        const skill = [r.skill_1, r.skill_2, r.skill_3].map(id => unitMap.get(id) || null);
-        const pet = unitMap.get(r.pet) || null;
-        return {
-          result_id: r.result_id,
-          first: r.first ?? "없음",
-          note: r.note ?? "",
-          atk,
-          skill,
-          pet
-        };
-      });
-
-      currentIndex = 0;
-      statusText.textContent = `결과 ${RESULTS.length}개`;
-      renderSingleResult();
-    });
-
-    searchInput.addEventListener("input", () => {
-      const q = searchInput.value.trim().toLowerCase();
-      if(!q){
-        renderUnitList(UNITS);
-        return;
-      }
-      const filtered = UNITS.filter(u => (u.name || "").toLowerCase().includes(q));
-      renderUnitList(filtered);
-    });
-
-    async function loadUnits(){
-      statusText.textContent = "유닛 로딩중...";
-      const { data, error } = await supabaseClient
-        .from("units")
-        .select("id, name, image_url")
-        .eq("kind", "unit")
-        .order("name", { ascending: true });
-
-      if(error){
-        console.error(error);
-        statusText.textContent = "유닛 로드 실패";
-        resultBox.textContent = "유닛을 불러오지 못했습니다. (RLS/정책 또는 컬럼 확인)";
-        return;
-      }
-
-      UNITS = (data || []).map(u => ({
-        id: u.id,
-        name: u.name,
-        image_url: u.image_url
-      }));
-
-      statusText.textContent = `유닛 ${UNITS.length}개 로드됨`;
-      updateResultHint();
-    }
-
-    renderSlots();
-    updateResultHint();
-    loadUnits();
-  </script>
-</body>
-</html>
-
-
-
+    <
