@@ -552,6 +552,114 @@
     const SUPABASE_URL = "https://rtlkthadgfyszawgbevk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_Vsr12aXc5r8kCnjBnpvrcQ_4Enqbi3F";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// ================================
+// RLS 대응: 로그인/권한 확인 로직
+// ================================
+
+// 이메일 인증 메일 보내기 (닉네임 포함)
+async function sendLoginEmail(email, nickname) {
+  if (!email || !nickname) {
+    alert("이메일과 닉네임을 입력해줘.");
+    return;
+  }
+
+  localStorage.setItem("pending_nickname", nickname.trim());
+
+  const { error } = await supabaseClient.auth.signInWithOtp({
+    email: email.trim(),
+    options: {
+      emailRedirectTo: window.location.origin + window.location.pathname,
+    },
+  });
+
+  if (error) {
+    console.error(error);
+    alert("인증 메일 전송 실패");
+    return;
+  }
+
+  alert("인증 메일을 보냈어! 메일에서 링크를 눌러줘.");
+}
+
+// members 자동 생성 + active 판정
+async function ensureMemberRow() {
+  const {
+    data: { user },
+    error: userErr,
+  } = await supabaseClient.auth.getUser();
+
+  if (userErr) throw userErr;
+  if (!user) return { ok: false, reason: "not_logged_in" };
+
+  const pendingNickname = (localStorage.getItem("pending_nickname") || "").trim();
+
+  // 신규면 members row 생성 시도 (중복이면 무시)
+  if (pendingNickname) {
+    const { error: upErr } = await supabaseClient
+      .from("members")
+      .upsert(
+        {
+          id: user.id,
+          email: user.email,
+          nickname: pendingNickname,
+          status: "active",
+        },
+        {
+          onConflict: "id",
+          ignoreDuplicates: true,
+        }
+      );
+
+    if (upErr) throw upErr;
+    localStorage.removeItem("pending_nickname");
+  }
+
+  // 🔑 active 여부는 DB 함수로 확정 판정
+  const { data: isActive, error: rpcErr } =
+    await supabaseClient.rpc("is_active_member");
+
+  if (rpcErr) throw rpcErr;
+  if (!isActive) return { ok: false, reason: "not_active" };
+
+  // active면 members row 조회 가능
+  const { data: row, error: selErr } = await supabaseClient
+    .from("members")
+    .select("id, email, nickname, status")
+    .eq("id", user.id)
+    .single();
+
+  if (selErr) throw selErr;
+
+  return { ok: true, row };
+}
+
+// 페이지 로드 시 권한 체크
+async function checkAuthOnLoad() {
+  try {
+    const res = await ensureMemberRow();
+
+    if (!res.ok && res.reason === "not_active") {
+      alert("길드 권한이 없습니다.");
+      return;
+    }
+
+    if (res.ok) {
+      console.log("ACTIVE MEMBER:", res.row);
+      // 👉 여기 아래부터 기존 길드전 검색 로직 실행하면 됨
+    }
+  } catch (e) {
+    console.error(e);
+    await supabaseClient.auth.signOut();
+  }
+}
+
+// 최초 실행
+checkAuthOnLoad();
+
+// 로그인 상태 변경 감지
+supabaseClient.auth.onAuthStateChange(() => {
+  checkAuthOnLoad();
+});
 
     const slots = [null, null, null];
     let activeSlotIndex = 0;
@@ -934,3 +1042,4 @@
   </script>
 </body>
 </html>
+
