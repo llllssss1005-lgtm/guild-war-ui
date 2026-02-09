@@ -13,9 +13,7 @@
       --line:#e5e7eb;
       --blue:#3b82f6;
       --sky:#bfe2ff;
-
       --card:#ffffff;
-      --soft:#f8fafc;
     }
 
     body{
@@ -211,7 +209,11 @@
     }
 
     /* =========================================================
-       ✅ 결과 카드 UI (네 참고 이미지 구조: 빨간 5박스)
+       ✅ 결과 카드 UI (빨간 5박스 구성)
+       - 오른쪽 폭 줄임
+       - 오른쪽 제목 중앙 정렬
+       - 이미지/폰트 소폭 축소
+       - 화살표 제거
        ========================================================= */
     .card{
       border:1px solid var(--line);
@@ -221,14 +223,9 @@
       color: var(--text);
     }
 
-    /* 파란 부모 안에서:
-       - 1행: (공격 유닛) (추천 펫)
-       - 2행: (스킬 순서) (선/후)
-       - 3행: (노트 full)
-    */
     .gridLayout{
       display:grid;
-      grid-template-columns: 1fr 120px;
+      grid-template-columns: 1fr 104px; /* ✅ 오른쪽 폭 축소(120→104) */
       gap:12px;
       align-items:stretch;
     }
@@ -247,19 +244,11 @@
       margin-bottom:8px;
     }
 
-    /* 왼쪽 큰 박스(공격/스킬) 내부 3칸 고정 */
+    /* 공격/스킬: 3칸 고정 */
     .grid3{
       display:grid;
       grid-template-columns: repeat(3, 1fr);
-      gap:10px;
-    }
-
-    /* 스킬: 아이콘-화살표-아이콘-화살표-아이콘 */
-    .gridSkills{
-      display:grid;
-      grid-template-columns: 1fr 18px 1fr 18px 1fr;
-      gap:10px;
-      align-items:center;
+      gap:8px; /* ✅ 살짝 촘촘하게 */
     }
 
     .cell{
@@ -267,9 +256,10 @@
       min-width:0;
     }
 
+    /* ✅ 이미지 크기 소폭 축소 (56→48) */
     .cell img{
-      width:56px;
-      height:56px;
+      width:48px;
+      height:48px;
       border-radius:14px;
       object-fit:cover;
       border:1px solid rgba(0,0,0,.06);
@@ -278,9 +268,10 @@
       margin:0 auto;
     }
 
+    /* ✅ 캡션 폰트 소폭 축소 */
     .cap{
       margin-top:4px;
-      font-size:12px;
+      font-size:11px;
       font-weight:800;
       color:#374151;
       white-space:nowrap;
@@ -288,18 +279,10 @@
       text-overflow:ellipsis;
     }
 
-    .arrow{
-      text-align:center;
-      font-weight:900;
-      font-size:18px;
-      color:#cbd5e1;
-      user-select:none;
-    }
-
     /* 없을 때도 자리 유지 */
     .emptyBox{
-      width:56px;
-      height:56px;
+      width:48px;
+      height:48px;
       border-radius:14px;
       background:#f3f4f6;
       border:1px solid rgba(0,0,0,.06);
@@ -309,7 +292,7 @@
       justify-content:center;
       color:#9ca3af;
       font-weight:900;
-      font-size:12px;
+      font-size:11px;
     }
 
     /* 오른쪽 작은 박스: 중앙 정렬 */
@@ -321,15 +304,16 @@
       text-align:center;
     }
 
+    /* ✅ 오른쪽 제목도 박스 기준 중앙 정렬 */
     .centerCol .panelTitle{
       width:100%;
-      text-align:left;
+      text-align:center;
       margin-bottom:10px;
     }
 
     .petName{
       margin-top:6px;
-      font-size:12px;
+      font-size:11px; /* ✅ 소폭 축소 */
       font-weight:900;
       color:#111827;
       white-space:nowrap;
@@ -498,6 +482,14 @@
       font-size: 12px;
       border-top: 1px dashed var(--line);
       background:#fff;
+    }
+
+    /* ✅ 모바일에서 추가로 살짝 더 타이트하게(선택적) */
+    @media (max-width: 360px){
+      .gridLayout{ grid-template-columns: 1fr 96px; }
+      .cell img, .emptyBox{ width:46px; height:46px; }
+      .cap{ font-size:10.5px; }
+      .petName{ font-size:10.5px; }
     }
   </style>
 </head>
@@ -750,7 +742,7 @@
 
         <div class="card">
           <div class="gridLayout">
-            <!-- 빨강1: 공격 유닛(좌 큰) -->
+            <!-- 1) 공격 유닛 -->
             <div class="panel">
               <div class="panelTitle">공격 유닛</div>
               <div class="grid3">
@@ -760,7 +752,7 @@
               </div>
             </div>
 
-            <!-- 빨강2: 추천 펫(우 작은, 중앙정렬) -->
+            <!-- 2) 추천 펫(중앙정렬) -->
             <div class="panel centerCol">
               <div class="panelTitle">추천 펫</div>
               ${pet ? `
@@ -776,25 +768,23 @@
               `}
             </div>
 
-            <!-- 빨강3: 스킬 순서(좌 큰) -->
+            <!-- 3) 스킬 순서 (화살표 제거, 3칸 고정) -->
             <div class="panel">
               <div class="panelTitle">스킬 순서</div>
-              <div class="gridSkills">
+              <div class="grid3">
                 ${cellHtml(skArr[0])}
-                <div class="arrow">➜</div>
                 ${cellHtml(skArr[1])}
-                <div class="arrow">➜</div>
                 ${cellHtml(skArr[2])}
               </div>
             </div>
 
-            <!-- 빨강4: 선/후(우 작은, 중앙정렬) -->
+            <!-- 4) 선/후(중앙정렬) -->
             <div class="panel centerCol">
               <div class="panelTitle">선 / 후</div>
               <span class="${badgeClass}">${escapeHtml(firstText)}</span>
             </div>
 
-            <!-- 빨강5: 노트(full) -->
+            <!-- 5) 노트(full) -->
             <div class="panel notePanel">
               <div class="noteHead">📌 노트</div>
               <div class="noteText">${escapeHtml(noteText || "없음")}</div>
