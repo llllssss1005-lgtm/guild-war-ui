@@ -714,82 +714,119 @@
     const SUPABASE_ANON_KEY = "sb_publishable_Vsr12aXc5r8kCnjBnpvrcQ_4Enqbi3F";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // =========================================================
-    // ✅ 2) 게이트(아이디+코드번호) 로직 (기존 그대로)
-    // =========================================================
-    const KAKAO_LINK = "https://open.kakao.com/o/smXJOCfi";
-    const SESSION_KEY = "guild_gate_ok_v1";
+   // =========================================================
+// ✅ 2) 게이트(아이디+코드번호) 로직 (DB/RPC 검증 버전)
+//    - guild_access_codes 테이블을 직접 읽지 않고
+//      check_guild_access_code(p_account_id, p_code) RPC로 true/false만 받음
+// =========================================================
+const KAKAO_LINK = "https://open.kakao.com/o/smXJOCfi";
+const SESSION_KEY = "guild_gate_ok_v1";
 
-    const gateEl = document.getElementById("gate");
-    const appEl = document.getElementById("app");
-    const gateMsgEl = document.getElementById("gateMsg");
+const gateEl = document.getElementById("gate");
+const appEl = document.getElementById("app");
+const gateMsgEl = document.getElementById("gateMsg");
 
-    const btnKakao = document.getElementById("btnKakao");
-    const btnGateEnter = document.getElementById("btnGateEnter");
-    const gateIdInput = document.getElementById("gateId");
-    const gateCodeInput = document.getElementById("gateCode");
+const btnKakao = document.getElementById("btnKakao");
+const btnGateEnter = document.getElementById("btnGateEnter");
+const gateIdInput = document.getElementById("gateId");
+const gateCodeInput = document.getElementById("gateCode");
 
-    function showGateMsg(msg){
-      gateMsgEl.style.display = "block";
-      gateMsgEl.textContent = msg;
-    }
-    function clearGateMsg(){
-      gateMsgEl.style.display = "none";
-      gateMsgEl.textContent = "";
-    }
+function showGateMsg(msg){
+  gateMsgEl.style.display = "block";
+  gateMsgEl.textContent = msg;
+}
+function clearGateMsg(){
+  gateMsgEl.style.display = "none";
+  gateMsgEl.textContent = "";
+}
 
-    function passGate(){
-      localStorage.setItem(SESSION_KEY, "1");
-      gateEl.style.display = "none";
-      appEl.style.display = "block";
-      // 길드전 데이터 로드 시작
-      initGuildWar();
-    }
+function passGate(){
+  localStorage.setItem(SESSION_KEY, "1");
+  gateEl.style.display = "none";
+  appEl.style.display = "block";
+  initGuildWar();
+}
 
-    function failGate(msg){
-      localStorage.removeItem(SESSION_KEY);
-      gateEl.style.display = "block";
-      appEl.style.display = "none";
-      showGateMsg(msg);
-    }
+function failGate(msg){
+  localStorage.removeItem(SESSION_KEY);
+  gateEl.style.display = "block";
+  appEl.style.display = "none";
+  showGateMsg(msg);
+}
 
-    // 규칙: id=1..40 / code=1000+id (즉 1001~1040)
-    function validateGate(idStr, codeStr){
-      const id = Number(String(idStr||"").trim());
-      const code = Number(String(codeStr||"").trim());
-      if(!Number.isInteger(id) || id < 1 || id > 40) return { ok:false, msg:"아이디는 1~40 사이 숫자만 가능해요." };
-      if(!Number.isInteger(code) || code < 1001 || code > 1040) return { ok:false, msg:"코드번호는 1001~1040 사이 숫자만 가능해요." };
-      if(code !== 1000 + id) return { ok:false, msg:"아이디/코드번호가 맞지 않아요. 관리자에게 카카오톡으로 문의해주세요." };
-      return { ok:true, id, code };
-    }
+function basicCheck(idStr, codeStr){
+  const id = Number(String(idStr || "").trim());
+  const code = Number(String(codeStr || "").trim());
 
-    btnKakao.addEventListener("click", () => {
-      window.open(KAKAO_LINK, "_blank", "noopener");
+  if(!Number.isInteger(id)) return { ok:false, msg:"아이디는 숫자만 입력해 주세요." };
+  if(!Number.isInteger(code)) return { ok:false, msg:"코드는 숫자만 입력해 주세요." };
+
+  return { ok:true, id, code };
+}
+
+// 카카오톡 버튼
+btnKakao.addEventListener("click", () => {
+  window.open(KAKAO_LINK, "_blank", "noopener");
+});
+
+// 확인 버튼 (DB/RPC 검증)
+btnGateEnter.addEventListener("click", async () => {
+  clearGateMsg();
+
+  // ✅ 중복 클릭 방지
+  btnGateEnter.disabled = true;
+
+  const chk = basicCheck(gateIdInput.value, gateCodeInput.value);
+  if(!chk.ok){
+    btnGateEnter.disabled = false;
+    failGate(chk.msg);
+    return;
+  }
+
+  try{
+    const { data, error } = await supabaseClient.rpc("check_guild_access_code", {
+      p_account_id: chk.id,
+      p_code: chk.code
     });
 
-    btnGateEnter.addEventListener("click", () => {
-      clearGateMsg();
-      const res = validateGate(gateIdInput.value, gateCodeInput.value);
-      if(res.ok) passGate();
-      else failGate(res.msg);
-    });
+    if(error){
+      console.error(error);
+      btnGateEnter.disabled = false;
+      failGate("서버 확인 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.");
+      return;
+    }
 
-    // 엔터로도 확인
-    [gateIdInput, gateCodeInput].forEach(inp => {
-      inp.addEventListener("keydown", (e) => {
-        if(e.key === "Enter") btnGateEnter.click();
-      });
-    });
-
-    // 자동 로그인(유지)
-    if(localStorage.getItem(SESSION_KEY) === "1"){
-      gateEl.style.display = "none";
-      appEl.style.display = "block";
-      initGuildWar();
+    if(data === true){
+      btnGateEnter.disabled = false;
+      passGate();
     }else{
-      gateEl.style.display = "block";
-      appEl.style.display = "none";
+      btnGateEnter.disabled = false;
+      failGate("아이디/코드가 올바르지 않거나 비활성화된 코드입니다. 관리자에게 문의해주세요.");
     }
+  }catch(err){
+    console.error(err);
+    btnGateEnter.disabled = false;
+    failGate("네트워크 오류가 발생했어요. 잠시 후 다시 시도해주세요.");
+  }
+});
+
+// 엔터로도 확인
+[gateIdInput, gateCodeInput].forEach(inp => {
+  inp.addEventListener("keydown", (e) => {
+    if(e.key === "Enter") btnGateEnter.click();
+  });
+});
+
+// 자동 로그인(유지)
+if(localStorage.getItem(SESSION_KEY) === "1"){
+  gateEl.style.display = "none";
+  appEl.style.display = "block";
+  initGuildWar();
+}else{
+  gateEl.style.display = "block";
+  appEl.style.display = "none";
+}
+
 
     // =========================================================
     // ✅ 3) 기존 길드전 코드(그대로) — initGuildWar로 감쌈(기존 유지)
@@ -1169,3 +1206,4 @@
   </script>
 </body>
 </html>
+
