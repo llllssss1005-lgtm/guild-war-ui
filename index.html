@@ -588,11 +588,12 @@
       localStorage.setItem("pending_nickname", nickname.trim());
 
       const { error } = await supabaseClient.auth.signInWithOtp({
-        email: email.trim(),
-        options: {
-          emailRedirectTo: SITE_URL, // ✅ 여기로 고정
-        },
-      });
+  email: email.trim(),
+  options: {
+    emailRedirectTo: "https://llllssss1005-lgtm.github.io/guild-war-ui/",
+  },
+});
+
 
       if (error) {
         console.error(error);
@@ -1076,3 +1077,4 @@
   </script>
 </body>
 </html>
+
