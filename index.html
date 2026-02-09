@@ -13,8 +13,9 @@
       --line:#e5e7eb;
       --blue:#3b82f6;
       --sky:#bfe2ff;
-      --panel:#ffffff;
-      --panelSoft:#f8fafc;
+
+      --card:#ffffff;
+      --soft:#f8fafc;
     }
 
     body{
@@ -50,6 +51,7 @@
       margin: 10px 0 10px;
     }
 
+    /* ===== 상단 3칸 슬롯 ===== */
     .slots{
       display:flex;
       gap:12px;
@@ -171,7 +173,7 @@
       background:#fff;
     }
 
-    /* ===== 결과 카드 (옵션 A: 1장 고정 + 넘김) ===== */
+    /* ===== 옵션A: 페이저 ===== */
     .resultToolbar{
       display:flex;
       justify-content:space-between;
@@ -208,17 +210,25 @@
       text-align:center;
     }
 
+    /* =========================================================
+       ✅ 결과 카드 UI (네 참고 이미지 구조: 빨간 5박스)
+       ========================================================= */
     .card{
       border:1px solid var(--line);
       border-radius:14px;
       padding:12px;
-      background:#fff;
-      color:var(--text);
+      background: var(--card);
+      color: var(--text);
     }
 
-    .mainGrid{
+    /* 파란 부모 안에서:
+       - 1행: (공격 유닛) (추천 펫)
+       - 2행: (스킬 순서) (선/후)
+       - 3행: (노트 full)
+    */
+    .gridLayout{
       display:grid;
-      grid-template-columns: 1fr 110px;
+      grid-template-columns: 1fr 120px;
       gap:12px;
       align-items:stretch;
     }
@@ -227,10 +237,7 @@
       border:1px solid var(--line);
       border-radius:12px;
       padding:10px;
-      background: var(--panel);
-    }
-    .panel.small{
-      background: var(--panelSoft);
+      background:#fff;
     }
 
     .panelTitle{
@@ -240,8 +247,24 @@
       margin-bottom:8px;
     }
 
+    /* 왼쪽 큰 박스(공격/스킬) 내부 3칸 고정 */
+    .grid3{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+    }
+
+    /* 스킬: 아이콘-화살표-아이콘-화살표-아이콘 */
+    .gridSkills{
+      display:grid;
+      grid-template-columns: 1fr 18px 1fr 18px 1fr;
+      gap:10px;
+      align-items:center;
+    }
+
     .cell{
       text-align:center;
+      min-width:0;
     }
 
     .cell img{
@@ -251,6 +274,8 @@
       object-fit:cover;
       border:1px solid rgba(0,0,0,.06);
       background:#f3f4f6;
+      display:block;
+      margin:0 auto;
     }
 
     .cap{
@@ -263,19 +288,6 @@
       text-overflow:ellipsis;
     }
 
-    .grid3{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:10px;
-    }
-
-    .gridSkills{
-      display:grid;
-      grid-template-columns: 1fr 18px 1fr 18px 1fr;
-      gap:10px;
-      align-items:center;
-    }
-
     .arrow{
       text-align:center;
       font-weight:900;
@@ -284,6 +296,7 @@
       user-select:none;
     }
 
+    /* 없을 때도 자리 유지 */
     .emptyBox{
       width:56px;
       height:56px;
@@ -297,6 +310,32 @@
       color:#9ca3af;
       font-weight:900;
       font-size:12px;
+    }
+
+    /* 오른쪽 작은 박스: 중앙 정렬 */
+    .centerCol{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      text-align:center;
+    }
+
+    .centerCol .panelTitle{
+      width:100%;
+      text-align:left;
+      margin-bottom:10px;
+    }
+
+    .petName{
+      margin-top:6px;
+      font-size:12px;
+      font-weight:900;
+      color:#111827;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      width:100%;
     }
 
     .badge{
@@ -315,28 +354,29 @@
     .badge.blue{ background:#3b82f6; }
     .badge.gray{ background:#9ca3af; }
 
-    /* 노트: 3줄 정도 + 내부 스크롤 */
-    .noteBox{
-      margin-top:10px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px;
-      background:#fafafa;
-      color:#111827;
+    /* 노트(아래 full) */
+    .notePanel{
+      grid-column: 1 / -1;
     }
-    .noteTitle{
-      font-size:12px;
-      font-weight:900;
-      color:#1e5aa8;
+
+    .noteHead{
+      display:flex;
+      align-items:center;
+      gap:8px;
       margin-bottom:6px;
+      color:#1e5aa8;
+      font-weight:900;
+      font-size:12px;
     }
+
     .noteText{
       white-space: pre-wrap;
       font-size:12px;
       line-height:1.4;
-      max-height: 4.2em; /* 약 3줄 */
+      max-height: 4.2em;   /* 약 3줄 */
       overflow-y:auto;
       padding-right:6px;
+      color:#111827;
     }
 
     /* ===== modal ===== */
@@ -348,7 +388,7 @@
       align-items:center;
       justify-content:center;
       padding: 16px;
-      z-index: 9999; /* ✅ 중요 */
+      z-index: 9999;
     }
     .modal{
       position:relative;
@@ -521,14 +561,10 @@
     const SUPABASE_ANON_KEY = "sb_publishable_Vsr12aXc5r8kCnjBnpvrcQ_4Enqbi3F";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // 선택 슬롯 데이터: { id, name, image_url }
     const slots = [null, null, null];
     let activeSlotIndex = 0;
 
-    // 유닛 목록
     let UNITS = [];
-
-    // 검색 결과 (옵션 A)
     let RESULTS = [];
     let currentIndex = 0;
 
@@ -547,7 +583,7 @@
         .replaceAll("'", "&#039;");
     }
 
-    // ---------- 슬롯 렌더 ----------
+    /* ===== 슬롯 렌더 ===== */
     function renderSlots(){
       document.querySelectorAll(".slot").forEach((el) => {
         const idx = Number(el.dataset.slot);
@@ -603,7 +639,7 @@
       resultBox.textContent = `선택됨: ${chosen.map(x=>x.name).join(", ")}`;
     }
 
-    // ---------- 유닛 리스트 ----------
+    /* ===== 유닛 리스트 ===== */
     function renderUnitList(list){
       unitListEl.innerHTML = "";
       list.forEach((u) => {
@@ -625,7 +661,6 @@
       }
     }
 
-    // ---------- 슬롯 조작 ----------
     function setSlot(i, unit){
       const already = slots.findIndex(s => s && s.name === unit.name);
       if(already !== -1 && already !== i){
@@ -643,18 +678,14 @@
       updateResultHint();
     }
 
-    // ---------- 모달 ----------
+    /* ===== 모달 ===== */
     function openModal(slotIndex){
       activeSlotIndex = slotIndex;
       modalBack.style.display = "flex";
       searchInput.value = "";
       renderUnitList(UNITS);
-
-      setTimeout(() => {
-        searchInput.focus({ preventScroll: true });
-      }, 50);
+      setTimeout(() => searchInput.focus({ preventScroll:true }), 50);
     }
-
     function closeModal(){
       modalBack.style.display = "none";
     }
@@ -663,16 +694,12 @@
     modalBack.addEventListener("click", (e) => {
       if(e.target === modalBack) closeModal();
     });
-
     document.querySelectorAll(".slot").forEach((el) => {
-      el.addEventListener("click", () => {
-        const idx = Number(el.dataset.slot);
-        openModal(idx);
-      });
+      el.addEventListener("click", () => openModal(Number(el.dataset.slot)));
     });
 
-    // ---------- 결과 프레임 ----------
-    function fillOrEmptyCell(unit){
+    /* ===== 결과 렌더 도우미 ===== */
+    function cellHtml(unit){
       if(!unit){
         return `
           <div class="cell">
@@ -692,6 +719,7 @@
     function renderSingleResult(){
       const total = RESULTS.length;
       const hasAny = total > 0;
+
       const idx = Math.min(Math.max(currentIndex, 0), Math.max(total - 1, 0));
       currentIndex = idx;
 
@@ -721,52 +749,63 @@
         </div>
 
         <div class="card">
-          <div class="mainGrid">
+          <div class="gridLayout">
+            <!-- 빨강1: 공격 유닛(좌 큰) -->
             <div class="panel">
               <div class="panelTitle">공격 유닛</div>
               <div class="grid3">
-                ${fillOrEmptyCell(atkArr[0])}
-                ${fillOrEmptyCell(atkArr[1])}
-                ${fillOrEmptyCell(atkArr[2])}
-              </div>
-
-              <div style="height:12px;"></div>
-
-              <div class="panelTitle">스킬 순서</div>
-              <div class="gridSkills">
-                ${fillOrEmptyCell(skArr[0])}
-                <div class="arrow">➜</div>
-                ${fillOrEmptyCell(skArr[1])}
-                <div class="arrow">➜</div>
-                ${fillOrEmptyCell(skArr[2])}
+                ${cellHtml(atkArr[0])}
+                ${cellHtml(atkArr[1])}
+                ${cellHtml(atkArr[2])}
               </div>
             </div>
 
-            <div class="panel small">
+            <!-- 빨강2: 추천 펫(우 작은, 중앙정렬) -->
+            <div class="panel centerCol">
               <div class="panelTitle">추천 펫</div>
-              ${pet ? fillOrEmptyCell(pet) : `
+              ${pet ? `
+                <div class="cell">
+                  <img src="${pet.image_url}" alt="${escapeHtml(pet.name)}">
+                  <div class="petName">${escapeHtml(pet.name)}</div>
+                </div>
+              ` : `
                 <div class="cell">
                   <div class="emptyBox">없음</div>
-                  <div class="cap">없음</div>
+                  <div class="petName">없음</div>
                 </div>
               `}
+            </div>
 
-              <div style="height:10px;"></div>
+            <!-- 빨강3: 스킬 순서(좌 큰) -->
+            <div class="panel">
+              <div class="panelTitle">스킬 순서</div>
+              <div class="gridSkills">
+                ${cellHtml(skArr[0])}
+                <div class="arrow">➜</div>
+                ${cellHtml(skArr[1])}
+                <div class="arrow">➜</div>
+                ${cellHtml(skArr[2])}
+              </div>
+            </div>
 
+            <!-- 빨강4: 선/후(우 작은, 중앙정렬) -->
+            <div class="panel centerCol">
               <div class="panelTitle">선 / 후</div>
               <span class="${badgeClass}">${escapeHtml(firstText)}</span>
             </div>
-          </div>
 
-          <div class="noteBox">
-            <div class="noteTitle">📌 노트</div>
-            <div class="noteText">${escapeHtml(noteText || "없음")}</div>
+            <!-- 빨강5: 노트(full) -->
+            <div class="panel notePanel">
+              <div class="noteHead">📌 노트</div>
+              <div class="noteText">${escapeHtml(noteText || "없음")}</div>
+            </div>
           </div>
         </div>
       `;
 
       const prevBtn = document.getElementById("btnPrev");
       const nextBtn = document.getElementById("btnNext");
+
       if(prevBtn) prevBtn.addEventListener("click", () => {
         if(currentIndex > 0){
           currentIndex--;
@@ -781,7 +820,7 @@
       });
     }
 
-    // ---------- 버튼 ----------
+    /* ===== 버튼 ===== */
     document.getElementById("btnReset").addEventListener("click", () => {
       slots[0]=slots[1]=slots[2]=null;
       RESULTS = [];
@@ -861,7 +900,7 @@
       renderSingleResult();
     });
 
-    // ---------- 검색 입력 필터 ----------
+    /* ===== 모달 검색 필터 ===== */
     searchInput.addEventListener("input", () => {
       const q = searchInput.value.trim().toLowerCase();
       if(!q){
@@ -872,7 +911,7 @@
       renderUnitList(filtered);
     });
 
-    // ---------- units 로드 ----------
+    /* ===== units 로드 ===== */
     async function loadUnits(){
       statusText.textContent = "유닛 로딩중...";
       const { data, error } = await supabaseClient
@@ -898,7 +937,7 @@
       updateResultHint();
     }
 
-    // init
+    /* init */
     renderSlots();
     updateResultHint();
     loadUnits();
