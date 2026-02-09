@@ -565,7 +565,7 @@
     // =========================================================
     // ✅ 0) 사이트 URL (메일 인증 복귀 주소) - 반드시 먼저 선언
     // =========================================================
-    const SITE_URL = "https://llssss1005-lgtm.github.io/guild-war-ui/";
+    const SITE_URL = "https://llllssss1005-lgtm.github.io/guild-war-ui/";
 
     // =========================================================
     // ✅ 1) Supabase 연결
@@ -590,7 +590,7 @@
       const { error } = await supabaseClient.auth.signInWithOtp({
   email: email.trim(),
   options: {
-    emailRedirectTo: "https://llllssss1005-lgtm.github.io/guild-war-ui/",
+    emailRedirectTo: SITE_URL
   },
 });
 
@@ -1077,4 +1077,5 @@
   </script>
 </body>
 </html>
+
 
