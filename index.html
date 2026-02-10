@@ -1283,7 +1283,10 @@
 
         const pageLabel = hasAny ? `${idx+1} / ${total}` : `0 / 0`;
 
-       const formationUnit = unitMap.get(r?.formations);
+       const formationUnit = (r?.formations && Array.isArray(UNITS))
+  ? UNITS.find(u => u.id === r.formations)
+  : null;
+
 
 const formationImgHtml = formationUnit
   ? `<img class="formationImg" src="${formationUnit.image_url}" alt="${escapeHtml(formationUnit.name)}">`
@@ -1568,6 +1571,7 @@ const formationNameText = formationUnit
   </script>
 </body>
 </html>
+
 
 
 
