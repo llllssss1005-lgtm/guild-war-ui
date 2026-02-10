@@ -5,1317 +5,1370 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>길드전</title>
 
+  <!-- Supabase JS (UMD) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     :root{
       --bg:#ffffff;
+      --panel:#ffffff;
       --text:#111827;
       --muted:#6b7280;
       --line:#e5e7eb;
-      --blue:#3b82f6;
-      --sky:#bfe2ff;
-      --card:#ffffff;
-      --kakao:#FEE500;
-      --kakaoText:#191600;
+      --soft:#f3f4f6;
+      --brand:#3b82f6;
+      --brand2:#60a5fa;
+      --danger:#ef4444;
+      --shadow: 0 8px 20px rgba(0,0,0,.08);
+      --radius: 16px;
+      --radius2: 12px;
     }
-
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Apple SD Gothic Neo", "Noto Sans KR", Arial, "맑은 고딕", sans-serif;
+      color:var(--text);
+      background: #f6f7fb;
     }
-
     .wrap{
-      max-width: 420px;
+      max-width: 980px;
       margin: 0 auto;
-      padding: 18px 16px 28px;
+      padding: 22px 16px 40px;
     }
-
-    h1{
-      margin: 4px 0 6px;
-      font-size: 22px;
+    header{
       text-align:center;
+      margin: 10px 0 14px;
     }
-
-    .desc{
-      margin: 0 0 14px;
-      font-size: 13px;
-      color: var(--muted);
-      text-align:center;
-      line-height:1.35;
-    }
-
-    .label{
-      font-size: 13px;
-      font-weight: 800;
-      margin: 10px 0 10px;
-    }
-
-    /* ===== 게이트(로그인) ===== */
-    .gateWrap{
-      max-width: 420px;
-      margin: 0 auto;
-      padding: 18px 16px 10px;
-    }
-    .gateCard{
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fff;
-      padding:14px;
-    }
-    .gateTitle{
-      font-weight: 900;
-      font-size: 16px;
-      margin: 0 0 6px;
-      text-align:center;
-    }
-    .gateDesc{
-      margin: 0 0 12px;
-      font-size: 12px;
-      color: var(--muted);
-      text-align:center;
-      line-height:1.4;
-    }
-    .gateBtn{
-      width:100%;
-      height: 44px;
-      border-radius: 12px;
-      border: 0;
-      cursor:pointer;
-      font-weight: 900;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-    }
-    .gateBtn.kakao{
-      background: var(--kakao);
-      color: var(--kakaoText);
-    }
-    .kakaoBadge{
-      width:22px;height:22px;
-      border-radius:6px;
-      background: rgba(0,0,0,.08);
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-    }
-
-    /* ✅ 겹침 방지 */
-    .gateRow{
-      display:flex;
-      gap:10px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-    }
-    .gateRow > div{
-      flex: 1 1 0;
-      min-width: 0;
-    }
-
-    .gateLabel{
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 800;
-      margin: 10px 0 6px;
-    }
-
-    .gateInput{
-      width:100%;
-      height: 40px;
-      border-radius: 12px;
-      border: 1px solid #dbeafe;
-      padding: 0 12px;
-      font-size: 14px;
-      outline:none;
-      box-sizing: border-box;
-    }
-    .gateInput:focus{
-      border-color:#93c5fd;
-      box-shadow: 0 0 0 4px rgba(59,130,246,.12);
-    }
-
-    .gateBtn.primary{
-      margin-top: 12px;
-      background: var(--sky);
-      border: 1px solid #93c5fd;
-      color: #0f172a;
-    }
-    .gateMsg{
-      margin-top: 10px;
-      font-size: 12px;
-      color: #991b1b;
-      font-weight: 900;
-      display:none;
-      background:#fee2e2;
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid #fecaca;
-    }
-    .gateHelp{
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-      text-align:center;
-    }
-    .gateHelp a{
-      color:#1d4ed8;
-      font-weight: 900;
-      text-decoration:none;
-    }
-    .gateHelp a:hover{ text-decoration:underline; }
-
-    @media (max-width: 420px){
-      .gateRow > div{ flex: 1 1 100%; }
-    }
-
-    /* ===== 상단 3칸 슬롯 ===== */
-    .slots{
-      display:flex;
-      gap:12px;
-      justify-content: space-between;
-    }
-
-    .slot{
-      width: 110px;
-      height: 92px;
-      border: 2px dashed var(--line);
-      border-radius: 12px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      position: relative;
-      background: #fff;
-      cursor: pointer;
-      user-select:none;
-    }
-
-    .slot .plus{
+    header h1{
+      margin:0;
       font-size: 26px;
-      color: var(--blue);
-      font-weight: 900;
-      line-height:1;
+      letter-spacing:-0.5px;
     }
-
-    .slot.filled{
-      border-style: solid;
-      border-color: #c7ddff;
-    }
-
-    .slot .thumb{
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      overflow:hidden;
-      border: 1px solid var(--line);
-      background:#f3f4f6;
-    }
-    .slot .thumb img{
-      width:100%;
-      height:100%;
-      object-fit: cover;
-      display:block;
-    }
-
-    .slot .name{
-      position:absolute;
-      left: 10px;
-      right: 10px;
-      bottom: 8px;
-      font-size: 12px;
-      font-weight: 800;
-      text-align:center;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .slot .remove{
-      position:absolute;
-      top: 6px;
-      right: 6px;
-      width: 22px;
-      height: 22px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background:#fff;
-      font-weight: 900;
-      cursor:pointer;
-      display:none;
-      line-height: 20px;
-    }
-    .slot.filled .remove{ display:block; }
-
-    .btnRow{
-      display:flex;
-      gap:12px;
-      margin-top: 14px;
-    }
-
-    .btn{
-      flex:1;
-      height: 44px;
-      border-radius: 10px;
-      border: 1px solid #dbeafe;
-      background:#fff;
-      font-weight: 800;
-      cursor:pointer;
-    }
-    .btn.primary{
-      background: var(--sky);
-      border-color: #93c5fd;
-    }
-
-    .resultHead{
-      margin-top: 18px;
-      display:flex;
-      justify-content: space-between;
-      align-items:center;
-      font-weight: 900;
+    header p{
+      margin:6px 0 0;
+      color:var(--muted);
       font-size: 13px;
     }
-    .resultHead .right{
-      color: var(--muted);
-      font-weight: 700;
-      font-size: 12px;
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
     }
 
-    .resultBox{
-      margin-top: 8px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 12px;
-      min-height: 54px;
-      font-size: 13px;
-      color: var(--muted);
-      background:#fff;
-    }
-
-    /* ===== 페이저 ===== */
-    .resultToolbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-bottom:10px;
-    }
-
-    .pager{
+    /* Defense pick */
+    .section-title{
+      font-weight: 800;
+      font-size: 14px;
+      margin: 2px 0 10px;
       display:flex;
       align-items:center;
       gap:8px;
     }
-
-    .pagerBtn{
-      height:32px;
-      min-width:38px;
-      border-radius:10px;
-      border:1px solid #dbeafe;
-      background:#fff;
-      font-weight:900;
-      cursor:pointer;
+    .section-title .tag{
+      font-weight:700;
+      font-size: 12px;
+      color:#2563eb;
+      background:#dbeafe;
+      padding:2px 8px;
+      border-radius: 999px;
     }
-    .pagerBtn:disabled{
-      opacity:.45;
+
+    .def-row{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .slot{
+      border: 2px solid #cfe0ff;
+      background:#f7fbff;
+      border-radius: 14px;
+      padding: 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      min-height: 78px;
+      cursor:pointer;
+      transition: transform .05s ease, border-color .12s ease;
+    }
+    .slot:hover{border-color:#93c5fd}
+    .slot:active{transform: scale(.99)}
+    .slot .left{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .avatar{
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      background: #fff;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex: 0 0 auto;
+    }
+    .avatar img{width:100%;height:100%;object-fit:cover}
+    .slot .name{
+      font-weight: 800;
+      font-size: 13px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 160px;
+    }
+    .slot .sub{
+      font-size: 12px;
+      color:var(--muted);
+      margin-top: 2px;
+    }
+    .xbtn{
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 900;
+      cursor:pointer;
+      flex: 0 0 auto;
+    }
+    .xbtn:hover{background: #f9fafb}
+
+    .actions{
+      display:flex;
+      gap: 10px;
+      justify-content:center;
+      margin-top: 6px;
+    }
+    button{
+      border:0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-weight: 900;
+      cursor:pointer;
+      transition: transform .05s ease, opacity .12s ease;
+    }
+    button:active{transform: scale(.99)}
+    .btn-ghost{
+      background: #eff6ff;
+      color:#1d4ed8;
+      border: 1px solid #bfdbfe;
+      min-width: 120px;
+    }
+    .btn-primary{
+      background: #bfdbfe;
+      color:#0f172a;
+      border: 1px solid #93c5fd;
+      min-width: 160px;
+    }
+    .btn-primary.enabled{
+      background: var(--brand);
+      color: #fff;
+      border: 1px solid #2563eb;
+    }
+    .btn-primary:disabled{
+      opacity: .45;
       cursor:not-allowed;
     }
 
-    .pageInfo{
-      font-size:12px;
-      font-weight:800;
-      color:#374151;
-      min-width:70px;
-      text-align:center;
+    /* Results header */
+    .results-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--line);
+    }
+    .results-header .left{
+      display:flex; align-items:center; gap:8px;
+      font-weight: 900;
+    }
+    .results-header .right{
+      display:flex; align-items:center; gap:10px;
+      color:var(--muted);
+      font-size: 12px;
     }
 
-    /* ===== 결과 카드 UI ===== */
-    .card{
+    /* Result card (7 sections) */
+    .result-shell{
+      border: 2px solid #2563eb;
+      border-radius: 14px;
+      margin-top: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .result-topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .result-topbar .title{
+      font-weight: 900;
+      font-size: 13px;
+    }
+    .pager{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      user-select:none;
+    }
+    .pager .pbtn{
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
       border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      background: var(--card);
-      color: var(--text);
-    }
-
-    .gridLayout{
-      display:grid;
-      grid-template-columns: 1fr 104px;
-      gap:12px;
-      align-items:stretch;
-    }
-
-    .panel{
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px;
       background:#fff;
-    }
-
-    .panelTitle{
-      font-size:12px;
-      font-weight:900;
-      color:#111827;
-      margin-bottom:8px;
-    }
-
-    .grid3{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:8px;
-    }
-
-    .cell{
-      text-align:center;
-      min-width:0;
-    }
-
-    .cell img{
-      width:48px;
-      height:48px;
-      border-radius:14px;
-      object-fit:cover;
-      border:1px solid rgba(0,0,0,.06);
-      background:#f3f4f6;
-      display:block;
-      margin:0 auto;
-    }
-
-    /* ✅ 공격 유닛은 클릭 가능 표시 (UI 크게 안 바꿈) */
-    .cell.clickable img{
       cursor:pointer;
-      outline: 0;
-    }
-    .cell.clickable img:active{
-      transform: scale(.98);
-    }
-
-    .cap{
-      margin-top:4px;
-      font-size:11px;
-      font-weight:800;
-      color:#374151;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .emptyBox{
-      width:48px;
-      height:48px;
-      border-radius:14px;
-      background:#f3f4f6;
-      border:1px solid rgba(0,0,0,.06);
-      margin:0 auto;
+      font-weight: 900;
       display:flex;
       align-items:center;
       justify-content:center;
-      color:#9ca3af;
-      font-weight:900;
-      font-size:11px;
     }
-
-    .centerCol{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:flex-start;
+    .pager .pbtn:hover{background:#f9fafb}
+    .pager .stat{
+      font-weight: 900;
+      font-size: 12px;
+      min-width: 54px;
       text-align:center;
-    }
-
-    .centerCol .panelTitle{
-      width:100%;
-      text-align:center;
-      margin-bottom:10px;
-    }
-
-    .petName{
-      margin-top:6px;
-      font-size:11px;
-      font-weight:900;
       color:#111827;
+    }
+
+    /* 1: important thin */
+    .box1{
+      border:2px solid var(--danger);
+      border-radius: 12px;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      background: #fff5f5;
+    }
+    .warn{
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: var(--danger);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+    .box1 .txt{
+      font-weight: 900;
+      font-size: 13px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      width:100%;
     }
 
-    .badge{
+    /* Grid layout for 2~7 */
+    .grid{
+      display:grid;
+      grid-template-columns: 1.45fr .85fr;
+      gap: 10px;
+    }
+    .col{
+      display:grid;
+      grid-template-rows: auto auto auto;
+      gap: 10px;
+    }
+
+    /* box base */
+    .box{
+      border: 2px solid #ef4444;
+      border-radius: 12px;
+      padding: 10px;
+      background: #fff;
+      min-height: 92px;
+    }
+    .box h3{
+      margin:0 0 8px;
+      font-size: 12px;
+      font-weight: 1000;
+      letter-spacing:-0.2px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 8px;
+    }
+    .box h3 .hint{
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    /* Size rules:
+      Left column: 2,4,7 same height 느낌
+      Right column: 3,5,6 same height 느낌
+    */
+    .box-247{min-height: 120px;}
+    .box-356{min-height: 120px;}
+
+    .row-icons{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+    }
+    .iconItem{
+      width: 54px;
+      text-align:center;
+      cursor: default;
+    }
+    .iconItem.clickable{cursor:pointer}
+    .iconItem .ico{
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background:#fff;
+      overflow:hidden;
+      margin: 0 auto 6px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .iconItem .ico img{width:100%;height:100%;object-fit:cover}
+    .iconItem .lab{
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1.15;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .pill{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      height:26px;
-      padding:0 10px;
-      border-radius:999px;
-      font-weight:900;
-      font-size:12px;
-      color:#fff;
-      margin-top:6px;
-    }
-    .badge.red{ background:#ef4444; }
-    .badge.blue{ background:#3b82f6; }
-    .badge.gray{ background:#9ca3af; }
-
-    .notePanel{
-      grid-column: 1 / -1;
-    }
-
-    .noteHead{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      margin-bottom:6px;
-      color:#1e5aa8;
-      font-weight:900;
-      font-size:12px;
-    }
-
-    .noteText{
-      white-space: pre-wrap;
-      font-size:12px;
-      line-height:1.4;
-      max-height: 4.2em;
-      overflow-y:auto;
-      padding-right:6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-weight: 1000;
+      font-size: 12px;
+      border: 1px solid var(--line);
+      background: var(--soft);
       color:#111827;
+      white-space:nowrap;
     }
 
-    /* ===== modal 공통 ===== */
-    .modalBack{
-      position: fixed;
-      inset: 0;
-      background: rgba(17,24,39,.45);
+    .textArea{
+      font-size: 12px;
+      color:#111827;
+      font-weight: 800;
+      line-height: 1.35;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+    .muted{color:var(--muted)}
+    .empty{
+      color: var(--muted);
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    /* Picker modal */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.45);
       display:none;
       align-items:center;
       justify-content:center;
-      padding: 16px;
-      z-index: 9999;
+      padding: 18px;
+      z-index: 50;
     }
+    .overlay.show{display:flex}
     .modal{
-      position:relative;
-      z-index:10000;
-      width: 100%;
-      max-width: 420px;
-      background:#fff;
-      border-radius: 14px;
+      width: min(920px, 96vw);
+      max-height: 86vh;
       overflow:hidden;
+      background: #fff;
       border: 1px solid var(--line);
-      box-shadow: 0 12px 30px rgba(0,0,0,.18);
+      border-radius: 18px;
+      box-shadow: 0 22px 60px rgba(0,0,0,.25);
+      display:flex;
+      flex-direction:column;
     }
     .modalHeader{
       display:flex;
       align-items:center;
-      justify-content: space-between;
-      padding: 14px 16px;
+      justify-content:space-between;
+      padding: 14px 14px;
       border-bottom: 1px solid var(--line);
-      background:#fff;
+      gap: 10px;
     }
-    .modalHeader .title{
-      font-weight: 900;
-      font-size: 14px;
-    }
-    .modalHeader .close{
-      border:1px solid var(--line);
-      background:#fff;
-      border-radius: 10px;
-      padding: 6px 10px;
-      cursor:pointer;
-      font-weight:900;
-    }
-
-    /* 유닛 선택 모달 */
-    .search{
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--line);
-      background:#fff;
-    }
-    .search input{
-      width:100%;
-      height: 42px;
-      border-radius: 10px;
-      border: 1px solid #dbeafe;
-      padding: 0 12px;
-      font-size: 14px;
-      outline:none;
-    }
-
-    #unitList{
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      padding: 14px 14px 16px;
-      max-height: 420px;
-      overflow:auto;
-      background:#fff;
-    }
-
-    #unitList .item{
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 8px;
-      border-radius: 14px;
-      border: 1px solid #e8eef7;
-      background: #fff;
-      cursor: pointer;
-    }
-
-    #unitList .item:hover{
-      border-color:#93c5fd;
-      background:#f8fbff;
-    }
-
-    #unitList .thumb{
-      width: 64px;
-      height: 64px;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      background:#f3f4f6;
-    }
-    #unitList .thumb img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display:block;
-    }
-
-    #unitList .name{
-      font-weight: 800;
-      font-size: 12px;
-      line-height: 1.15;
-      letter-spacing: -0.2px;
-      text-align: center;
-      word-break: keep-all;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-      color:#111827;
-    }
-
-    .hint{
-      padding: 10px 12px 14px;
-      color: var(--muted);
-      font-size: 12px;
-      border-top: 1px dashed var(--line);
-      background:#fff;
-    }
-
-    /* ✅ 공격 유닛 모달(준비중) */
-    .atkModalBody{
-      padding: 14px 16px 16px;
-      background:#fff;
-    }
-    .atkHero{
+    .modalHeader .mhLeft{
       display:flex;
       align-items:center;
-      gap:12px;
-      padding: 10px 0 14px;
-      border-bottom: 1px solid var(--line);
-      margin-bottom: 12px;
+      gap: 10px;
+      min-width: 0;
     }
-    .atkHeroImg{
-      width:54px;height:54px;
-      border-radius:14px;
-      overflow:hidden;
-      border:1px solid rgba(0,0,0,.06);
-      background:#f3f4f6;
-      flex:0 0 auto;
-    }
-    .atkHeroImg img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .atkHeroName{
+    .modalHeader .mhTitle{
       font-weight: 1000;
       font-size: 14px;
-      color:#111827;
-      line-height:1.2;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
-    .atkHeroSub{
-      margin-top:4px;
+    .modalHeader .mhSub{
       font-size: 12px;
+      color: var(--muted);
       font-weight: 800;
-      color:#6b7280;
     }
-    .atkNotice{
-      border: 1px solid #dbeafe;
-      background: #eff6ff;
-      color:#1e40af;
+    .modalHeader .mhClose{
+      width: 34px; height: 34px;
       border-radius: 12px;
-      padding: 12px;
-      font-size: 12px;
-      font-weight: 900;
-      line-height: 1.45;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight: 1000;
+      cursor:pointer;
+    }
+    .modalBody{
+      padding: 12px 14px;
+      overflow:auto;
     }
 
-    @media (max-width: 360px){
-      .gridLayout{ grid-template-columns: 1fr 96px; }
-      .cell img, .emptyBox{ width:46px; height:46px; }
-      .cap{ font-size:10.5px; }
-      .petName{ font-size:10.5px; }
+    .searchbar{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      margin-bottom: 10px;
     }
+    .searchbar input{
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      outline:none;
+      font-weight: 900;
+      font-size: 13px;
+      background:#fff;
+    }
+    .gridList{
+      display:grid;
+      grid-template-columns: repeat(6, minmax(0,1fr));
+      gap: 10px;
+    }
+    @media (max-width: 860px){
+      .grid{grid-template-columns: 1fr}
+      .gridList{grid-template-columns: repeat(4, minmax(0,1fr));}
+      .slot .name{max-width: 110px;}
+    }
+    @media (max-width: 520px){
+      .gridList{grid-template-columns: repeat(3, minmax(0,1fr));}
+      .iconItem{width: 52px;}
+      .iconItem .ico{width: 50px;height:50px}
+    }
+    .pickCard{
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 8px;
+      background:#fff;
+      cursor:pointer;
+      transition: transform .05s ease, border-color .12s ease;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 6px;
+    }
+    .pickCard:hover{border-color:#93c5fd}
+    .pickCard:active{transform: scale(.99)}
+    .pickCard .pimg{
+      width: 60px; height: 60px;
+      border-radius: 16px;
+      border:1px solid var(--line);
+      overflow:hidden;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .pickCard .pimg img{width:100%;height:100%;object-fit:cover}
+    .pickCard .ptxt{
+      font-size: 12px;
+      font-weight: 1000;
+      text-align:center;
+      line-height: 1.15;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      width: 100%;
+    }
+    .toast{
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--muted);
+      text-align:center;
+    }
+
+    /* Set Modal content */
+    .setModalTop{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .bigAvatar{
+      width: 64px; height: 64px;
+      border-radius: 18px;
+      border:1px solid var(--line);
+      overflow:hidden;
+      background:#fff;
+      flex: 0 0 auto;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .bigAvatar img{width:100%;height:100%;object-fit:cover}
+    .setModalTop .info .nm{
+      font-weight: 1000;
+      font-size: 15px;
+      margin: 0;
+    }
+    .setModalTop .info .sm{
+      margin-top: 3px;
+      color: var(--muted);
+      font-weight: 900;
+      font-size: 12px;
+    }
+    .setGrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .setBox{
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background:#fff;
+    }
+    .setBox h4{
+      margin:0 0 10px;
+      font-size: 13px;
+      font-weight: 1000;
+    }
+    .setRow{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+    }
+    .setChip{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background:#fff;
+      min-width: 180px;
+    }
+    .setChip .simg{
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      overflow:hidden;
+      background:#fff;
+      flex: 0 0 auto;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .setChip .simg img{width:100%;height:100%;object-fit:cover}
+    .setChip .stxt{
+      font-weight: 1000;
+      font-size: 12px;
+      line-height: 1.15;
+    }
+    .hr{height:1px;background:var(--line); margin: 12px 0;}
   </style>
 </head>
 
 <body>
-  <!-- ✅ 1) 게이트 화면 -->
-  <div id="gate" class="gateWrap">
-    <div class="gateCard">
-      <div class="gateTitle">VLRT길드 열람 코드 입력</div>
+  <div class="wrap">
+    <header>
+      <h1>길드전</h1>
+      <p>방어 유닛 3명을 선택하면 해당 구성에 대한 결과를 조회합니다</p>
+    </header>
 
-      <div class="gateDesc">
-        먼저 카카오톡으로 연락해 <b>아이디 + 코드번호</b>를 받으세요.<br/>
-        받은 뒤 아래에 입력하면 열람 가능합니다.
-      </div>
+    <div class="card">
+      <div class="section-title">방어 유닛 선택 <span class="tag">3명</span></div>
 
-      <button class="gateBtn kakao" id="btnKakao" type="button">
-        <span class="kakaoBadge" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M12 3C6.477 3 2 6.582 2 11c0 2.74 1.77 5.15 4.5 6.62L5.8 21l4.03-2.2c.7.1 1.43.15 2.17.15 5.523 0 10-3.582 10-8s-4.477-8-10-8Z" fill="#191600" opacity=".92"/>
-            <path d="M8.3 10.2h7.4M8.3 12.2h5.2" stroke="#FEE500" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-        </span>
-        코드 받기 (카카오톡)
-      </button>
-
-      <div class="gateRow">
-        <div>
-          <div class="gateLabel">아이디</div>
-          <input id="gateId" class="gateInput" inputmode="numeric" placeholder="입력:" />
+      <div class="def-row">
+        <div class="slot" data-slot="0">
+          <div class="left">
+            <div class="avatar" id="defAvatar0"></div>
+            <div style="min-width:0">
+              <div class="name" id="defName0">선택</div>
+              <div class="sub" id="defSub0">터치/클릭해서 선택</div>
+            </div>
+          </div>
+          <div class="xbtn" id="defClear0" title="삭제" style="display:none">×</div>
         </div>
-        <div>
-          <div class="gateLabel">코드</div>
-          <input id="gateCode" class="gateInput" inputmode="numeric" placeholder="입력:" />
+
+        <div class="slot" data-slot="1">
+          <div class="left">
+            <div class="avatar" id="defAvatar1"></div>
+            <div style="min-width:0">
+              <div class="name" id="defName1">선택</div>
+              <div class="sub" id="defSub1">터치/클릭해서 선택</div>
+            </div>
+          </div>
+          <div class="xbtn" id="defClear1" title="삭제" style="display:none">×</div>
+        </div>
+
+        <div class="slot" data-slot="2">
+          <div class="left">
+            <div class="avatar" id="defAvatar2"></div>
+            <div style="min-width:0">
+              <div class="name" id="defName2">선택</div>
+              <div class="sub" id="defSub2">터치/클릭해서 선택</div>
+            </div>
+          </div>
+          <div class="xbtn" id="defClear2" title="삭제" style="display:none">×</div>
         </div>
       </div>
 
-      <button class="gateBtn primary" id="btnGateEnter" type="button">확인</button>
-
-      <div id="gateMsg" class="gateMsg"></div>
-
-      <div class="gateHelp">
-        문제가 있으면 <a href="https://open.kakao.com/o/smXJOCfi" target="_blank" rel="noopener">관리자에게 카카오톡으로 연락</a>해주세요.
+      <div class="actions">
+        <button class="btn-ghost" id="btnReset">초기화</button>
+        <button class="btn-primary" id="btnSearch" disabled>검색</button>
       </div>
+
+      <div class="results-header">
+        <div class="left">결과</div>
+        <div class="right"><span id="resultCount">결과 0개</span></div>
+      </div>
+
+      <div id="resultArea"></div>
     </div>
   </div>
 
-  <!-- ✅ 2) 기존 길드전 UI (그대로) -->
-  <div id="app" class="wrap" style="display:none;">
-    <h1>길드전</h1>
-    <p class="desc">방어 유닛 3명을 선택하면 해당 구성에 대한 결과를 조회합니다</p>
-
-    <div class="label">방어 유닛 선택</div>
-
-    <div class="slots">
-      <div class="slot" data-slot="0" aria-label="slot 1">
-        <div class="plus">+</div>
-        <button class="remove" title="제거" aria-label="remove 1">×</button>
-      </div>
-
-      <div class="slot" data-slot="1" aria-label="slot 2">
-        <div class="plus">+</div>
-        <button class="remove" title="제거" aria-label="remove 2">×</button>
-      </div>
-
-      <div class="slot" data-slot="2" aria-label="slot 3">
-        <div class="plus">+</div>
-        <button class="remove" title="제거" aria-label="remove 3">×</button>
-      </div>
-    </div>
-
-    <div class="btnRow">
-      <button class="btn" id="btnReset">초기화</button>
-      <button class="btn primary" id="btnSearch">검색</button>
-    </div>
-
-    <div class="resultHead">
-      <div class="left">결과</div>
-      <div class="right" id="statusText">검색 전</div>
-    </div>
-
-    <div class="resultBox" id="resultBox">방어 유닛 3명을 선택해 주세요</div>
-  </div>
-
-  <!-- ✅ 유닛 선택 modal -->
-  <div class="modalBack" id="modalBack" role="dialog" aria-modal="true">
-    <div class="modal">
+  <!-- Unit Picker Modal -->
+  <div class="overlay" id="pickerOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
       <div class="modalHeader">
-        <div class="title">유닛 선택</div>
-        <button class="close" id="btnClose" aria-label="닫기">닫기</button>
-      </div>
-      <div class="search">
-        <input id="searchInput" placeholder="이름 검색 (예: 루디)" />
-      </div>
-      <div id="unitList"></div>
-      <div class="hint">유닛을 선택하고 방어 3명을 채운 뒤 검색하세요.</div>
-    </div>
-  </div>
-
-  <!-- ✅ 오늘 추가: 공격 유닛 클릭 → 준비중 modal -->
-  <div class="modalBack" id="atkModalBack" role="dialog" aria-modal="true">
-    <div class="modal">
-      <div class="modalHeader">
-        <div class="title">공격 유닛</div>
-        <button class="close" id="btnAtkClose" aria-label="닫기">닫기</button>
-      </div>
-      <div class="atkModalBody">
-        <div class="atkHero">
-          <div class="atkHeroImg" id="atkHeroImg"></div>
+        <div class="mhLeft" style="min-width:0">
           <div>
-            <div class="atkHeroName" id="atkHeroName">-</div>
-            <div class="atkHeroSub">상세 기능은 다음 업데이트에 추가됩니다</div>
+            <div class="mhTitle" id="pickerTitle">유닛 선택</div>
+            <div class="mhSub" id="pickerSub">클릭하면 해당 슬롯에 입력됩니다</div>
           </div>
         </div>
-
-        <div class="atkNotice">
-          현재는 <b>공격 유닛 클릭 시 안내 모달</b>만 제공 중입니다.<br/>
-          (예: 추천 이유 / 세팅 / 대체 유닛 / 운영 팁 등은 준비중)
+        <button class="mhClose" id="pickerClose" title="닫기">×</button>
+      </div>
+      <div class="modalBody">
+        <div class="searchbar">
+          <input id="pickerSearch" placeholder="유닛 이름 검색" autocomplete="off" />
         </div>
+        <div class="gridList" id="pickerGrid"></div>
+        <div class="toast" id="pickerToast"></div>
       </div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Set Modal (attack unit click) -->
+  <div class="overlay" id="setOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modalHeader">
+        <div class="mhLeft" style="min-width:0">
+          <div>
+            <div class="mhTitle" id="setTitle">세트 추천</div>
+            <div class="mhSub" id="setSub">유닛별 추천 세트 & 설명</div>
+          </div>
+        </div>
+        <button class="mhClose" id="setClose" title="닫기">×</button>
+      </div>
+      <div class="modalBody" id="setBody"></div>
+    </div>
+  </div>
 
   <script>
-    // =========================================================
-    // ✅ 1) Supabase 연결 (기존 유지)
-    // =========================================================
-    const SUPABASE_URL = "https://rtlkthadgfyszawgbevk.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_Vsr12aXc5r8kCnjBnpvrcQ_4Enqbi3F";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    /***********************
+     * 1) Supabase 설정
+     ***********************/
+    const SUPABASE_URL = "YOUR_SUPABASE_URL";
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+    const supabase = supabasejs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // =========================================================
-    // ✅ 2) 게이트(아이디+코드번호) 로직 (RPC 검증)
-    // =========================================================
-    const KAKAO_LINK = "https://open.kakao.com/o/smXJOCfi";
-    const SESSION_KEY = "guild_gate_ok_v1";
+    /***********************
+     * 2) 전역 상태
+     ***********************/
+    let units = [];              // units table rows
+    let unitMap = new Map();     // id => row
+    let onlyUnits = [];          // kind === 'unit'
 
-    const gateEl = document.getElementById("gate");
-    const appEl = document.getElementById("app");
-    const gateMsgEl = document.getElementById("gateMsg");
+    let selectedDef = [null, null, null]; // u###
+    let activeSlot = 0;
 
-    const btnKakao = document.getElementById("btnKakao");
-    const btnGateEnter = document.getElementById("btnGateEnter");
-    const gateIdInput = document.getElementById("gateId");
-    const gateCodeInput = document.getElementById("gateCode");
+    let searchResults = [];      // guild_war_results matched rows
+    let currentIndex = 0;
 
-    function showGateMsg(msg){
-      gateMsgEl.style.display = "block";
-      gateMsgEl.textContent = msg;
+    /***********************
+     * 3) 유틸
+     ***********************/
+    const $ = (sel) => document.querySelector(sel);
+
+    function safeText(v){
+      if (v === null || v === undefined) return "";
+      return String(v);
     }
-    function clearGateMsg(){
-      gateMsgEl.style.display = "none";
-      gateMsgEl.textContent = "";
+    function isEmpty(v){
+      return safeText(v).trim().length === 0;
     }
-
-    function passGate(){
-      localStorage.setItem(SESSION_KEY, "1");
-      gateEl.style.display = "none";
-      appEl.style.display = "block";
-      initGuildWar();
+    function normalizeId(v){
+      const s = safeText(v).trim();
+      return s || null;
     }
-
-    function failGate(msg){
-      localStorage.removeItem(SESSION_KEY);
-      gateEl.style.display = "block";
-      appEl.style.display = "none";
-      showGateMsg(msg);
+    function makeDefKey(a,b,c){
+      const arr = [a,b,c].filter(Boolean).sort();
+      return arr.join("|");
     }
 
-    function basicCheck(idStr, codeStr){
-      const id = Number(String(idStr || "").trim());
-      const code = Number(String(codeStr || "").trim());
-      if(!Number.isInteger(id)) return { ok:false, msg:"아이디는 숫자만 입력해 주세요." };
-      if(!Number.isInteger(code)) return { ok:false, msg:"코드는 숫자만 입력해 주세요." };
-      return { ok:true, id, code };
+    function renderAvatar(el, item){
+      el.innerHTML = "";
+      if (!item || !item.img){
+        el.style.background = "#fff";
+        el.textContent = "";
+        return;
+      }
+      const img = document.createElement("img");
+      img.src = item.img;
+      img.alt = item.name || "";
+      el.appendChild(img);
     }
 
-    btnKakao.addEventListener("click", () => {
-      window.open(KAKAO_LINK, "_blank", "noopener");
-    });
+    function setSlotUI(i, id){
+      const nameEl = $("#defName"+i);
+      const subEl  = $("#defSub"+i);
+      const avEl   = $("#defAvatar"+i);
+      const clr    = $("#defClear"+i);
 
-    btnGateEnter.addEventListener("click", async () => {
-      clearGateMsg();
-      btnGateEnter.disabled = true;
+      if (!id){
+        nameEl.textContent = "선택";
+        subEl.textContent  = "터치/클릭해서 선택";
+        renderAvatar(avEl, null);
+        clr.style.display = "none";
+        return;
+      }
+      const item = unitMap.get(id);
+      nameEl.textContent = item?.name || id;
+      subEl.textContent  = id;
+      renderAvatar(avEl, item);
+      clr.style.display = "flex";
+    }
 
-      const chk = basicCheck(gateIdInput.value, gateCodeInput.value);
-      if(!chk.ok){
-        btnGateEnter.disabled = false;
-        failGate(chk.msg);
+    function updateSearchButton(){
+      const ok = selectedDef.every(Boolean);
+      const btn = $("#btnSearch");
+      btn.disabled = !ok;
+      btn.classList.toggle("enabled", ok);
+    }
+
+    function getUnit(id){
+      return unitMap.get(id) || null;
+    }
+
+    function makeIconItem(id, clickable=false){
+      const u = getUnit(id);
+      const div = document.createElement("div");
+      div.className = "iconItem" + (clickable ? " clickable" : "");
+
+      const ico = document.createElement("div");
+      ico.className = "ico";
+      if (u?.img){
+        const img = document.createElement("img");
+        img.src = u.img;
+        img.alt = u.name || "";
+        ico.appendChild(img);
+      }
+      const lab = document.createElement("div");
+      lab.className = "lab";
+      lab.textContent = u?.name || (id ? id : "없음");
+
+      div.appendChild(ico);
+      div.appendChild(lab);
+      return div;
+    }
+
+    function parseMaybeMultiIds(value){
+      // 값이 "u100|u101" 이나 "u100, u101" 형태로 들어오면 분리해서 배열로 반환
+      const s = safeText(value).trim();
+      if (!s) return [];
+      if (s.includes("|")) return s.split("|").map(v=>v.trim()).filter(Boolean);
+      if (s.includes(",")) return s.split(",").map(v=>v.trim()).filter(Boolean);
+      return [s];
+    }
+
+    /***********************
+     * 4) 데이터 로드
+     ***********************/
+    async function loadUnits(){
+      // 캐시 사용(있으면)
+      const cacheKey = "vlrt_units_cache_v1";
+      try{
+        const cached = localStorage.getItem(cacheKey);
+        if (cached){
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length){
+            units = parsed;
+            rebuildUnitMap();
+            return;
+          }
+        }
+      }catch(e){}
+
+      const { data, error } = await supabase
+        .from("units")
+        .select("*")
+        .order("id", { ascending:true });
+
+      if (error){
+        console.error(error);
+        alert("units 로드 실패: " + error.message);
+        return;
+      }
+      units = data || [];
+      try{ localStorage.setItem(cacheKey, JSON.stringify(units)); }catch(e){}
+      rebuildUnitMap();
+    }
+
+    function rebuildUnitMap(){
+      unitMap = new Map();
+      for (const r of units){
+        if (r?.id) unitMap.set(r.id, r);
+      }
+      onlyUnits = units.filter(r => (r?.kind || "").toLowerCase() === "unit");
+    }
+
+    /***********************
+     * 5) 유닛 선택 Picker
+     ***********************/
+    function openPicker(slotIndex){
+      activeSlot = slotIndex;
+      $("#pickerTitle").textContent = `유닛 선택 (슬롯 ${slotIndex+1})`;
+      $("#pickerSub").textContent = "클릭하면 해당 슬롯에 입력됩니다";
+      $("#pickerSearch").value = "";
+      renderPickerList("");
+      $("#pickerOverlay").classList.add("show");
+      $("#pickerOverlay").setAttribute("aria-hidden", "false");
+      $("#pickerSearch").focus();
+    }
+
+    function closePicker(){
+      $("#pickerOverlay").classList.remove("show");
+      $("#pickerOverlay").setAttribute("aria-hidden", "true");
+    }
+
+    function renderPickerList(q){
+      const grid = $("#pickerGrid");
+      const toast = $("#pickerToast");
+      grid.innerHTML = "";
+
+      const query = (q || "").trim().toLowerCase();
+      const list = onlyUnits.filter(u => {
+        if (!query) return true;
+        return safeText(u.name).toLowerCase().includes(query) || safeText(u.id).toLowerCase().includes(query);
+      });
+
+      toast.textContent = list.length ? `${list.length}개 표시 중` : "검색 결과가 없습니다";
+
+      for (const u of list){
+        const card = document.createElement("div");
+        card.className = "pickCard";
+
+        const imgWrap = document.createElement("div");
+        imgWrap.className = "pimg";
+        if (u.img){
+          const img = document.createElement("img");
+          img.src = u.img;
+          img.alt = u.name || "";
+          imgWrap.appendChild(img);
+        }
+
+        const txt = document.createElement("div");
+        txt.className = "ptxt";
+        txt.textContent = u.name || u.id;
+
+        card.appendChild(imgWrap);
+        card.appendChild(txt);
+
+        card.addEventListener("click", () => {
+          selectedDef[activeSlot] = u.id;
+          setSlotUI(activeSlot, u.id);
+          updateSearchButton();
+          closePicker();
+        });
+
+        grid.appendChild(card);
+      }
+    }
+
+    /***********************
+     * 6) 검색
+     ***********************/
+    async function runSearch(){
+      const a = selectedDef[0], b = selectedDef[1], c = selectedDef[2];
+      const defKey = makeDefKey(a,b,c);
+
+      $("#resultArea").innerHTML = "";
+      $("#resultCount").textContent = "검색 중...";
+
+      const { data, error } = await supabase
+        .from("guild_war_results")
+        .select("*")
+        .eq("def_key", defKey)
+        .order("id", { ascending:true });
+
+      if (error){
+        console.error(error);
+        $("#resultCount").textContent = "결과 0개";
+        alert("검색 실패: " + error.message);
         return;
       }
 
-      try{
-        const { data, error } = await supabaseClient.rpc("check_guild_access_code", {
-          p_account_id: chk.id,
-          p_code: chk.code
-        });
+      searchResults = data || [];
+      currentIndex = 0;
+      $("#resultCount").textContent = `결과 ${searchResults.length}개`;
 
-        if(error){
-          console.error(error);
-          btnGateEnter.disabled = false;
-          failGate("서버 확인 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.");
-          return;
-        }
-
-        if(data === true){
-          btnGateEnter.disabled = false;
-          passGate();
-        }else{
-          btnGateEnter.disabled = false;
-          failGate("아이디/코드가 올바르지 않거나 비활성화된 코드입니다. 관리자에게 문의해주세요.");
-        }
-      }catch(err){
-        console.error(err);
-        btnGateEnter.disabled = false;
-        failGate("네트워크 오류가 발생했어요. 잠시 후 다시 시도해주세요.");
-      }
-    });
-
-    [gateIdInput, gateCodeInput].forEach(inp => {
-      inp.addEventListener("keydown", (e) => {
-        if(e.key === "Enter") btnGateEnter.click();
-      });
-    });
-
-    if(localStorage.getItem(SESSION_KEY) === "1"){
-      gateEl.style.display = "none";
-      appEl.style.display = "block";
-      initGuildWar();
-    }else{
-      gateEl.style.display = "block";
-      appEl.style.display = "none";
+      renderResult();
     }
 
-    // =========================================================
-    // ✅ 3) 길드전 본체 (UI 유지 + 오늘 추가 기능 포함)
-    // =========================================================
-    function initGuildWar(){
-      if(window.__GUILD_INITED__) return;
-      window.__GUILD_INITED__ = true;
+    function renderResult(){
+      const area = $("#resultArea");
+      area.innerHTML = "";
 
-      const slots = [null, null, null];
-      let activeSlotIndex = 0;
-
-      let UNITS = [];
-      let RESULTS = [];
-      let currentIndex = 0;
-
-      const modalBack = document.getElementById("modalBack");
-      const unitListEl = document.getElementById("unitList");
-      const searchInput = document.getElementById("searchInput");
-      const statusText = document.getElementById("statusText");
-      const resultBox = document.getElementById("resultBox");
-
-      // ✅ 오늘 추가: 공격유닛 모달
-      const atkModalBack = document.getElementById("atkModalBack");
-      const btnAtkClose = document.getElementById("btnAtkClose");
-      const atkHeroImg = document.getElementById("atkHeroImg");
-      const atkHeroName = document.getElementById("atkHeroName");
-
-      function escapeHtml(str) {
-        return String(str ?? "")
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
+      if (!searchResults.length){
+        const empty = document.createElement("div");
+        empty.style.marginTop = "10px";
+        empty.className = "empty";
+        empty.textContent = "검색 결과가 없습니다";
+        area.appendChild(empty);
+        return;
       }
 
-      function renderSlots(){
-        document.querySelectorAll(".slot").forEach((el) => {
-          const idx = Number(el.dataset.slot);
-          const s = slots[idx];
+      const row = searchResults[currentIndex];
 
-          el.classList.toggle("filled", !!s);
-          el.innerHTML = "";
+      const shell = document.createElement("div");
+      shell.className = "result-shell";
 
-          const rm = document.createElement("button");
-          rm.className = "remove";
-          rm.title = "제거";
-          rm.textContent = "×";
-          rm.addEventListener("click", (e) => {
-            e.stopPropagation();
-            clearSlot(idx);
-          });
-          el.appendChild(rm);
+      // Top bar
+      const top = document.createElement("div");
+      top.className = "result-topbar";
 
-          if(!s){
-            const plus = document.createElement("div");
-            plus.className = "plus";
-            plus.textContent = "+";
-            el.appendChild(plus);
-            return;
-          }
+      const title = document.createElement("div");
+      title.className = "title";
+      title.textContent = "검색 결과";
 
-          const thumb = document.createElement("div");
-          thumb.className = "thumb";
-          const img = document.createElement("img");
-          img.src = s.image_url;
-          img.alt = s.name;
-          thumb.appendChild(img);
+      const pager = document.createElement("div");
+      pager.className = "pager";
 
-          const nm = document.createElement("div");
-          nm.className = "name";
-          nm.textContent = s.name;
-
-          el.appendChild(thumb);
-          el.appendChild(nm);
-        });
-      }
-
-      function updateResultHint(){
-        const chosen = slots.filter(Boolean);
-        if(chosen.length < 3){
-          statusText.textContent = "검색 전";
-          resultBox.textContent = "방어 유닛 3명을 선택해 주세요";
-          RESULTS = [];
-          currentIndex = 0;
-          return;
+      const prev = document.createElement("div");
+      prev.className = "pbtn";
+      prev.textContent = "‹";
+      prev.addEventListener("click", () => {
+        if (currentIndex > 0){
+          currentIndex--;
+          renderResult();
         }
-        statusText.textContent = "준비됨";
-        resultBox.textContent = `선택됨: ${chosen.map(x=>x.name).join(", ")}`;
-      }
-
-      function renderUnitList(list){
-        unitListEl.innerHTML = "";
-        list.forEach((u) => {
-          const row = document.createElement("div");
-          row.className = "item";
-          row.innerHTML = `
-            <div class="thumb"><img src="${u.image_url}" alt="${escapeHtml(u.name)}"></div>
-            <div class="name">${escapeHtml(u.name)}</div>
-          `;
-          row.addEventListener("click", () => {
-            setSlot(activeSlotIndex, u);
-            closeModal();
-          });
-          unitListEl.appendChild(row);
-        });
-
-        if(list.length === 0){
-          unitListEl.innerHTML = `<div style="padding:14px;color:#6b7280;font-size:13px;">검색 결과가 없습니다</div>`;
-        }
-      }
-
-      function setSlot(i, unit){
-        const already = slots.findIndex(s => s && s.name === unit.name);
-        if(already !== -1 && already !== i){
-          alert("이미 선택된 유닛입니다.");
-          return;
-        }
-        slots[i] = { id: unit.id, name: unit.name, image_url: unit.image_url };
-        renderSlots();
-        updateResultHint();
-      }
-
-      function clearSlot(i){
-        slots[i] = null;
-        renderSlots();
-        updateResultHint();
-      }
-
-      function openModal(slotIndex){
-        activeSlotIndex = slotIndex;
-        modalBack.style.display = "flex";
-        searchInput.value = "";
-        renderUnitList(UNITS);
-        setTimeout(() => searchInput.focus({ preventScroll:true }), 50);
-      }
-      function closeModal(){
-        modalBack.style.display = "none";
-      }
-
-      document.getElementById("btnClose").addEventListener("click", closeModal);
-      modalBack.addEventListener("click", (e) => {
-        if(e.target === modalBack) closeModal();
-      });
-      document.querySelectorAll(".slot").forEach((el) => {
-        el.addEventListener("click", () => openModal(Number(el.dataset.slot)));
       });
 
-      // ✅ 오늘 추가: 공격유닛 모달 열기/닫기
-      function openAtkModal(unit){
-        if(!unit) return;
-        atkHeroImg.innerHTML = `<img src="${unit.image_url}" alt="${escapeHtml(unit.name)}">`;
-        atkHeroName.textContent = unit.name || "-";
-        atkModalBack.style.display = "flex";
-      }
-      function closeAtkModal(){
-        atkModalBack.style.display = "none";
-      }
-      btnAtkClose.addEventListener("click", closeAtkModal);
-      atkModalBack.addEventListener("click", (e) => {
-        if(e.target === atkModalBack) closeAtkModal();
+      const stat = document.createElement("div");
+      stat.className = "stat";
+      stat.textContent = `${currentIndex+1} / ${searchResults.length}`;
+
+      const next = document.createElement("div");
+      next.className = "pbtn";
+      next.textContent = "›";
+      next.addEventListener("click", () => {
+        if (currentIndex < searchResults.length-1){
+          currentIndex++;
+          renderResult();
+        }
       });
 
-      // cell html (공격유닛은 clickable 옵션)
-      function cellHtml(unit, clickable=false){
-        if(!unit){
-          return `
-            <div class="cell">
-              <div class="emptyBox">없음</div>
-              <div class="cap">없음</div>
-            </div>
-          `;
-        }
-        const cls = clickable ? "cell clickable" : "cell";
-        const data = clickable ? `data-click="atk" data-unit-id="${escapeHtml(unit.id)}"` : "";
-        return `
-          <div class="${cls}" ${data}>
-            <img src="${unit.image_url}" alt="${escapeHtml(unit.name)}">
-            <div class="cap">${escapeHtml(unit.name)}</div>
-          </div>
-        `;
-      }
+      pager.appendChild(prev);
+      pager.appendChild(stat);
+      pager.appendChild(next);
 
-      function renderSingleResult(){
-        const total = RESULTS.length;
-        const hasAny = total > 0;
+      top.appendChild(title);
+      top.appendChild(pager);
+      shell.appendChild(top);
 
-        const idx = Math.min(Math.max(currentIndex, 0), Math.max(total - 1, 0));
-        currentIndex = idx;
+      // 1) important (always show, thin)
+      const b1 = document.createElement("div");
+      b1.className = "box1";
 
-        const r = hasAny ? RESULTS[idx] : null;
+      const warn = document.createElement("div");
+      warn.className = "warn";
+      warn.textContent = "⚠";
 
-        const atkArr = r ? r.atk : [null, null, null];
-        const skArr  = r ? r.skill : [null, null, null];
-        const pet    = r ? r.pet : null;
+      const t1 = document.createElement("div");
+      t1.className = "txt";
+      const imp = safeText(row.important).trim();
+      t1.textContent = imp ? imp : "없음";
 
-        const firstText = r?.first ?? "없음";
-        const badgeClass =
-          firstText === "선공" ? "badge red" :
-          firstText === "후공" ? "badge blue" :
-          "badge gray";
+      b1.appendChild(warn);
+      b1.appendChild(t1);
+      shell.appendChild(b1);
 
-        const noteText = (r?.note ?? "").trim();
-        const pageLabel = hasAny ? `${idx+1} / ${total}` : `0 / 0`;
+      // Main grid
+      const grid = document.createElement("div");
+      grid.className = "grid";
 
-        resultBox.innerHTML = `
-          <div class="resultToolbar">
-            <div style="font-weight:900;color:#111827;">검색 결과</div>
-            <div class="pager">
-              <button class="pagerBtn" id="btnPrev" ${(!hasAny || idx===0) ? "disabled":""}>◀</button>
-              <div class="pageInfo">${pageLabel}</div>
-              <button class="pagerBtn" id="btnNext" ${(!hasAny || idx===total-1) ? "disabled":""}>▶</button>
-            </div>
-          </div>
+      const leftCol = document.createElement("div");
+      leftCol.className = "col";
 
-          <div class="card">
-            <div class="gridLayout">
-              <div class="panel">
-                <div class="panelTitle">공격 유닛</div>
-                <div class="grid3">
-                  ${cellHtml(atkArr[0], true)}
-                  ${cellHtml(atkArr[1], true)}
-                  ${cellHtml(atkArr[2], true)}
-                </div>
-              </div>
+      const rightCol = document.createElement("div");
+      rightCol.className = "col";
 
-              <div class="panel centerCol">
-                <div class="panelTitle">추천 펫</div>
-                ${pet ? `
-                  <div class="cell">
-                    <img src="${pet.image_url}" alt="${escapeHtml(pet.name)}">
-                    <div class="petName">${escapeHtml(pet.name)}</div>
-                  </div>
-                ` : `
-                  <div class="cell">
-                    <div class="emptyBox">없음</div>
-                    <div class="petName">없음</div>
-                  </div>
-                `}
-              </div>
+      // 2) 공격유닛 (click -> set modal)
+      const box2 = document.createElement("div");
+      box2.className = "box box-247";
+      const h2 = document.createElement("h3");
+      h2.innerHTML = `<span>2번: 공격유닛</span><span class="hint">클릭 시 세트 모달</span>`;
+      const row2 = document.createElement("div");
+      row2.className = "row-icons";
 
-              <div class="panel">
-                <div class="panelTitle">스킬 순서</div>
-                <div class="grid3">
-                  ${cellHtml(skArr[0])}
-                  ${cellHtml(skArr[1])}
-                  ${cellHtml(skArr[2])}
-                </div>
-              </div>
-
-              <div class="panel centerCol">
-                <div class="panelTitle">선 / 후</div>
-                <span class="${badgeClass}">${escapeHtml(firstText)}</span>
-              </div>
-
-              <div class="panel notePanel">
-                <div class="noteHead">📌 노트</div>
-                <div class="noteText">${escapeHtml(noteText || "없음")}</div>
-              </div>
-            </div>
-          </div>
-        `;
-
-        // 페이저
-        const prevBtn = document.getElementById("btnPrev");
-        const nextBtn = document.getElementById("btnNext");
-
-        if(prevBtn) prevBtn.addEventListener("click", () => {
-          if(currentIndex > 0){
-            currentIndex--;
-            renderSingleResult();
-          }
-        });
-        if(nextBtn) nextBtn.addEventListener("click", () => {
-          if(currentIndex < total - 1){
-            currentIndex++;
-            renderSingleResult();
-          }
-        });
-
-        // ✅ 오늘 추가: 공격 유닛 클릭 시 "준비중" 모달
-        // 렌더된 결과 영역에서 data-click="atk" 가진 셀만 이벤트 붙임
-        resultBox.querySelectorAll('[data-click="atk"]').forEach(el => {
-          el.addEventListener("click", () => {
-            const uid = el.getAttribute("data-unit-id");
-            const unit = RESULTS[currentIndex]?.atk?.find(u => u && u.id === uid);
-            if(unit) openAtkModal(unit);
-          });
-        });
-      }
-
-      document.getElementById("btnReset").addEventListener("click", () => {
-        slots[0]=slots[1]=slots[2]=null;
-        RESULTS = [];
-        currentIndex = 0;
-        renderSlots();
-        updateResultHint();
+      const atkIds = [row.atk_1, row.atk_2, row.atk_3].map(normalizeId);
+      atkIds.forEach((id, idx) => {
+        const item = makeIconItem(id, true);
+        item.addEventListener("click", () => openSetModal(idx, row));
+        row2.appendChild(item);
       });
 
-      // ✅ def_key 만들기: "_" 기본 + "|" 대체키도 같이 만들어서 둘 다 조회
-      function makeDefKey(ids, sep){
-        return (ids || []).map(x => String(x||"").trim()).filter(Boolean).sort().join(sep);
+      // 빈칸 방지
+      if (atkIds.filter(Boolean).length === 0){
+        const em = document.createElement("div");
+        em.className = "empty";
+        em.textContent = "없음";
+        row2.appendChild(em);
       }
 
-      document.getElementById("btnSearch").addEventListener("click", async () => {
-        const selected = slots.filter(Boolean);
-        if(selected.length < 3){
-          alert("방어 유닛 3명을 먼저 선택해 주세요.");
-          return;
-        }
+      box2.appendChild(h2);
+      box2.appendChild(row2);
 
-        const idArr = selected.map(s => s.id);
+      // 4) 스킬순서
+      const box4 = document.createElement("div");
+      box4.className = "box box-247";
+      const h4 = document.createElement("h3");
+      h4.innerHTML = `<span>4번: 스킬순서</span>`;
+      const row4 = document.createElement("div");
+      row4.className = "row-icons";
 
-        // ✅ 둘 다 만들어서 (DB에 어떤 구분자로 저장됐든) 맞춰 찾게 함
-        const defKeyUnderscore = makeDefKey(idArr, "_");
-        const defKeyPipe = makeDefKey(idArr, "|");
+      const skillIds = [row.skill_1, row.skill_2, row.skill_3].map(normalizeId);
+      skillIds.forEach((id) => row4.appendChild(makeIconItem(id)));
+      if (skillIds.filter(Boolean).length === 0){
+        const em = document.createElement("div");
+        em.className = "empty";
+        em.textContent = "없음";
+        row4.appendChild(em);
+      }
+      box4.appendChild(h4);
+      box4.appendChild(row4);
 
-        statusText.textContent = "검색중...";
-        resultBox.textContent = "잠시만...";
+      // 7) 진형설명 (text)
+      const box7 = document.createElement("div");
+      box7.className = "box box-247";
+      const h7 = document.createElement("h3");
+      h7.innerHTML = `<span>7번: 진형설명</span>`;
+      const tx7 = document.createElement("div");
+      tx7.className = "textArea";
+      const fcom = safeText(row.formations_comment).trim();
+      tx7.textContent = fcom ? fcom : "없음";
 
-        // ✅ 컬럼 존재 여부 이슈를 피하려고 일단 *로 받고, 매핑에서 유연하게 처리
-        const { data: rows, error } = await supabaseClient
-          .from("guild_war_results")
-          .select("*")
-          .in("def_key", [defKeyUnderscore, defKeyPipe])
-          .order("result_id", { ascending: true });
+      box7.appendChild(h7);
+      box7.appendChild(tx7);
 
-        if(error){
-          console.error(error);
-          statusText.textContent = "에러";
-          resultBox.textContent = "조회 실패(콘솔 확인)";
-          return;
-        }
+      leftCol.appendChild(box2);
+      leftCol.appendChild(box4);
+      leftCol.appendChild(box7);
 
-        if(!rows || rows.length === 0){
-          statusText.textContent = "결과 없음";
-          RESULTS = [];
-          currentIndex = 0;
-          renderSingleResult();
-          return;
-        }
+      // 3) 추천펫
+      const box3 = document.createElement("div");
+      box3.className = "box box-356";
+      const h3 = document.createElement("h3");
+      h3.innerHTML = `<span>3번: 추천 펫</span>`;
+      const row3 = document.createElement("div");
+      row3.className = "row-icons";
 
-        // 결과에서 필요한 유닛 id 수집
-        const ids = new Set();
-        rows.forEach(r => {
-          [
-            r.atk_1, r.atk_2, r.atk_3,
-            r.skill_1, r.skill_2, r.skill_3,
-            r.pet
-          ].forEach(x => { if(x) ids.add(x); });
-        });
+      const petIds = [row.pet_1, row.pet_2, row.pet_3].map(normalizeId);
+      petIds.forEach((id) => row3.appendChild(makeIconItem(id)));
+      if (petIds.filter(Boolean).length === 0){
+        const em = document.createElement("div");
+        em.className = "empty";
+        em.textContent = "없음";
+        row3.appendChild(em);
+      }
+      box3.appendChild(h3);
+      box3.appendChild(row3);
 
-        // units 조회
-        const { data: unitRows, error: unitErr } = await supabaseClient
-          .from("units")
-          .select("id, name, image_url")
-          .in("id", Array.from(ids));
+      // 5) 공격순서 (기존 선/후 결과 유지)
+      const box5 = document.createElement("div");
+      box5.className = "box box-356";
+      const h5 = document.createElement("h3");
+      h5.innerHTML = `<span>5번: 공격순서</span>`;
+      const row5 = document.createElement("div");
 
-        if(unitErr) console.error(unitErr);
+      // 기존 데이터 컬럼명이 프로젝트마다 달랐을 수 있어서, 여러 후보를 체크
+      const orderValue =
+        safeText(row.attack_order).trim() ||
+        safeText(row.atk_order).trim() ||
+        safeText(row.order).trim() ||
+        safeText(row.first).trim() ||
+        safeText(row.turn).trim();
 
-        const unitMap = new Map((unitRows || []).map(u => [u.id, u]));
+      const pill = document.createElement("div");
+      pill.className = "pill";
+      pill.textContent = orderValue ? orderValue : "없음";
+      row5.appendChild(pill);
 
-        // ✅ first/note 컬럼이 없을 수도 있으니 대체 필드 사용
-        // - first: r.first || r.formations || "없음"
-        // - note : r.note  || r.set_comment || r.formations_comment || ""
-        RESULTS = rows.map(r => {
-          const atk = [r.atk_1, r.atk_2, r.atk_3].map(id => unitMap.get(id) || null);
-          const skill = [r.skill_1, r.skill_2, r.skill_3].map(id => unitMap.get(id) || null);
-          const pet = unitMap.get(r.pet) || null;
+      box5.appendChild(h5);
+      box5.appendChild(row5);
 
-          const first = (r.first ?? r.formations ?? "없음");
-          const note = (r.note ?? r.set_comment ?? r.formations_comment ?? "");
+      // 6) 진형추천 (formations + 이미지)
+      const box6 = document.createElement("div");
+      box6.className = "box box-356";
+      const h6 = document.createElement("h3");
+      h6.innerHTML = `<span>6번: 진형추천</span><span class="hint">기본/밸런스/공격/보호</span>`;
+      const row6 = document.createElement("div");
+      row6.className = "row-icons";
 
-          return {
-            result_id: r.result_id,
-            first,
-            note,
-            atk,
-            skill,
-            pet
-          };
-        });
-
-        currentIndex = 0;
-        statusText.textContent = `결과 ${RESULTS.length}개`;
-        renderSingleResult();
-      });
-
-      searchInput.addEventListener("input", () => {
-        const q = searchInput.value.trim().toLowerCase();
-        if(!q){
-          renderUnitList(UNITS);
-          return;
-        }
-        const filtered = UNITS.filter(u => (u.name || "").toLowerCase().includes(q));
-        renderUnitList(filtered);
-      });
-
-      async function loadUnits(){
-        statusText.textContent = "유닛 로딩중...";
-
-        // ✅ kind 컬럼이 없을 수 있어 eq("kind","unit") 제거
-        const { data, error } = await supabaseClient
-          .from("units")
-          .select("id, name, image_url")
-          .order("name", { ascending: true });
-
-        if(error){
-          console.error(error);
-          statusText.textContent = "유닛 로드 실패";
-          resultBox.textContent = "유닛을 불러오지 못했습니다. (RLS/정책 또는 컬럼 확인)";
-          return;
-        }
-
-        UNITS = (data || []).map(u => ({
-          id: u.id,
-          name: u.name,
-          image_url: u.image_url
-        }));
-
-        statusText.textContent = `유닛 ${UNITS.length}개 로드됨`;
-        updateResultHint();
+      // formations 값이 units(kind=formation)로 들어온다고 가정 (u###)
+      const formationId = normalizeId(row.formations);
+      if (formationId){
+        row6.appendChild(makeIconItem(formationId));
+      }else{
+        const em = document.createElement("div");
+        em.className = "empty";
+        em.textContent = "없음";
+        row6.appendChild(em);
       }
 
-      // 초기 실행
-      renderSlots();
-      updateResultHint();
-      loadUnits();
+      box6.appendChild(h6);
+      box6.appendChild(row6);
+
+      rightCol.appendChild(box3);
+      rightCol.appendChild(box5);
+      rightCol.appendChild(box6);
+
+      grid.appendChild(leftCol);
+      grid.appendChild(rightCol);
+
+      shell.appendChild(grid);
+      area.appendChild(shell);
     }
+
+    /***********************
+     * 7) 세트 모달
+     ***********************/
+    function openSetModal(atkIndex, row){
+      const atkId = normalizeId([row.atk_1, row.atk_2, row.atk_3][atkIndex]);
+      const unit = getUnit(atkId);
+
+      // 각 공격유닛별 추천 세트 컬럼
+      const setCol = ["atk_1_set", "atk_2_set", "atk_3_set"][atkIndex];
+      const setRaw = row[setCol];
+      const setIds = parseMaybeMultiIds(setRaw);
+
+      const setComment = safeText(row.set_comment).trim();
+
+      $("#setTitle").textContent = "세트 추천";
+      $("#setSub").textContent = `(${atkIndex+1}번 공격유닛)`;
+
+      const body = $("#setBody");
+      body.innerHTML = "";
+
+      // Top
+      const top = document.createElement("div");
+      top.className = "setModalTop";
+
+      const ba = document.createElement("div");
+      ba.className = "bigAvatar";
+      if (unit?.img){
+        const img = document.createElement("img");
+        img.src = unit.img;
+        img.alt = unit.name || "";
+        ba.appendChild(img);
+      }
+
+      const info = document.createElement("div");
+      info.className = "info";
+      const nm = document.createElement("div");
+      nm.className = "nm";
+      nm.textContent = unit?.name || (atkId || "없음");
+      const sm = document.createElement("div");
+      sm.className = "sm";
+      sm.textContent = atkId ? `ID: ${atkId}` : "ID: 없음";
+
+      info.appendChild(nm);
+      info.appendChild(sm);
+
+      top.appendChild(ba);
+      top.appendChild(info);
+
+      body.appendChild(top);
+
+      // Set box
+      const setBox = document.createElement("div");
+      setBox.className = "setBox";
+      const h4 = document.createElement("h4");
+      h4.textContent = "추천 세트";
+      setBox.appendChild(h4);
+
+      const setRow = document.createElement("div");
+      setRow.className = "setRow";
+
+      if (setIds.length){
+        for (const sid of setIds){
+          const s = getUnit(sid); // kind=set
+          const chip = document.createElement("div");
+          chip.className = "setChip";
+
+          const simg = document.createElement("div");
+          simg.className = "simg";
+          if (s?.img){
+            const img = document.createElement("img");
+            img.src = s.img;
+            img.alt = s.name || "";
+            simg.appendChild(img);
+          }
+
+          const stxt = document.createElement("div");
+          stxt.className = "stxt";
+          stxt.textContent = s?.name || sid;
+
+          chip.appendChild(simg);
+          chip.appendChild(stxt);
+          setRow.appendChild(chip);
+        }
+      }else{
+        const em = document.createElement("div");
+        em.className = "empty";
+        em.textContent = "없음";
+        setRow.appendChild(em);
+      }
+
+      setBox.appendChild(setRow);
+      body.appendChild(setBox);
+
+      // Comment box
+      const cBox = document.createElement("div");
+      cBox.className = "setBox";
+      const h5 = document.createElement("h4");
+      h5.textContent = "세트 설명";
+      cBox.appendChild(h5);
+
+      const tx = document.createElement("div");
+      tx.className = "textArea";
+      tx.textContent = setComment ? setComment : "없음";
+      cBox.appendChild(tx);
+
+      body.appendChild(cBox);
+
+      // open
+      $("#setOverlay").classList.add("show");
+      $("#setOverlay").setAttribute("aria-hidden", "false");
+    }
+
+    function closeSetModal(){
+      $("#setOverlay").classList.remove("show");
+      $("#setOverlay").setAttribute("aria-hidden", "true");
+    }
+
+    /***********************
+     * 8) 이벤트 바인딩
+     ***********************/
+    function bindEvents(){
+      // slot open picker
+      document.querySelectorAll(".slot").forEach(slot => {
+        slot.addEventListener("click", (e) => {
+          // clear 버튼 누른 경우는 제외
+          if (e.target && e.target.classList.contains("xbtn")) return;
+          const idx = Number(slot.dataset.slot);
+          openPicker(idx);
+        });
+      });
+
+      // clear each
+      [0,1,2].forEach(i => {
+        $("#defClear"+i).addEventListener("click", (e) => {
+          e.stopPropagation();
+          selectedDef[i] = null;
+          setSlotUI(i, null);
+          updateSearchButton();
+        });
+      });
+
+      // reset
+      $("#btnReset").addEventListener("click", () => {
+        selectedDef = [null,null,null];
+        [0,1,2].forEach(i => setSlotUI(i, null));
+        updateSearchButton();
+        searchResults = [];
+        currentIndex = 0;
+        $("#resultCount").textContent = "결과 0개";
+        $("#resultArea").innerHTML = "";
+      });
+
+      // search
+      $("#btnSearch").addEventListener("click", runSearch);
+
+      // picker close
+      $("#pickerClose").addEventListener("click", closePicker);
+      $("#pickerOverlay").addEventListener("click", (e) => {
+        if (e.target === $("#pickerOverlay")) closePicker();
+      });
+
+      // picker search
+      $("#pickerSearch").addEventListener("input", (e) => {
+        renderPickerList(e.target.value);
+      });
+
+      // set modal close
+      $("#setClose").addEventListener("click", closeSetModal);
+      $("#setOverlay").addEventListener("click", (e) => {
+        if (e.target === $("#setOverlay")) closeSetModal();
+      });
+
+      // esc close
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape"){
+          closePicker();
+          closeSetModal();
+        }
+      });
+    }
+
+    /***********************
+     * 9) 초기화
+     ***********************/
+    async function init(){
+      bindEvents();
+      await loadUnits();
+
+      // 초기 슬롯 UI
+      [0,1,2].forEach(i => setSlotUI(i, null));
+      updateSearchButton();
+
+      // picker 기본 리스트
+      renderPickerList("");
+    }
+
+    init();
   </script>
 </body>
 </html>
