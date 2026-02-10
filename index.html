@@ -1283,14 +1283,16 @@
 
         const pageLabel = hasAny ? `${idx+1} / ${total}` : `0 / 0`;
 
-        const formationUnit =
-  (typeof unitMap !== "undefined" && r?.formations)
-    ? unitMap.get(r.formations)
-    : null;
+       const formationUnit = unitMap.get(r?.formations);
 
 const formationImgHtml = formationUnit
-  ? `<img class="formationImg" src="${formationUnit.image_url}" alt="formation">`
-  : ``;
+  ? `<img class="formationImg" src="${formationUnit.image_url}" alt="${escapeHtml(formationUnit.name)}">`
+  : `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 72px; border-radius:12px;">없음</div>`;
+
+const formationNameText = formationUnit
+  ? formationUnit.name
+  : "없음";
+
 
 
         resultBox.innerHTML = `
@@ -1357,7 +1359,8 @@ const formationImgHtml = formationUnit
               <div class="panel centerCol">
                 <div class="formationWrap">
                   ${formationImgHtml || `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 64px; border-radius:12px;">없음</div>`}
-                  <div class="formationName">${escapeHtml(formationsText)}</div>
+                  <div class="formationName">${escapeHtml(formationNameText)}</div>
+
                 </div>
               </div>
 
@@ -1565,5 +1568,6 @@ const formationImgHtml = formationUnit
   </script>
 </body>
 </html>
+
 
 
