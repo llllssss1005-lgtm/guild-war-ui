@@ -1283,9 +1283,11 @@
 
         const pageLabel = hasAny ? `${idx+1} / ${total}` : `0 / 0`;
 
-        const formationImgHtml = looksLikeUrl(r?.formations_url)
-          ? `<img class="formationImg" src="${escapeHtml(r.formations_url)}" alt="formation">`
-          : (looksLikeUrl(r?.formations) ? `<img class="formationImg" src="${escapeHtml(r.formations)}" alt="formation">` : ``);
+        const formationUnit = unitMap.get(r?.formations);
+const formationImgHtml = formationUnit
+  ? `<img class="formationImg" src="${formationUnit.image_url}" alt="formation">`
+  : ``;
+
 
         resultBox.innerHTML = `
           <div class="resultToolbar">
@@ -1349,7 +1351,6 @@
 
             <div class="layoutBottom">
               <div class="panel centerCol">
-                <div class="panelTitle">진형추천</div>
                 <div class="formationWrap">
                   ${formationImgHtml || `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 64px; border-radius:12px;">없음</div>`}
                   <div class="formationName">${escapeHtml(formationsText)}</div>
@@ -1358,7 +1359,9 @@
 
               <div class="panel">
                 <div class="panelTitle">진형설명</div>
-                <div class="textBox">${escapeHtml(formationsComment)}</div>
+                <div class="formationName">
+  ${escapeHtml(formationsText || "공격진형")}
+</div>
               </div>
             </div>
           </div>
@@ -1558,3 +1561,4 @@
   </script>
 </body>
 </html>
+
