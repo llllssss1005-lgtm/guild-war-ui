@@ -1035,6 +1035,9 @@
       let RESULTS = [];
       let currentIndex = 0;
 
+      let UNIT_MAP = new Map(); // ✅ 검색 결과용(유닛/진형/세트 공용)
+
+
       const modalBack = document.getElementById("modalBack");
       const unitListEl = document.getElementById("unitList");
       const searchInput = document.getElementById("searchInput");
@@ -1288,13 +1291,12 @@
   : null;
 
 
-const formationImgHtml = formationUnit
-  ? `<img class="formationImg" src="${formationUnit.image_url}" alt="${escapeHtml(formationUnit.name)}">`
-  : `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 72px; border-radius:12px;">없음</div>`;
+const formationUnit = (r?.formations ? (UNIT_MAP.get(r.formations) || null) : null);
+const formationNameText = formationUnit?.name || "없음";
 
-const formationNameText = formationUnit
-  ? formationUnit.name
-  : "없음";
+const formationImgHtml = formationUnit?.image_url
+  ? `<img class="formationImg" src="${escapeHtml(formationUnit.image_url)}" alt="formation">`
+  : ``;
 
 
 
@@ -1362,7 +1364,8 @@ const formationNameText = formationUnit
               <div class="panel centerCol">
                 <div class="formationWrap">
                   ${formationImgHtml || `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 64px; border-radius:12px;">없음</div>`}
-                  <div class="formationName">${escapeHtml(formationNameText)}</div>
+                 <div class="formationName">${escapeHtml(formationNameText)}</div>
+
 
                 </div>
               </div>
@@ -1467,6 +1470,7 @@ const formationNameText = formationUnit
         const ids = new Set();
         rows.forEach(r => {
           [r.atk_1,r.atk_2,r.atk_3,r.skill_1,r.skill_2,r.skill_3,r.pet].forEach(x => { if(x) ids.add(x); });
+if (r.formations) ids.add(r.formations); // ✅ u172 같은 진형 id도 유닛처럼 가져오기
 
           const s1 = parseSetIds(r.atk_1_set);
           const s2 = parseSetIds(r.atk_2_set);
@@ -1482,6 +1486,7 @@ const formationNameText = formationUnit
         if(unitErr) console.error(unitErr);
 
         const unitMap = new Map((unitRows || []).map(u => [u.id, u]));
+UNIT_MAP = unitMap; // ✅ renderSingleResult에서도 진형 찾게 공유
 
         RESULTS = rows.map(r => {
           const atk = [r.atk_1, r.atk_2, r.atk_3].map(id => unitMap.get(id) || null);
@@ -1571,6 +1576,7 @@ const formationNameText = formationUnit
   </script>
 </body>
 </html>
+
 
 
 
