@@ -1369,7 +1369,7 @@ const formationImgHtml = formationUnit?.image_url
               <div class="panel">
                 <div class="panelTitle">진형설명</div>
                 <div class="formationName">
-  ${escapeHtml(formationsText || "공격진형")}
+  ${escapeHtml(formationsComment || "없음")}
 </div>
               </div>
             </div>
@@ -1572,6 +1572,7 @@ UNIT_MAP = unitMap; // ✅ renderSingleResult에서도 진형 찾게 공유
   </script>
 </body>
 </html>
+
 
 
 
