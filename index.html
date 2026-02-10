@@ -362,15 +362,15 @@
       margin-bottom: 12px;
     }
 
-    /* ✅ 5번 수정안: 경고 아이콘 반짝 */
+    /* ✅ (수정) 경고 아이콘 반짝: 빨간빛으로 */
     @keyframes warnGlow{
-      0%,100%{ filter: drop-shadow(0 0 0 rgba(250,204,21,0)); transform: translateY(0); }
-      50%{ filter: drop-shadow(0 0 7px rgba(250,204,21,.95)); transform: translateY(-0.5px); }
+      0%,100%{ filter: drop-shadow(0 0 0 rgba(239,68,68,0)); transform: translateY(0); }
+      50%{ filter: drop-shadow(0 0 9px rgba(239,68,68,.95)); transform: translateY(-0.5px); }
     }
     .importantBar .ico{
       font-size: 15px;
       flex: 0 0 auto;
-      animation: warnGlow 1.15s ease-in-out infinite;
+      animation: warnGlow 1.05s ease-in-out infinite;
     }
     .importantBar .txt{
       font-size: 12px;
@@ -529,7 +529,7 @@
       line-height:1.4;
       color:#111827;
       white-space:pre-wrap;
-      height: calc(var(--panelH) - 10px - 10px - 12px - 8px); /* panel padding(10+10) + title(대략 12+8) 제외 */
+      height: calc(var(--panelH) - 10px - 10px - 12px - 8px);
       overflow:auto;
       padding-right:6px;
       box-sizing:border-box;
@@ -545,17 +545,16 @@
       gap:6px;
     }
     .formationImg{
-      width: calc(var(--narrowW) - 20px); /* 패널 padding 10*2 제외 */
+      width: calc(var(--narrowW) - 20px);
       aspect-ratio: var(--formationAR);
       height:auto;
-      max-height: 72px; /* 고정 박스 안에서 안전 */
+      max-height: 64px; /* (수정) 이름 공간 확보 */
       object-fit: contain;
       border-radius: 12px;
       border:1px solid rgba(0,0,0,.06);
       background:#f3f4f6;
       display:block;
     }
-    /* ✅ 요청: 진형 이름에 또 라운드 박스 있던거 제거 -> 그냥 텍스트 */
     .formationName{
       font-size:11px;
       font-weight:900;
@@ -573,7 +572,7 @@
       .cell img, .emptyBox{ width:46px; height:46px; }
       .cap{ font-size:10.5px; }
       .petName{ font-size:10.5px; }
-      .formationImg{ width: calc(var(--narrowW) - 20px); max-height: 70px; }
+      .formationImg{ width: calc(var(--narrowW) - 20px); max-height: 62px; }
     }
 
     /* ===== modal(유닛 선택) ===== */
@@ -1273,10 +1272,7 @@
 
         const importantText = (r?.important ?? "").trim() || "없음";
 
-        /* ✅ 6번: 진형추천(공격진형) */
         const formationsText = (r?.formations ?? "").trim() || "없음";
-
-        /* ✅ 7번: 진형설명 */
         const formationsComment = (r?.formations_comment ?? "").trim() || "없음";
 
         const firstText = r?.first ?? "없음";
@@ -1307,9 +1303,7 @@
               <div class="txt">주요사항: ${escapeHtml(importantText)}</div>
             </div>
 
-            <!-- ✅ 고정 틀 -->
             <div class="layoutTop">
-              <!-- [2 공격유닛] (왼쪽 넓게) -->
               <div class="panel">
                 <div class="panelTitle">공격유닛</div>
                 <div class="grid3">
@@ -1319,7 +1313,6 @@
                 </div>
               </div>
 
-              <!-- [3 추천펫] (오른쪽 좁게) -->
               <div class="panel centerCol">
                 <div class="panelTitle">추천 펫</div>
                 ${pet ? `
@@ -1335,15 +1328,7 @@
                 `}
               </div>
 
-              <!-- [5 공격순서] (왼쪽 넓게) -->
-              <div class="panel centerCol" style="align-items:flex-start;text-align:left;">
-                <div class="panelTitle" style="text-align:left;width:100%;">공격순서</div>
-                <div style="width:100%;display:flex;justify-content:center;">
-                  <span class="${badgeClass}">${escapeHtml(firstText)}</span>
-                </div>
-              </div>
-
-              <!-- [4 스킬순서] (오른쪽 좁게) -->
+              <!-- ✅ (수정) [4 스킬순서]를 큰 박스(왼쪽)로 이동 -->
               <div class="panel">
                 <div class="panelTitle">스킬순서</div>
                 <div class="grid3">
@@ -1352,20 +1337,25 @@
                   ${cellHtml(skArr[2])}
                 </div>
               </div>
+
+              <!-- ✅ (수정) [5 공격순서]를 좁은 박스(오른쪽)로 이동 -->
+              <div class="panel centerCol" style="align-items:center;text-align:center;">
+                <div class="panelTitle">공격순서</div>
+                <div style="width:100%;display:flex;justify-content:center;">
+                  <span class="${badgeClass}">${escapeHtml(firstText)}</span>
+                </div>
+              </div>
             </div>
 
-            <!-- [6][7] -->
             <div class="layoutBottom">
-              <!-- [6 진형추천(공격진형)] (왼쪽 좁게) -->
               <div class="panel centerCol">
                 <div class="panelTitle">진형추천</div>
                 <div class="formationWrap">
-                  ${formationImgHtml || `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 72px; border-radius:12px;">없음</div>`}
+                  ${formationImgHtml || `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 64px; border-radius:12px;">없음</div>`}
                   <div class="formationName">${escapeHtml(formationsText)}</div>
                 </div>
               </div>
 
-              <!-- [7 진형설명] (오른쪽 넓게) -->
               <div class="panel">
                 <div class="panelTitle">진형설명</div>
                 <div class="textBox">${escapeHtml(formationsComment)}</div>
@@ -1461,7 +1451,6 @@
           return;
         }
 
-        /* ✅ 필요한 id 수집(세트가 "u001,u002,u003" 같이 들어와도 파싱해서 전부 포함) */
         const ids = new Set();
         rows.forEach(r => {
           [r.atk_1,r.atk_2,r.atk_3,r.skill_1,r.skill_2,r.skill_3,r.pet].forEach(x => { if(x) ids.add(x); });
