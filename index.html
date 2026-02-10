@@ -1286,10 +1286,6 @@
 
         const pageLabel = hasAny ? `${idx+1} / ${total}` : `0 / 0`;
 
-       const formationUnit = (r?.formations && Array.isArray(UNITS))
-  ? UNITS.find(u => u.id === r.formations)
-  : null;
-
 
 const formationUnit = (r?.formations ? (UNIT_MAP.get(r.formations) || null) : null);
 const formationNameText = formationUnit?.name || "없음";
@@ -1576,6 +1572,7 @@ UNIT_MAP = unitMap; // ✅ renderSingleResult에서도 진형 찾게 공유
   </script>
 </body>
 </html>
+
 
 
 
