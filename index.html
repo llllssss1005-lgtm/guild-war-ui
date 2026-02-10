@@ -101,12 +101,12 @@
       justify-content:center;
     }
 
-    /* ✅ 겹침 방지: 기본은 2열, 좁으면 세로로 자동 전환 */
+    /* ✅ 겹침 방지 */
     .gateRow{
       display:flex;
       gap:10px;
       margin-top: 12px;
-      flex-wrap: wrap;              /* 핵심: 줄바꿈 허용 */
+      flex-wrap: wrap;
     }
     .gateRow > div{
       flex: 1 1 0;
@@ -120,7 +120,6 @@
       margin: 10px 0 6px;
     }
 
-    /* ✅ 입력창 크기 약간 축소 + box-sizing 강제 */
     .gateInput{
       width:100%;
       height: 40px;
@@ -167,11 +166,8 @@
     }
     .gateHelp a:hover{ text-decoration:underline; }
 
-    /* ✅ 아주 좁은 화면에서는 입력칸을 세로로(겹침 완전 방지) */
     @media (max-width: 420px){
-      .gateRow > div{
-        flex: 1 1 100%;
-      }
+      .gateRow > div{ flex: 1 1 100%; }
     }
 
     /* ===== 상단 3칸 슬롯 ===== */
@@ -296,7 +292,7 @@
       background:#fff;
     }
 
-    /* ===== 옵션A: 페이저 ===== */
+    /* ===== 페이저 ===== */
     .resultToolbar{
       display:flex;
       justify-content:space-between;
@@ -383,6 +379,15 @@
       background:#f3f4f6;
       display:block;
       margin:0 auto;
+    }
+
+    /* ✅ 공격 유닛은 클릭 가능 표시 (UI 크게 안 바꿈) */
+    .cell.clickable img{
+      cursor:pointer;
+      outline: 0;
+    }
+    .cell.clickable img:active{
+      transform: scale(.98);
     }
 
     .cap{
@@ -475,7 +480,7 @@
       color:#111827;
     }
 
-    /* ===== modal ===== */
+    /* ===== modal 공통 ===== */
     .modalBack{
       position: fixed;
       inset: 0;
@@ -517,6 +522,8 @@
       cursor:pointer;
       font-weight:900;
     }
+
+    /* 유닛 선택 모달 */
     .search{
       padding: 10px 12px;
       border-bottom: 1px solid var(--line);
@@ -596,6 +603,51 @@
       background:#fff;
     }
 
+    /* ✅ 공격 유닛 모달(준비중) */
+    .atkModalBody{
+      padding: 14px 16px 16px;
+      background:#fff;
+    }
+    .atkHero{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding: 10px 0 14px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 12px;
+    }
+    .atkHeroImg{
+      width:54px;height:54px;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,.06);
+      background:#f3f4f6;
+      flex:0 0 auto;
+    }
+    .atkHeroImg img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .atkHeroName{
+      font-weight: 1000;
+      font-size: 14px;
+      color:#111827;
+      line-height:1.2;
+    }
+    .atkHeroSub{
+      margin-top:4px;
+      font-size: 12px;
+      font-weight: 800;
+      color:#6b7280;
+    }
+    .atkNotice{
+      border: 1px solid #dbeafe;
+      background: #eff6ff;
+      color:#1e40af;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
     @media (max-width: 360px){
       .gridLayout{ grid-template-columns: 1fr 96px; }
       .cell img, .emptyBox{ width:46px; height:46px; }
@@ -609,7 +661,6 @@
   <!-- ✅ 1) 게이트 화면 -->
   <div id="gate" class="gateWrap">
     <div class="gateCard">
-      <!-- ✅ 문구 변경 -->
       <div class="gateTitle">VLRT길드 열람 코드 입력</div>
 
       <div class="gateDesc">
@@ -629,15 +680,11 @@
 
       <div class="gateRow">
         <div>
-          <!-- ✅ 라벨 변경 -->
           <div class="gateLabel">아이디</div>
-          <!-- ✅ placeholder 변경 -->
           <input id="gateId" class="gateInput" inputmode="numeric" placeholder="입력:" />
         </div>
         <div>
-          <!-- ✅ 라벨 변경 -->
           <div class="gateLabel">코드</div>
-          <!-- ✅ placeholder 변경 -->
           <input id="gateCode" class="gateInput" inputmode="numeric" placeholder="입력:" />
         </div>
       </div>
@@ -689,7 +736,7 @@
     <div class="resultBox" id="resultBox">방어 유닛 3명을 선택해 주세요</div>
   </div>
 
-  <!-- modal -->
+  <!-- ✅ 유닛 선택 modal -->
   <div class="modalBack" id="modalBack" role="dialog" aria-modal="true">
     <div class="modal">
       <div class="modalHeader">
@@ -704,6 +751,30 @@
     </div>
   </div>
 
+  <!-- ✅ 오늘 추가: 공격 유닛 클릭 → 준비중 modal -->
+  <div class="modalBack" id="atkModalBack" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modalHeader">
+        <div class="title">공격 유닛</div>
+        <button class="close" id="btnAtkClose" aria-label="닫기">닫기</button>
+      </div>
+      <div class="atkModalBody">
+        <div class="atkHero">
+          <div class="atkHeroImg" id="atkHeroImg"></div>
+          <div>
+            <div class="atkHeroName" id="atkHeroName">-</div>
+            <div class="atkHeroSub">상세 기능은 다음 업데이트에 추가됩니다</div>
+          </div>
+        </div>
+
+        <div class="atkNotice">
+          현재는 <b>공격 유닛 클릭 시 안내 모달</b>만 제공 중입니다.<br/>
+          (예: 추천 이유 / 세팅 / 대체 유닛 / 운영 팁 등은 준비중)
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
@@ -714,125 +785,113 @@
     const SUPABASE_ANON_KEY = "sb_publishable_Vsr12aXc5r8kCnjBnpvrcQ_4Enqbi3F";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-   // =========================================================
-// ✅ 2) 게이트(아이디+코드번호) 로직 (DB/RPC 검증 버전)
-//    - guild_access_codes 테이블을 직접 읽지 않고
-//      check_guild_access_code(p_account_id, p_code) RPC로 true/false만 받음
-// =========================================================
-const KAKAO_LINK = "https://open.kakao.com/o/smXJOCfi";
-const SESSION_KEY = "guild_gate_ok_v1";
+    // =========================================================
+    // ✅ 2) 게이트(아이디+코드번호) 로직 (RPC 검증)
+    // =========================================================
+    const KAKAO_LINK = "https://open.kakao.com/o/smXJOCfi";
+    const SESSION_KEY = "guild_gate_ok_v1";
 
-const gateEl = document.getElementById("gate");
-const appEl = document.getElementById("app");
-const gateMsgEl = document.getElementById("gateMsg");
+    const gateEl = document.getElementById("gate");
+    const appEl = document.getElementById("app");
+    const gateMsgEl = document.getElementById("gateMsg");
 
-const btnKakao = document.getElementById("btnKakao");
-const btnGateEnter = document.getElementById("btnGateEnter");
-const gateIdInput = document.getElementById("gateId");
-const gateCodeInput = document.getElementById("gateCode");
+    const btnKakao = document.getElementById("btnKakao");
+    const btnGateEnter = document.getElementById("btnGateEnter");
+    const gateIdInput = document.getElementById("gateId");
+    const gateCodeInput = document.getElementById("gateCode");
 
-function showGateMsg(msg){
-  gateMsgEl.style.display = "block";
-  gateMsgEl.textContent = msg;
-}
-function clearGateMsg(){
-  gateMsgEl.style.display = "none";
-  gateMsgEl.textContent = "";
-}
+    function showGateMsg(msg){
+      gateMsgEl.style.display = "block";
+      gateMsgEl.textContent = msg;
+    }
+    function clearGateMsg(){
+      gateMsgEl.style.display = "none";
+      gateMsgEl.textContent = "";
+    }
 
-function passGate(){
-  localStorage.setItem(SESSION_KEY, "1");
-  gateEl.style.display = "none";
-  appEl.style.display = "block";
-  initGuildWar();
-}
+    function passGate(){
+      localStorage.setItem(SESSION_KEY, "1");
+      gateEl.style.display = "none";
+      appEl.style.display = "block";
+      initGuildWar();
+    }
 
-function failGate(msg){
-  localStorage.removeItem(SESSION_KEY);
-  gateEl.style.display = "block";
-  appEl.style.display = "none";
-  showGateMsg(msg);
-}
+    function failGate(msg){
+      localStorage.removeItem(SESSION_KEY);
+      gateEl.style.display = "block";
+      appEl.style.display = "none";
+      showGateMsg(msg);
+    }
 
-function basicCheck(idStr, codeStr){
-  const id = Number(String(idStr || "").trim());
-  const code = Number(String(codeStr || "").trim());
+    function basicCheck(idStr, codeStr){
+      const id = Number(String(idStr || "").trim());
+      const code = Number(String(codeStr || "").trim());
+      if(!Number.isInteger(id)) return { ok:false, msg:"아이디는 숫자만 입력해 주세요." };
+      if(!Number.isInteger(code)) return { ok:false, msg:"코드는 숫자만 입력해 주세요." };
+      return { ok:true, id, code };
+    }
 
-  if(!Number.isInteger(id)) return { ok:false, msg:"아이디는 숫자만 입력해 주세요." };
-  if(!Number.isInteger(code)) return { ok:false, msg:"코드는 숫자만 입력해 주세요." };
-
-  return { ok:true, id, code };
-}
-
-// 카카오톡 버튼
-btnKakao.addEventListener("click", () => {
-  window.open(KAKAO_LINK, "_blank", "noopener");
-});
-
-// 확인 버튼 (DB/RPC 검증)
-btnGateEnter.addEventListener("click", async () => {
-  clearGateMsg();
-
-  // ✅ 중복 클릭 방지
-  btnGateEnter.disabled = true;
-
-  const chk = basicCheck(gateIdInput.value, gateCodeInput.value);
-  if(!chk.ok){
-    btnGateEnter.disabled = false;
-    failGate(chk.msg);
-    return;
-  }
-
-  try{
-    const { data, error } = await supabaseClient.rpc("check_guild_access_code", {
-      p_account_id: chk.id,
-      p_code: chk.code
+    btnKakao.addEventListener("click", () => {
+      window.open(KAKAO_LINK, "_blank", "noopener");
     });
 
-    if(error){
-      console.error(error);
-      btnGateEnter.disabled = false;
-      failGate("서버 확인 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.");
-      return;
-    }
+    btnGateEnter.addEventListener("click", async () => {
+      clearGateMsg();
+      btnGateEnter.disabled = true;
 
-    if(data === true){
-      btnGateEnter.disabled = false;
-      passGate();
+      const chk = basicCheck(gateIdInput.value, gateCodeInput.value);
+      if(!chk.ok){
+        btnGateEnter.disabled = false;
+        failGate(chk.msg);
+        return;
+      }
+
+      try{
+        const { data, error } = await supabaseClient.rpc("check_guild_access_code", {
+          p_account_id: chk.id,
+          p_code: chk.code
+        });
+
+        if(error){
+          console.error(error);
+          btnGateEnter.disabled = false;
+          failGate("서버 확인 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.");
+          return;
+        }
+
+        if(data === true){
+          btnGateEnter.disabled = false;
+          passGate();
+        }else{
+          btnGateEnter.disabled = false;
+          failGate("아이디/코드가 올바르지 않거나 비활성화된 코드입니다. 관리자에게 문의해주세요.");
+        }
+      }catch(err){
+        console.error(err);
+        btnGateEnter.disabled = false;
+        failGate("네트워크 오류가 발생했어요. 잠시 후 다시 시도해주세요.");
+      }
+    });
+
+    [gateIdInput, gateCodeInput].forEach(inp => {
+      inp.addEventListener("keydown", (e) => {
+        if(e.key === "Enter") btnGateEnter.click();
+      });
+    });
+
+    if(localStorage.getItem(SESSION_KEY) === "1"){
+      gateEl.style.display = "none";
+      appEl.style.display = "block";
+      initGuildWar();
     }else{
-      btnGateEnter.disabled = false;
-      failGate("아이디/코드가 올바르지 않거나 비활성화된 코드입니다. 관리자에게 문의해주세요.");
+      gateEl.style.display = "block";
+      appEl.style.display = "none";
     }
-  }catch(err){
-    console.error(err);
-    btnGateEnter.disabled = false;
-    failGate("네트워크 오류가 발생했어요. 잠시 후 다시 시도해주세요.");
-  }
-});
-
-// 엔터로도 확인
-[gateIdInput, gateCodeInput].forEach(inp => {
-  inp.addEventListener("keydown", (e) => {
-    if(e.key === "Enter") btnGateEnter.click();
-  });
-});
-
-// 자동 로그인(유지)
-if(localStorage.getItem(SESSION_KEY) === "1"){
-  gateEl.style.display = "none";
-  appEl.style.display = "block";
-  initGuildWar();
-}else{
-  gateEl.style.display = "block";
-  appEl.style.display = "none";
-}
-
 
     // =========================================================
-    // ✅ 3) 기존 길드전 코드(그대로) — initGuildWar로 감쌈(기존 유지)
+    // ✅ 3) 길드전 본체 (UI 유지 + 오늘 추가 기능 포함)
     // =========================================================
     function initGuildWar(){
-      // 중복 실행 방지
       if(window.__GUILD_INITED__) return;
       window.__GUILD_INITED__ = true;
 
@@ -848,6 +907,12 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
       const searchInput = document.getElementById("searchInput");
       const statusText = document.getElementById("statusText");
       const resultBox = document.getElementById("resultBox");
+
+      // ✅ 오늘 추가: 공격유닛 모달
+      const atkModalBack = document.getElementById("atkModalBack");
+      const btnAtkClose = document.getElementById("btnAtkClose");
+      const atkHeroImg = document.getElementById("atkHeroImg");
+      const atkHeroName = document.getElementById("atkHeroName");
 
       function escapeHtml(str) {
         return String(str ?? "")
@@ -970,7 +1035,23 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
         el.addEventListener("click", () => openModal(Number(el.dataset.slot)));
       });
 
-      function cellHtml(unit){
+      // ✅ 오늘 추가: 공격유닛 모달 열기/닫기
+      function openAtkModal(unit){
+        if(!unit) return;
+        atkHeroImg.innerHTML = `<img src="${unit.image_url}" alt="${escapeHtml(unit.name)}">`;
+        atkHeroName.textContent = unit.name || "-";
+        atkModalBack.style.display = "flex";
+      }
+      function closeAtkModal(){
+        atkModalBack.style.display = "none";
+      }
+      btnAtkClose.addEventListener("click", closeAtkModal);
+      atkModalBack.addEventListener("click", (e) => {
+        if(e.target === atkModalBack) closeAtkModal();
+      });
+
+      // cell html (공격유닛은 clickable 옵션)
+      function cellHtml(unit, clickable=false){
         if(!unit){
           return `
             <div class="cell">
@@ -979,8 +1060,10 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
             </div>
           `;
         }
+        const cls = clickable ? "cell clickable" : "cell";
+        const data = clickable ? `data-click="atk" data-unit-id="${escapeHtml(unit.id)}"` : "";
         return `
-          <div class="cell">
+          <div class="${cls}" ${data}>
             <img src="${unit.image_url}" alt="${escapeHtml(unit.name)}">
             <div class="cap">${escapeHtml(unit.name)}</div>
           </div>
@@ -1024,9 +1107,9 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
               <div class="panel">
                 <div class="panelTitle">공격 유닛</div>
                 <div class="grid3">
-                  ${cellHtml(atkArr[0])}
-                  ${cellHtml(atkArr[1])}
-                  ${cellHtml(atkArr[2])}
+                  ${cellHtml(atkArr[0], true)}
+                  ${cellHtml(atkArr[1], true)}
+                  ${cellHtml(atkArr[2], true)}
                 </div>
               </div>
 
@@ -1067,6 +1150,7 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
           </div>
         `;
 
+        // 페이저
         const prevBtn = document.getElementById("btnPrev");
         const nextBtn = document.getElementById("btnNext");
 
@@ -1082,6 +1166,16 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
             renderSingleResult();
           }
         });
+
+        // ✅ 오늘 추가: 공격 유닛 클릭 시 "준비중" 모달
+        // 렌더된 결과 영역에서 data-click="atk" 가진 셀만 이벤트 붙임
+        resultBox.querySelectorAll('[data-click="atk"]').forEach(el => {
+          el.addEventListener("click", () => {
+            const uid = el.getAttribute("data-unit-id");
+            const unit = RESULTS[currentIndex]?.atk?.find(u => u && u.id === uid);
+            if(unit) openAtkModal(unit);
+          });
+        });
       }
 
       document.getElementById("btnReset").addEventListener("click", () => {
@@ -1092,6 +1186,11 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
         updateResultHint();
       });
 
+      // ✅ def_key 만들기: "_" 기본 + "|" 대체키도 같이 만들어서 둘 다 조회
+      function makeDefKey(ids, sep){
+        return (ids || []).map(x => String(x||"").trim()).filter(Boolean).sort().join(sep);
+      }
+
       document.getElementById("btnSearch").addEventListener("click", async () => {
         const selected = slots.filter(Boolean);
         if(selected.length < 3){
@@ -1099,18 +1198,20 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
           return;
         }
 
-        const defKey = selected
-          .map(s => s.id)
-          .sort()
-          .join("|");
+        const idArr = selected.map(s => s.id);
+
+        // ✅ 둘 다 만들어서 (DB에 어떤 구분자로 저장됐든) 맞춰 찾게 함
+        const defKeyUnderscore = makeDefKey(idArr, "_");
+        const defKeyPipe = makeDefKey(idArr, "|");
 
         statusText.textContent = "검색중...";
         resultBox.textContent = "잠시만...";
 
+        // ✅ 컬럼 존재 여부 이슈를 피하려고 일단 *로 받고, 매핑에서 유연하게 처리
         const { data: rows, error } = await supabaseClient
           .from("guild_war_results")
-          .select("result_id, atk_1, atk_2, atk_3, skill_1, skill_2, skill_3, pet, first, note, def_key")
-          .eq("def_key", defKey)
+          .select("*")
+          .in("def_key", [defKeyUnderscore, defKeyPipe])
           .order("result_id", { ascending: true });
 
         if(error){
@@ -1128,13 +1229,17 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
           return;
         }
 
+        // 결과에서 필요한 유닛 id 수집
         const ids = new Set();
         rows.forEach(r => {
-          [r.atk_1,r.atk_2,r.atk_3,r.skill_1,r.skill_2,r.skill_3,r.pet].forEach(x => {
-            if(x) ids.add(x);
-          });
+          [
+            r.atk_1, r.atk_2, r.atk_3,
+            r.skill_1, r.skill_2, r.skill_3,
+            r.pet
+          ].forEach(x => { if(x) ids.add(x); });
         });
 
+        // units 조회
         const { data: unitRows, error: unitErr } = await supabaseClient
           .from("units")
           .select("id, name, image_url")
@@ -1144,14 +1249,21 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
 
         const unitMap = new Map((unitRows || []).map(u => [u.id, u]));
 
+        // ✅ first/note 컬럼이 없을 수도 있으니 대체 필드 사용
+        // - first: r.first || r.formations || "없음"
+        // - note : r.note  || r.set_comment || r.formations_comment || ""
         RESULTS = rows.map(r => {
           const atk = [r.atk_1, r.atk_2, r.atk_3].map(id => unitMap.get(id) || null);
           const skill = [r.skill_1, r.skill_2, r.skill_3].map(id => unitMap.get(id) || null);
           const pet = unitMap.get(r.pet) || null;
+
+          const first = (r.first ?? r.formations ?? "없음");
+          const note = (r.note ?? r.set_comment ?? r.formations_comment ?? "");
+
           return {
             result_id: r.result_id,
-            first: r.first ?? "없음",
-            note: r.note ?? "",
+            first,
+            note,
             atk,
             skill,
             pet
@@ -1175,10 +1287,11 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
 
       async function loadUnits(){
         statusText.textContent = "유닛 로딩중...";
+
+        // ✅ kind 컬럼이 없을 수 있어 eq("kind","unit") 제거
         const { data, error } = await supabaseClient
           .from("units")
           .select("id, name, image_url")
-          .eq("kind", "unit")
           .order("name", { ascending: true });
 
         if(error){
@@ -1206,4 +1319,3 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
   </script>
 </body>
 </html>
-
