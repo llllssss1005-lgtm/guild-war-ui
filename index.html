@@ -25,6 +25,11 @@
 
       /* ✅ 6번(진형추천) 이미지 비율: 업로드된 샘플(200x136) = 25:17 */
       --formationAR: 25 / 17;
+
+      /* ✅ NEW: TOP UI */
+      --topRowH: 92px;   /* 슬라이드 1장 높이 */
+      --rankLeftW: 44px; /* 순위 배지 칼럼 */
+      --rankRightW: 64px;/* 조회수 칼럼 */
     }
 
     body{
@@ -178,6 +183,187 @@
       .gateRow > div{
         flex: 1 1 100%;
       }
+    }
+
+    /* ===== ✅ NEW: TOP5 슬라이드/랭킹표 ===== */
+    .topSection{
+      margin-top: 8px;
+      margin-bottom: 14px;
+    }
+    .topLabel{
+      font-size: 12px;
+      font-weight: 900;
+      color:#ef4444;
+      margin: 10px 0 8px;
+    }
+    .topCard{
+      border:1px solid var(--line);
+      border-radius: 14px;
+      background:#fff;
+      overflow:hidden;
+    }
+
+    .topSliderWrap{
+      height: var(--topRowH);
+      overflow:hidden;
+      position: relative;
+      background:#fff;
+    }
+    .topTrack{
+      will-change: transform;
+      transform: translateY(0);
+    }
+    .topSlideRow{
+      height: var(--topRowH);
+      padding: 10px 10px;
+      box-sizing: border-box;
+      display:grid;
+      grid-template-columns: var(--rankLeftW) 1fr var(--rankRightW);
+      align-items:center;
+      gap: 8px;
+    }
+
+    /* 순위 배지(금색 원형) */
+    .rankCol{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .rankBadge{
+      width:30px;
+      height:30px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 1000;
+      font-size: 14px;
+      color:#111827;
+      border: 1px solid rgba(0,0,0,.08);
+      background: radial-gradient(circle at 30% 30%, #fff6c7 0%, #f7d878 40%, #e9b949 70%, #d9a037 100%);
+      box-shadow: 0 2px 10px rgba(217,160,55,.22);
+    }
+
+    /* 조회수(불꽃) */
+    .countCol{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 4px;
+      font-weight: 1000;
+      font-size: 12px;
+      color:#ef4444;
+      white-space:nowrap;
+    }
+
+    /* 가운데 유닛 3개: 이미지 위치 고정(3등분) */
+    .midUnits{
+      min-width:0;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      align-items:center;
+    }
+    .midUnit{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap: 6px;
+    }
+    .midUnit .uimg{
+      width:28px;
+      height:28px;
+      border-radius: 10px;
+      border:1px solid rgba(0,0,0,.06);
+      background:#f3f4f6;
+      object-fit:cover;
+      display:block;
+    }
+    .midUnit .uname{
+      width:100%;
+      min-width:0;
+      text-align:center;
+      font-size: 11px;
+      font-weight: 900;
+      color:#374151;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* 파란 박스(랭킹표) */
+    .rankTableWrap{
+      margin-top: 10px;
+      border:1px solid var(--line);
+      border-radius: 14px;
+      background:#fff;
+      padding: 10px;
+    }
+    .rankRow{
+      width:100%;
+      display:grid;
+      grid-template-columns: 34px 1fr var(--rankRightW);
+      gap: 8px;
+      align-items:center;
+      padding: 8px 6px;
+      border-radius: 12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .rankRow:hover{
+      background:#f8fbff;
+    }
+    .rankRow:active{
+      transform: scale(.995);
+    }
+    .rankNum{
+      font-weight: 1000;
+      color:#2563eb;
+      font-size: 12px;
+      text-align:left;
+      white-space:nowrap;
+    }
+    .rankUnits{
+      min-width:0;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+    /* [이미지][이름] 모듈 */
+    .rankUnit{
+      min-width:0;
+      display:flex;
+      align-items:center;
+      gap: 6px;
+    }
+    .rankUnit img{
+      width:22px;
+      height:22px;
+      border-radius: 8px;
+      border:1px solid rgba(0,0,0,.06);
+      background:#f3f4f6;
+      object-fit:cover;
+      flex: 0 0 auto;
+    }
+    .rankUnit span{
+      min-width:0;
+      font-size: 11px;
+      font-weight: 900;
+      color:#374151;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      display:block;
+    }
+
+    .rankEmpty{
+      padding: 12px 6px;
+      color:#6b7280;
+      font-size: 12px;
+      font-weight: 900;
+      text-align:center;
     }
 
     /* ===== 상단 3칸 슬롯 ===== */
@@ -573,6 +759,12 @@
       .cap{ font-size:10.5px; }
       .petName{ font-size:10.5px; }
       .formationImg{ width: calc(var(--narrowW) - 20px); max-height: 62px; }
+
+      /* TOP UI 조금 축소 */
+      :root{ --rankRightW: 58px; --topRowH: 88px; }
+      .midUnit .uimg{ width:26px; height:26px; }
+      .rankBadge{ width:28px; height:28px; font-size:13px; }
+      .rankUnit img{ width:21px; height:21px; }
     }
 
     /* ===== modal(유닛 선택) ===== */
@@ -855,6 +1047,25 @@
   <!-- ✅ 2) 기존 길드전 UI (그대로) -->
   <div id="app" class="wrap" style="display:none;">
     <h1>길드전</h1>
+
+    <!-- ✅ NEW: 슬라이드/랭킹표 (요청 순서 그대로) -->
+    <div class="topSection">
+      <div class="topLabel">실시간 검색 TOP5</div>
+
+      <!-- 🔴 빨간 박스: 자동 슬라이드 -->
+      <div class="topCard">
+        <div class="topSliderWrap" id="topSliderWrap">
+          <div class="topTrack" id="topTrack"></div>
+        </div>
+      </div>
+
+      <!-- 🔵 파란 박스: 랭킹 조합표(클릭하면 자동 검색) -->
+      <div class="rankTableWrap" id="rankTableWrap">
+        <div id="rankList"></div>
+      </div>
+    </div>
+
+    <!-- 기존 검색 UI -->
     <p class="desc">방어 유닛 3명을 선택하면 해당 구성에 대한 결과를 조회합니다</p>
 
     <div class="label">방어 유닛 선택</div>
@@ -1065,9 +1276,6 @@
 
       // ===============================
       // ✅ 강제체크(ON/OFF) 안정판
-      // - OFF면 타이머 완전 종료
-      // - error면 절대 로그아웃 금지
-      // - 검색 중(IS_SEARCHING)엔 체크 스킵
       // ===============================
       let enforceTimerId = null;
       let enforceLastEnabled = null;
@@ -1148,6 +1356,18 @@
       const setModalBody = document.getElementById("setModalBody");
       const setModalTitle = document.getElementById("setModalTitle");
       const btnSetClose = document.getElementById("btnSetClose");
+
+      // ✅ NEW: TOP5 UI elements
+      const topTrackEl = document.getElementById("topTrack");
+      const rankListEl = document.getElementById("rankList");
+
+      // TOP5 데이터(렌더링용)
+      let TOP_ROWS = []; // [{rank, def_ids:[id,id,id], count}]
+      let TOP_UNIT_MAP = new Map(); // top용 유닛 맵
+      let SLIDE_TIMER = null;
+      let SLIDE_INDEX = 0;
+      const SLIDE_INTERVAL_MS = 1000;   // 1초 텀
+      const SLIDE_TRANS_MS = 900;       // 스르륵 시간
 
       function escapeHtml(str) {
         return String(str ?? "")
@@ -1530,7 +1750,21 @@
             .map(s => s.id)
             .sort()
             .join("|");
+// 🔥 검색 로그 기록 (하루 1회만 카운트)
+try {
+  const id = Number(localStorage.getItem(LS_ACCOUNT_ID));
+  const code = Number(localStorage.getItem(LS_CODE));
 
+  if (Number.isInteger(id) && Number.isInteger(code)) {
+    await supabaseClient.rpc("log_guild_search", {
+      p_account_id: id,
+      p_code: code,
+      p_def_key: defKey
+    });
+  }
+} catch (e) {
+  console.error("검색 로그 기록 실패:", e);
+}
           statusText.textContent = "검색중...";
           resultBox.textContent = "잠시만...";
 
@@ -1658,8 +1892,266 @@
 
         statusText.textContent = `유닛 ${UNITS.length}개 로드됨`;
         updateResultHint();
+
+        // ✅ 유닛 로드 후 TOP5 로드(이름/이미지 매핑 필요)
+        loadTop5AllTime();
       }
 
+      // ===============================
+      // ✅ NEW: TOP5(전체기간) 불러오기 + 슬라이드/랭킹표 렌더
+      // ===============================
+
+      function parseDefKeyToIds(defKey){
+        return String(defKey || "")
+          .split("|")
+          .map(s => s.trim())
+          .filter(Boolean)
+          .slice(0,3);
+      }
+
+      // ⚠️ DB 준비 필요:
+      // - view/table: defkey_alltime_counts
+      //   columns: def_key (text), total_count (int)
+      //
+      // 없다면 TOP영역은 "데이터 준비중"으로 표시하고 넘어감(UI는 유지)
+      async function loadTop5AllTime(){
+        try{
+          // 권한(게이트) 통과 상태에서만
+          const ok = await checkAccessByStored();
+          if(ok !== true) return;
+
+          const { data, error } = await supabaseClient
+            .from("defkey_alltime_counts")
+            .select("def_key, total_count")
+            .order("total_count", { ascending: false })
+            .limit(5);
+
+          if(error){
+            console.warn("[TOP5] defkey_alltime_counts not ready:", error);
+            renderTopEmpty("TOP 데이터 준비중");
+            return;
+          }
+
+          const rows = (data || [])
+            .filter(x => x?.def_key)
+            .map((x, i) => ({
+              rank: i + 1,
+              def_key: x.def_key,
+              def_ids: parseDefKeyToIds(x.def_key),
+              count: Number(x.total_count || 0)
+            }))
+            .filter(x => x.def_ids.length === 3);
+
+          if(rows.length === 0){
+            renderTopEmpty("TOP 데이터 없음");
+            return;
+          }
+
+          TOP_ROWS = rows;
+
+          // 필요한 유닛 15개(최대)만 뽑아서 로드
+          const need = new Set();
+          TOP_ROWS.forEach(r => r.def_ids.forEach(id => need.add(id)));
+
+          const { data: urows, error: uerr } = await supabaseClient
+            .from("units")
+            .select("id, name, image_url, kind")
+            .in("id", Array.from(need));
+
+          if(uerr){
+            console.error("[TOP5 units load error]", uerr);
+            renderTopEmpty("TOP 유닛 로드 실패");
+            return;
+          }
+
+          TOP_UNIT_MAP = new Map((urows || []).map(u => [u.id, u]));
+
+          renderTopSlider();
+          renderTopRankList();
+          startSlider();
+        }catch(e){
+          console.error("[TOP5 load error]", e);
+          renderTopEmpty("TOP 데이터 오류");
+        }
+      }
+
+      function renderTopEmpty(msg){
+        // 슬라이더 영역
+        topTrackEl.innerHTML = `
+          <div class="topSlideRow">
+            <div class="rankCol"><div class="rankBadge">-</div></div>
+            <div style="min-width:0;display:flex;align-items:center;justify-content:center;color:#6b7280;font-weight:900;font-size:12px;">
+              ${escapeHtml(msg || "없음")}
+            </div>
+            <div class="countCol">🔥 0</div>
+          </div>
+        `;
+        rankListEl.innerHTML = `<div class="rankEmpty">${escapeHtml(msg || "없음")}</div>`;
+        stopSlider();
+      }
+
+      function getUnitForTop(id){
+        const u = TOP_UNIT_MAP.get(id);
+        if(!u) return null;
+        return { id: u.id, name: u.name, image_url: u.image_url };
+      }
+
+      function topUnitCellHtml(u){
+        if(!u){
+          return `
+            <div class="midUnit">
+              <div class="uimg" style="display:flex;align-items:center;justify-content:center;color:#9ca3af;font-weight:1000;background:#f3f4f6;border:1px solid rgba(0,0,0,.06);">-</div>
+              <div class="uname">없음</div>
+            </div>
+          `;
+        }
+        return `
+          <div class="midUnit">
+            <img class="uimg" src="${escapeHtml(u.image_url)}" alt="${escapeHtml(u.name)}">
+            <div class="uname">${escapeHtml(u.name)}</div>
+          </div>
+        `;
+      }
+
+      function renderTopSlider(){
+        // 무한루프용으로 첫 슬라이드 복제해서 마지막에 추가
+        const slides = [...TOP_ROWS];
+        slides.push({ ...TOP_ROWS[0], rank: TOP_ROWS[0].rank, __clone:true });
+
+        topTrackEl.style.transition = `transform ${SLIDE_TRANS_MS}ms cubic-bezier(0.4,0,0.2,1)`;
+        topTrackEl.innerHTML = slides.map((r) => {
+          const u1 = getUnitForTop(r.def_ids[0]);
+          const u2 = getUnitForTop(r.def_ids[1]);
+          const u3 = getUnitForTop(r.def_ids[2]);
+          const rank = r.__clone ? TOP_ROWS[0].rank : r.rank;
+          const count = r.count ?? 0;
+
+          return `
+            <div class="topSlideRow">
+              <div class="rankCol"><div class="rankBadge">${rank}</div></div>
+              <div class="midUnits">
+                ${topUnitCellHtml(u1)}
+                ${topUnitCellHtml(u2)}
+                ${topUnitCellHtml(u3)}
+              </div>
+              <div class="countCol">🔥 ${escapeHtml(count)}</div>
+            </div>
+          `;
+        }).join("");
+
+        // 초기 위치
+        SLIDE_INDEX = 0;
+        topTrackEl.style.transform = `translateY(0px)`;
+      }
+
+      function renderTopRankList(){
+        rankListEl.innerHTML = TOP_ROWS.map((r) => {
+          const u1 = getUnitForTop(r.def_ids[0]);
+          const u2 = getUnitForTop(r.def_ids[1]);
+          const u3 = getUnitForTop(r.def_ids[2]);
+
+          const uHtml = (u) => {
+            if(!u){
+              return `<div class="rankUnit"><img alt="" src="" style="display:none;"><span>없음</span></div>`;
+            }
+            return `
+              <div class="rankUnit">
+                <img src="${escapeHtml(u.image_url)}" alt="${escapeHtml(u.name)}">
+                <span>${escapeHtml(u.name)}</span>
+              </div>
+            `;
+          };
+
+          return `
+            <div class="rankRow" data-defkey="${escapeHtml(r.def_key)}">
+              <div class="rankNum">${r.rank}.</div>
+              <div class="rankUnits">
+                ${uHtml(u1)}
+                ${uHtml(u2)}
+                ${uHtml(u3)}
+              </div>
+              <div class="countCol">🔥 ${escapeHtml(r.count)}</div>
+            </div>
+          `;
+        }).join("");
+
+        // 클릭 → 슬롯 자동 입력 → 바로 검색
+        document.querySelectorAll(".rankRow").forEach(el => {
+          el.addEventListener("click", async () => {
+            const defKey = el.getAttribute("data-defkey");
+            if(!defKey) return;
+
+            // 권한 체크(에러면 유지)
+            const ok = await checkAccessByStored();
+            if(ok === null){
+              statusText.textContent = "서버 불안정";
+              resultBox.textContent = "서버 확인 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.";
+              return;
+            }
+            if(ok === false){
+              failGate("접근 권한이 없거나 비활성화된 코드입니다. 관리자에게 문의해주세요.");
+              return;
+            }
+
+            const ids = parseDefKeyToIds(defKey);
+            if(ids.length !== 3) return;
+
+            const a = getUnitForTop(ids[0]);
+            const b = getUnitForTop(ids[1]);
+            const c = getUnitForTop(ids[2]);
+            if(!a || !b || !c){
+              alert("랭킹 유닛 정보를 불러오지 못했습니다.");
+              return;
+            }
+
+            // 슬롯 세팅
+            slots[0] = a;
+            slots[1] = b;
+            slots[2] = c;
+            renderSlots();
+            updateResultHint();
+
+            // 바로 검색
+            statusText.textContent = "랭킹으로 검색중...";
+            document.getElementById("btnSearch").click();
+          });
+        });
+      }
+
+      function startSlider(){
+        stopSlider();
+        if(!TOP_ROWS || TOP_ROWS.length === 0) return;
+
+        SLIDE_TIMER = setInterval(() => {
+          const rowH = Number(getComputedStyle(document.documentElement).getPropertyValue("--topRowH").replace("px","")) || 92;
+
+          SLIDE_INDEX += 1;
+          topTrackEl.style.transition = `transform ${SLIDE_TRANS_MS}ms cubic-bezier(0.4,0,0.2,1)`;
+          topTrackEl.style.transform = `translateY(-${SLIDE_INDEX * rowH}px)`;
+
+          // 마지막(복제) 도달 시, transition 끝난 직후 0으로 순간 이동
+          if(SLIDE_INDEX === TOP_ROWS.length){
+            setTimeout(() => {
+              topTrackEl.style.transition = "none";
+              SLIDE_INDEX = 0;
+              topTrackEl.style.transform = `translateY(0px)`;
+              // 다음 tick에서 transition 복구(부드럽게)
+              requestAnimationFrame(() => {
+                topTrackEl.style.transition = `transform ${SLIDE_TRANS_MS}ms cubic-bezier(0.4,0,0.2,1)`;
+              });
+            }, SLIDE_TRANS_MS + 20);
+          }
+        }, SLIDE_INTERVAL_MS);
+      }
+
+      function stopSlider(){
+        if(SLIDE_TIMER){
+          clearInterval(SLIDE_TIMER);
+          SLIDE_TIMER = null;
+        }
+      }
+
+      // ESC 닫기
       function closeModalOnEsc(e){
         if(e.key === "Escape"){
           if(modalBack.style.display === "flex") modalBack.style.display = "none";
