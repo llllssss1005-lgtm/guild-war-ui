@@ -1999,6 +1999,7 @@ try {
         topTrackEl.innerHTML = `
           <div class="topSlideRow">
             <div class="rankCol"><div class="rankBadge r${rank}">${rank}</div></div>
+
             <div style="min-width:0;display:flex;align-items:center;justify-content:center;color:#6b7280;font-weight:900;font-size:12px;">
               ${escapeHtml(msg || "없음")}
             </div>
@@ -2047,7 +2048,8 @@ try {
 
           return `
             <div class="topSlideRow">
-              <div class="rankCol"><div class="rankBadge">${rank}</div></div>
+              <div class="rankCol"><div class="rankBadge r${rank}">${rank}</div></div>
+
               <div class="midUnits">
                 ${topUnitCellHtml(u1)}
                 ${topUnitCellHtml(u2)}
@@ -2186,4 +2188,5 @@ try {
   </script>
 </body>
 </html>
+
 
