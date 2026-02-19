@@ -243,6 +243,25 @@
       background: radial-gradient(circle at 30% 30%, #fff6c7 0%, #f7d878 40%, #e9b949 70%, #d9a037 100%);
       box-shadow: 0 2px 10px rgba(217,160,55,.22);
     }
+/* ✅ 메달 컬러 (1~5) */
+.rankBadge.is-1{
+  background: radial-gradient(circle at 30% 30%, #fff6c7 0%, #f7d878 40%, #e9b949 70%, #d9a037 100%);
+  box-shadow: 0 2px 10px rgba(217,160,55,.22);
+}
+.rankBadge.is-2{
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #e9eef5 40%, #cfd8e3 70%, #b6c2d1 100%);
+  box-shadow: 0 2px 10px rgba(148,163,184,.22);
+}
+.rankBadge.is-3{
+  background: radial-gradient(circle at 30% 30%, #ffe0c7 0%, #f0b58b 42%, #d9895b 72%, #b76a3c 100%);
+  box-shadow: 0 2px 10px rgba(183,106,60,.22);
+}
+.rankBadge.is-4,
+.rankBadge.is-5{
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #e5e7eb 45%, #cbd5e1 75%, #94a3b8 100%);
+  box-shadow: 0 2px 10px rgba(100,116,139,.18);
+  color:#0f172a;
+}
 
     /* 조회수(불꽃) */
     .countCol{
@@ -1366,7 +1385,7 @@
       let TOP_UNIT_MAP = new Map(); // top용 유닛 맵
       let SLIDE_TIMER = null;
       let SLIDE_INDEX = 0;
-      const SLIDE_INTERVAL_MS = 1000;   // 1초 텀
+      const SLIDE_INTERVAL_MS = 2600;   // 1초 텀
       const SLIDE_TRANS_MS = 900;       // 스르륵 시간
 
       function escapeHtml(str) {
@@ -1979,7 +1998,7 @@ try {
         // 슬라이더 영역
         topTrackEl.innerHTML = `
           <div class="topSlideRow">
-            <div class="rankCol"><div class="rankBadge">-</div></div>
+            <div class="rankCol"><div class="rankBadge r${rank}">${rank}</div></div>
             <div style="min-width:0;display:flex;align-items:center;justify-content:center;color:#6b7280;font-weight:900;font-size:12px;">
               ${escapeHtml(msg || "없음")}
             </div>
@@ -2167,3 +2186,4 @@ try {
   </script>
 </body>
 </html>
+
