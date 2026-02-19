@@ -1998,7 +1998,7 @@ try {
         // 슬라이더 영역
         topTrackEl.innerHTML = `
           <div class="topSlideRow">
-            <div class="rankCol"><div class="rankBadge r${rank}">${rank}</div></div>
+            <div class="rankCol"><div class="rankBadge is-1">1</div></div>
 
             <div style="min-width:0;display:flex;align-items:center;justify-content:center;color:#6b7280;font-weight:900;font-size:12px;">
               ${escapeHtml(msg || "없음")}
@@ -2048,7 +2048,7 @@ try {
 
           return `
             <div class="topSlideRow">
-              <div class="rankCol"><div class="rankBadge r${rank}">${rank}</div></div>
+              <div class="rankCol"><div class="rankBadge is-${rank}">${rank}</div></div>
 
               <div class="midUnits">
                 ${topUnitCellHtml(u1)}
@@ -2188,5 +2188,6 @@ try {
   </script>
 </body>
 </html>
+
 
 
