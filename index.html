@@ -17,19 +17,19 @@
       --kakao:#FEE500;
       --kakaoText:#191600;
 
-      /* ✅ 2번 박스 기준: 2~7 전부 동일 고정 높이 */
+      /* ✅ 오른쪽 박스(추천펫/공격순서/진형) 공통 높이 */
       --panelH: 122px;
 
       /* ✅ 오른쪽 좁은 컬럼 고정폭 */
       --narrowW: 104px;
 
-      /* ✅ 6번(진형추천) 이미지 비율: 업로드된 샘플(200x136) = 25:17 */
+      /* ✅ 진형 이미지 비율 */
       --formationAR: 25 / 17;
 
-      /* ✅ NEW: TOP UI */
-      --topRowH: 92px;   /* 슬라이드 1장 높이 */
-      --rankLeftW: 44px; /* 순위 배지 칼럼 */
-      --rankRightW: 64px;/* 조회수 칼럼 */
+      /* ✅ TOP UI */
+      --topRowH: 92px;
+      --rankLeftW: 44px;
+      --rankRightW: 64px;
     }
 
     body{
@@ -185,7 +185,7 @@
       }
     }
 
-    /* ===== ✅ NEW: TOP5 슬라이드/랭킹표 ===== */
+    /* ===== TOP5 슬라이드/랭킹표 ===== */
     .topSection{
       margin-top: 8px;
       margin-bottom: 14px;
@@ -223,7 +223,6 @@
       gap: 8px;
     }
 
-    /* 순위 배지(금색 원형) */
     .rankCol{
       display:flex;
       align-items:center;
@@ -243,27 +242,25 @@
       background: radial-gradient(circle at 30% 30%, #fff6c7 0%, #f7d878 40%, #e9b949 70%, #d9a037 100%);
       box-shadow: 0 2px 10px rgba(217,160,55,.22);
     }
-/* ✅ 메달 컬러 (1~5) */
-.rankBadge.is-1{
-  background: radial-gradient(circle at 30% 30%, #fff6c7 0%, #f7d878 40%, #e9b949 70%, #d9a037 100%);
-  box-shadow: 0 2px 10px rgba(217,160,55,.22);
-}
-.rankBadge.is-2{
-  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #e9eef5 40%, #cfd8e3 70%, #b6c2d1 100%);
-  box-shadow: 0 2px 10px rgba(148,163,184,.22);
-}
-.rankBadge.is-3{
-  background: radial-gradient(circle at 30% 30%, #ffe0c7 0%, #f0b58b 42%, #d9895b 72%, #b76a3c 100%);
-  box-shadow: 0 2px 10px rgba(183,106,60,.22);
-}
-.rankBadge.is-4,
-.rankBadge.is-5{
-  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #e5e7eb 45%, #cbd5e1 75%, #94a3b8 100%);
-  box-shadow: 0 2px 10px rgba(100,116,139,.18);
-  color:#0f172a;
-}
+    .rankBadge.is-1{
+      background: radial-gradient(circle at 30% 30%, #fff6c7 0%, #f7d878 40%, #e9b949 70%, #d9a037 100%);
+      box-shadow: 0 2px 10px rgba(217,160,55,.22);
+    }
+    .rankBadge.is-2{
+      background: radial-gradient(circle at 30% 30%, #ffffff 0%, #e9eef5 40%, #cfd8e3 70%, #b6c2d1 100%);
+      box-shadow: 0 2px 10px rgba(148,163,184,.22);
+    }
+    .rankBadge.is-3{
+      background: radial-gradient(circle at 30% 30%, #ffe0c7 0%, #f0b58b 42%, #d9895b 72%, #b76a3c 100%);
+      box-shadow: 0 2px 10px rgba(183,106,60,.22);
+    }
+    .rankBadge.is-4,
+    .rankBadge.is-5{
+      background: radial-gradient(circle at 30% 30%, #ffffff 0%, #e5e7eb 45%, #cbd5e1 75%, #94a3b8 100%);
+      box-shadow: 0 2px 10px rgba(100,116,139,.18);
+      color:#0f172a;
+    }
 
-    /* 조회수(불꽃) */
     .countCol{
       display:flex;
       align-items:center;
@@ -275,7 +272,6 @@
       white-space:nowrap;
     }
 
-    /* 가운데 유닛 3개: 이미지 위치 고정(3등분) */
     .midUnits{
       min-width:0;
       display:grid;
@@ -312,7 +308,6 @@
       text-overflow: ellipsis;
     }
 
-    /* 파란 박스(랭킹표) */
     .rankTableWrap{
       margin-top: 10px;
       border:1px solid var(--line);
@@ -331,12 +326,9 @@
       cursor:pointer;
       user-select:none;
     }
-    .rankRow:hover{
-      background:#f8fbff;
-    }
-    .rankRow:active{
-      transform: scale(.995);
-    }
+    .rankRow:hover{ background:#f8fbff; }
+    .rankRow:active{ transform: scale(.995); }
+
     .rankNum{
       font-weight: 1000;
       color:#2563eb;
@@ -350,7 +342,6 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
     }
-    /* [이미지][이름] 모듈 */
     .rankUnit{
       min-width:0;
       display:flex;
@@ -376,7 +367,6 @@
       text-overflow:ellipsis;
       display:block;
     }
-
     .rankEmpty{
       padding: 12px 6px;
       color:#6b7280;
@@ -405,19 +395,16 @@
       cursor: pointer;
       user-select:none;
     }
-
     .slot .plus{
       font-size: 26px;
       color: var(--blue);
       font-weight: 900;
       line-height:1;
     }
-
     .slot.filled{
       border-style: solid;
       border-color: #c7ddff;
     }
-
     .slot .thumb{
       width: 44px;
       height: 44px;
@@ -432,7 +419,6 @@
       object-fit: cover;
       display:block;
     }
-
     .slot .name{
       position:absolute;
       left: 10px;
@@ -445,7 +431,6 @@
       overflow:hidden;
       text-overflow:ellipsis;
     }
-
     .slot .remove{
       position:absolute;
       top: 6px;
@@ -515,13 +500,11 @@
       gap:10px;
       margin-bottom:10px;
     }
-
     .pager{
       display:flex;
       align-items:center;
       gap:8px;
     }
-
     .pagerBtn{
       height:32px;
       min-width:38px;
@@ -535,7 +518,6 @@
       opacity:.45;
       cursor:not-allowed;
     }
-
     .pageInfo{
       font-size:12px;
       font-weight:800;
@@ -567,7 +549,6 @@
       margin-bottom: 12px;
     }
 
-    /* ✅ (수정) 경고 아이콘 반짝: 빨간빛으로 */
     @keyframes warnGlow{
       0%,100%{ filter: drop-shadow(0 0 0 rgba(239,68,68,0)); transform: translateY(0); }
       50%{ filter: drop-shadow(0 0 9px rgba(239,68,68,.95)); transform: translateY(-0.5px); }
@@ -594,13 +575,15 @@
       padding:10px;
       background:#fff;
       min-width:0;
+      box-sizing:border-box;
+      overflow:hidden;
+    }
 
-      /* ✅ 2~7 높이 고정 */
+    /* ✅ 오른쪽(좁은) 패널은 높이 고정 */
+    .panel.small{
       height: var(--panelH);
       min-height: var(--panelH);
       max-height: var(--panelH);
-      overflow:hidden;
-      box-sizing:border-box;
     }
 
     .panelTitle{
@@ -610,22 +593,15 @@
       margin-bottom:8px;
     }
 
-    /* ✅ 레이아웃(사용자 지정 고정)
-       [1]
-       [2][3]
-       [5][4]
-       [6][7]
-    */
-    .layoutTop{
+    /* ✅ NEW: 3행 2열 레이아웃 */
+    .layoutRows{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .row2col{
       display:grid;
       grid-template-columns: 1fr var(--narrowW);
-      gap:12px;
-      align-items:stretch;
-    }
-    .layoutBottom{
-      margin-top:12px;
-      display:grid;
-      grid-template-columns: var(--narrowW) 1fr;
       gap:12px;
       align-items:stretch;
     }
@@ -719,28 +695,49 @@
     .badge.blue{ background:#3b82f6; }
     .badge.gray{ background:#9ca3af; }
 
-    /* ✅ 공격유닛 클릭 가능 표시 */
-    .clickableUnit img{
-      cursor:pointer;
-      transition: transform .08s ease;
-    }
-    .clickableUnit img:active{
-      transform: scale(.98);
-    }
-
-    /* ✅ 7번 진형설명 텍스트: 내부 스크롤 */
+    /* ✅ 텍스트 박스(스크롤) */
     .textBox{
       font-size:12px;
-      line-height:1.4;
+      line-height:1.45;
       color:#111827;
       white-space:pre-wrap;
-      height: calc(var(--panelH) - 10px - 10px - 12px - 8px);
       overflow:auto;
       padding-right:6px;
       box-sizing:border-box;
     }
 
-    /* ✅ 6번 진형추천(공격진형): 이미지 비율 유지 + 박스 안에 맞춤 */
+    /* ✅ 세트추천(왼쪽 3행) 텍스트용 */
+    .setTextBox{
+      height: calc(var(--panelH) * 1); /* 기본은 우측 높이와 균형 맞추고 싶으면 1로 */
+      max-height: 180px;              /* 너무 길어지는 것 방지 */
+      overflow:auto;
+    }
+    .setLine{
+      display:flex;
+      gap:8px;
+      margin: 6px 0;
+      align-items:flex-start;
+    }
+    .setLine .k{
+      flex:0 0 auto;
+      font-size:12px;
+      font-weight:1000;
+      color:#111827;
+      white-space:nowrap;
+    }
+    .setLine .v{
+      min-width:0;
+      font-size:12px;
+      font-weight:800;
+      color:#374151;
+      white-space:pre-wrap;
+    }
+    .setDivider{
+      border-top: 1px dashed #e5e7eb;
+      margin: 10px 0;
+    }
+
+    /* ✅ 진형(오른쪽 3행) 한 박스에 합치기 */
     .formationWrap{
       width:100%;
       display:flex;
@@ -771,6 +768,19 @@
       text-align:center;
       margin-top:2px;
     }
+    .formationDesc{
+      width:100%;
+      margin-top: 6px;
+      font-size:11.5px;
+      line-height:1.35;
+      color:#111827;
+      white-space:pre-wrap;
+      overflow:auto;
+      padding-right:6px;
+      box-sizing:border-box;
+      height: calc(var(--panelH) - 10px - 10px - 12px - 8px - 64px - 6px - 16px); /* 대략: 타이틀/패딩/이미지 영역 제외 */
+      max-height: 54px;
+    }
 
     @media (max-width: 360px){
       :root{ --narrowW: 96px; }
@@ -779,7 +789,6 @@
       .petName{ font-size:10.5px; }
       .formationImg{ width: calc(var(--narrowW) - 20px); max-height: 62px; }
 
-      /* TOP UI 조금 축소 */
       :root{ --rankRightW: 58px; --topRowH: 88px; }
       .midUnit .uimg{ width:26px; height:26px; }
       .rankBadge{ width:28px; height:28px; font-size:13px; }
@@ -906,118 +915,6 @@
       border-top: 1px dashed var(--line);
       background:#fff;
     }
-
-    /* ===== ✅ 세트 추천 모달 ===== */
-    .setModalBack{
-      position: fixed;
-      inset: 0;
-      background: rgba(17,24,39,.45);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding: 16px;
-      z-index: 10001;
-    }
-    .setModal{
-      width:100%;
-      max-width: 420px;
-      background:#fff;
-      border-radius:14px;
-      overflow:hidden;
-      border:1px solid var(--line);
-      box-shadow: 0 12px 30px rgba(0,0,0,.18);
-    }
-    .setBody{
-      padding: 12px 14px 14px;
-    }
-    .setTopUnit{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-bottom: 10px;
-    }
-    .setTopUnit .uimg{
-      width:52px;height:52px;border-radius:14px;
-      object-fit:cover;
-      border:1px solid rgba(0,0,0,.06);
-      background:#f3f4f6;
-    }
-    .setTopUnit .uname{
-      font-weight: 900;
-      font-size: 14px;
-      color:#111827;
-      line-height:1.2;
-    }
-    .setGrid{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:10px;
-      margin-top: 10px;
-    }
-    .setItem{
-      border:1px solid #e8eef7;
-      border-radius:14px;
-      padding:10px 8px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:6px;
-      background:#fff;
-      min-width:0;
-      position:relative;
-    }
-    .rankTag{
-      position:absolute;
-      top:8px;
-      left:8px;
-      font-size:10px;
-      font-weight:900;
-      color:#111827;
-      background:#eef2ff;
-      border:1px solid #dbeafe;
-      padding:3px 6px;
-      border-radius:999px;
-      line-height:1;
-    }
-    .setItem img{
-      width:64px;height:64px;border-radius:14px;
-      object-fit:cover;
-      border:1px solid rgba(0,0,0,.06);
-      background:#f3f4f6;
-      margin-top: 10px;
-    }
-    .setItem .sname{
-      font-size:12px;
-      font-weight:900;
-      color:#111827;
-      text-align:center;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      width:100%;
-    }
-    .setComment{
-      margin-top: 12px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px 10px;
-      background:#fff;
-    }
-    .setComment .title{
-      font-size:12px;
-      font-weight:900;
-      margin-bottom:6px;
-      color:#111827;
-    }
-    .setComment .text{
-      font-size:12px;
-      line-height:1.45;
-      white-space:pre-wrap;
-      color:#111827;
-      max-height: 8.2em;
-      overflow:auto;
-      padding-right:6px;
-    }
   </style>
 </head>
 
@@ -1063,28 +960,25 @@
     </div>
   </div>
 
-  <!-- ✅ 2) 기존 길드전 UI (그대로) -->
+  <!-- ✅ 2) 길드전 UI -->
   <div id="app" class="wrap" style="display:none;">
     <h1>길드전</h1>
 
-    <!-- ✅ NEW: 슬라이드/랭킹표 (요청 순서 그대로) -->
+    <!-- TOP5 -->
     <div class="topSection">
       <div class="topLabel">실시간 검색 TOP5</div>
 
-      <!-- 🔴 빨간 박스: 자동 슬라이드 -->
       <div class="topCard">
         <div class="topSliderWrap" id="topSliderWrap">
           <div class="topTrack" id="topTrack"></div>
         </div>
       </div>
 
-      <!-- 🔵 파란 박스: 랭킹 조합표(클릭하면 자동 검색) -->
       <div class="rankTableWrap" id="rankTableWrap">
         <div id="rankList"></div>
       </div>
     </div>
 
-    <!-- 기존 검색 UI -->
     <p class="desc">방어 유닛 3명을 선택하면 해당 구성에 대한 결과를 조회합니다</p>
 
     <div class="label">방어 유닛 선택</div>
@@ -1134,17 +1028,6 @@
     </div>
   </div>
 
-  <!-- ✅ modal: 세트 추천/설명 -->
-  <div class="setModalBack" id="setModalBack" role="dialog" aria-modal="true">
-    <div class="setModal">
-      <div class="modalHeader">
-        <div class="title" id="setModalTitle">세트 추천</div>
-        <button class="close" id="btnSetClose" aria-label="닫기" type="button">닫기</button>
-      </div>
-      <div class="setBody" id="setModalBody"></div>
-    </div>
-  </div>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
@@ -1156,8 +1039,8 @@
 
     // ✅ 세션 키
     const SESSION_KEY = "guild_gate_ok_v1";
-    const LS_ACCOUNT_ID = "guild_account_id";   // ✅ 저장키 고정
-    const LS_CODE = "guild_code";               // ✅ 저장키 고정
+    const LS_ACCOUNT_ID = "guild_account_id";
+    const LS_CODE = "guild_code";
 
     const gateEl = document.getElementById("gate");
     const appEl = document.getElementById("app");
@@ -1184,7 +1067,6 @@
     }
 
     function passGate(accountId, code){
-      // ✅ 로그인 성공 시 반드시 저장
       localStorage.setItem(SESSION_KEY, "1");
       localStorage.setItem(LS_ACCOUNT_ID, String(accountId));
       localStorage.setItem(LS_CODE, String(code));
@@ -1216,8 +1098,6 @@
     });
 
     // ✅ 공용: 현재 저장된 계정으로 접근권한 확인 (RPC)
-    // - true/false 반환
-    // - error면 null 반환 (절대 로그아웃하지 않기 위해)
     async function checkAccessByStored(){
       const id = Number(localStorage.getItem(LS_ACCOUNT_ID));
       const code = Number(localStorage.getItem(LS_CODE));
@@ -1230,7 +1110,7 @@
 
       if(error){
         console.error("[checkAccess RPC error]", error);
-        return null; // ✅ 에러면 '모름'으로 처리
+        return null;
       }
       return data === true;
     }
@@ -1305,11 +1185,7 @@
         if(IS_SEARCHING) return;
 
         const ok = await checkAccessByStored();
-
-        if(ok === null){
-          // ✅ 에러면 유지(절대 failGate X)
-          return;
-        }
+        if(ok === null) return; // 에러면 유지
         if(ok === false){
           failGate("접근 권한이 없거나 비활성화된 코드입니다. 관리자에게 문의해주세요.");
         }
@@ -1324,7 +1200,7 @@
 
         if(error){
           console.error("[settings read error]", error);
-          return; // ✅ 설정 못 읽어도 유지
+          return;
         }
 
         const enabled = !!data?.enforce_active_enabled;
@@ -1335,26 +1211,22 @@
         enforceLastEnabled = enabled;
         enforceLastSeconds = sec;
 
-        // ✅ 기존 타이머 종료 (핵심)
         if(enforceTimerId){
           clearInterval(enforceTimerId);
           enforceTimerId = null;
         }
 
-        // ✅ OFF면 완전 종료
         if(!enabled) return;
 
-        // ✅ ON이면 새로 시작 + 즉시 1회
         enforceTimerId = setInterval(runEnforceCheck, sec * 1000);
         runEnforceCheck();
       }
 
-      // 시작 시 1회 + 30초마다 반영
       refreshEnforceSchedule();
       setInterval(refreshEnforceSchedule, 30000);
 
       // ===============================
-      // ✅ 기존 길드전 로직(그대로)
+      // ✅ 길드전 로직
       // ===============================
       const slots = [null, null, null];
       let activeSlotIndex = 0;
@@ -1363,7 +1235,7 @@
       let RESULTS = [];
       let currentIndex = 0;
 
-      let UNIT_MAP = new Map(); // ✅ 검색 결과용(유닛/진형/세트 공용)
+      let UNIT_MAP = new Map(); // 유닛/스킬/펫/세트/진형 공용
 
       const modalBack = document.getElementById("modalBack");
       const unitListEl = document.getElementById("unitList");
@@ -1371,22 +1243,16 @@
       const statusText = document.getElementById("statusText");
       const resultBox = document.getElementById("resultBox");
 
-      const setModalBack = document.getElementById("setModalBack");
-      const setModalBody = document.getElementById("setModalBody");
-      const setModalTitle = document.getElementById("setModalTitle");
-      const btnSetClose = document.getElementById("btnSetClose");
-
-      // ✅ NEW: TOP5 UI elements
+      // TOP5
       const topTrackEl = document.getElementById("topTrack");
       const rankListEl = document.getElementById("rankList");
 
-      // TOP5 데이터(렌더링용)
-      let TOP_ROWS = []; // [{rank, def_ids:[id,id,id], count}]
-      let TOP_UNIT_MAP = new Map(); // top용 유닛 맵
+      let TOP_ROWS = [];
+      let TOP_UNIT_MAP = new Map();
       let SLIDE_TIMER = null;
       let SLIDE_INDEX = 0;
-      const SLIDE_INTERVAL_MS = 2600;   // 1초 텀
-      const SLIDE_TRANS_MS = 900;       // 스르륵 시간
+      const SLIDE_INTERVAL_MS = 2600;
+      const SLIDE_TRANS_MS = 900;
 
       function escapeHtml(str) {
         return String(str ?? "")
@@ -1510,61 +1376,7 @@
         el.addEventListener("click", () => openModal(Number(el.dataset.slot)));
       });
 
-      function closeSetModal(){
-        setModalBack.style.display = "none";
-      }
-      btnSetClose.addEventListener("click", closeSetModal);
-      setModalBack.addEventListener("click", (e) => {
-        if(e.target === setModalBack) closeSetModal();
-      });
-
-      function setCardHtml(setUnit, rankText){
-        if(!setUnit){
-          return `
-            <div class="setItem">
-              <div class="rankTag">${rankText}</div>
-              <div class="emptyBox" style="width:64px;height:64px;border-radius:14px;margin-top:10px;">없음</div>
-              <div class="sname">없음</div>
-            </div>
-          `;
-        }
-        return `
-          <div class="setItem">
-            <div class="rankTag">${rankText}</div>
-            <img src="${setUnit.image_url}" alt="${escapeHtml(setUnit.name)}">
-            <div class="sname">${escapeHtml(setUnit.name)}</div>
-          </div>
-        `;
-      }
-
-      function openSetModal(atkUnit, setArr, setComment){
-        if(!atkUnit) return;
-
-        setModalTitle.textContent = "세트 추천";
-        const comment = (setComment ?? "").trim();
-
-        setModalBody.innerHTML = `
-          <div class="setTopUnit">
-            <img class="uimg" src="${atkUnit.image_url}" alt="${escapeHtml(atkUnit.name)}">
-            <div class="uname">${escapeHtml(atkUnit.name)}</div>
-          </div>
-
-          <div style="font-size:12px;font-weight:900;color:#111827;margin-top:8px;">추천 세트</div>
-          <div class="setGrid">
-            ${setCardHtml(setArr[0], "1순위")}
-            ${setCardHtml(setArr[1], "2순위")}
-            ${setCardHtml(setArr[2], "3순위")}
-          </div>
-
-          <div class="setComment">
-            <div class="title">세트 설명</div>
-            <div class="text">${escapeHtml(comment || "없음")}</div>
-          </div>
-        `;
-        setModalBack.style.display = "flex";
-      }
-
-      function cellHtml(unit, clickIndex){
+      function cellHtml(unit){
         if(!unit){
           return `
             <div class="cell">
@@ -1573,12 +1385,8 @@
             </div>
           `;
         }
-        const clickable = Number.isInteger(clickIndex);
-        const cls = clickable ? "cell clickableUnit" : "cell";
-        const dataAttr = clickable ? `data-atk-index="${clickIndex}"` : "";
-
         return `
-          <div class="${cls}" ${dataAttr}>
+          <div class="cell">
             <img src="${unit.image_url}" alt="${escapeHtml(unit.name)}">
             <div class="cap">${escapeHtml(unit.name)}</div>
           </div>
@@ -1593,6 +1401,15 @@
           .map(x => x.trim())
           .filter(Boolean)
           .slice(0,3);
+      }
+
+      function setNamesText(setArr){
+        // setArr: [unit|null, unit|null, unit|null]
+        const names = setArr.map((u, idx) => {
+          const label = (idx === 0 ? "1" : idx === 1 ? "2" : "3") + "순위";
+          return `${label} ${u?.name ? u.name : "없음"}`;
+        });
+        return names.join(" / ");
       }
 
       function renderSingleResult(){
@@ -1610,6 +1427,7 @@
 
         const importantText = (r?.important ?? "").trim() || "없음";
         const formationsComment = (r?.formations_comment ?? "").trim() || "없음";
+        const setComment = (r?.set_comment ?? "").trim() || "없음";
 
         const firstText = r?.first ?? "없음";
         const badgeClass =
@@ -1619,12 +1437,33 @@
 
         const pageLabel = hasAny ? `${idx+1} / ${total}` : `0 / 0`;
 
+        // 진형(오른쪽 3행)
         const formationUnit = (r?.formations ? (UNIT_MAP.get(r.formations) || null) : null);
         const formationNameText = formationUnit?.name || "없음";
-
         const formationImgHtml = formationUnit?.image_url
           ? `<img class="formationImg" src="${escapeHtml(formationUnit.image_url)}" alt="formation">`
-          : ``;
+          : `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 64px; border-radius:12px;">없음</div>`;
+
+        // 세트 텍스트(왼쪽 3행)
+        const setLines = hasAny ? `
+          <div class="setLine">
+            <div class="k">${escapeHtml(atkArr[0]?.name || "공격1")}</div>
+            <div class="v">${escapeHtml(setNamesText(r.atk_sets?.[0] || [null,null,null]))}</div>
+          </div>
+          <div class="setLine">
+            <div class="k">${escapeHtml(atkArr[1]?.name || "공격2")}</div>
+            <div class="v">${escapeHtml(setNamesText(r.atk_sets?.[1] || [null,null,null]))}</div>
+          </div>
+          <div class="setLine">
+            <div class="k">${escapeHtml(atkArr[2]?.name || "공격3")}</div>
+            <div class="v">${escapeHtml(setNamesText(r.atk_sets?.[2] || [null,null,null]))}</div>
+          </div>
+          <div class="setDivider"></div>
+          <div class="setLine">
+            <div class="k">설명</div>
+            <div class="v">${escapeHtml(setComment)}</div>
+          </div>
+        ` : `<div class="textBox">없음</div>`;
 
         resultBox.innerHTML = `
           <div class="resultToolbar">
@@ -1642,59 +1481,68 @@
               <div class="txt">주요사항: ${escapeHtml(importantText)}</div>
             </div>
 
-            <div class="layoutTop">
-              <div class="panel">
-                <div class="panelTitle">공격유닛</div>
-                <div class="grid3">
-                  ${cellHtml(atkArr[0], 0)}
-                  ${cellHtml(atkArr[1], 1)}
-                  ${cellHtml(atkArr[2], 2)}
-                </div>
-              </div>
-
-              <div class="panel centerCol">
-                <div class="panelTitle">추천 펫</div>
-                ${pet ? `
-                  <div class="cell">
-                    <img src="${pet.image_url}" alt="${escapeHtml(pet.name)}">
-                    <div class="petName">${escapeHtml(pet.name)}</div>
+            <div class="layoutRows">
+              <!-- Row 1 -->
+              <div class="row2col">
+                <div class="panel">
+                  <div class="panelTitle">공격유닛</div>
+                  <div class="grid3">
+                    ${cellHtml(atkArr[0])}
+                    ${cellHtml(atkArr[1])}
+                    ${cellHtml(atkArr[2])}
                   </div>
-                ` : `
-                  <div class="cell">
-                    <div class="emptyBox">없음</div>
-                    <div class="petName">없음</div>
+                </div>
+
+                <div class="panel small centerCol">
+                  <div class="panelTitle">추천 펫</div>
+                  ${pet ? `
+                    <div class="cell">
+                      <img src="${pet.image_url}" alt="${escapeHtml(pet.name)}">
+                      <div class="petName">${escapeHtml(pet.name)}</div>
+                    </div>
+                  ` : `
+                    <div class="cell">
+                      <div class="emptyBox">없음</div>
+                      <div class="petName">없음</div>
+                    </div>
+                  `}
+                </div>
+              </div>
+
+              <!-- Row 2 -->
+              <div class="row2col">
+                <div class="panel">
+                  <div class="panelTitle">스킬순서</div>
+                  <div class="grid3">
+                    ${cellHtml(skArr[0])}
+                    ${cellHtml(skArr[1])}
+                    ${cellHtml(skArr[2])}
                   </div>
-                `}
-              </div>
+                </div>
 
-              <div class="panel">
-                <div class="panelTitle">스킬순서</div>
-                <div class="grid3">
-                  ${cellHtml(skArr[0])}
-                  ${cellHtml(skArr[1])}
-                  ${cellHtml(skArr[2])}
+                <div class="panel small centerCol" style="align-items:center;text-align:center;">
+                  <div class="panelTitle">공격순서</div>
+                  <div style="width:100%;display:flex;justify-content:center;">
+                    <span class="${badgeClass}">${escapeHtml(firstText)}</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="panel centerCol" style="align-items:center;text-align:center;">
-                <div class="panelTitle">공격순서</div>
-                <div style="width:100%;display:flex;justify-content:center;">
-                  <span class="${badgeClass}">${escapeHtml(firstText)}</span>
+              <!-- Row 3 -->
+              <div class="row2col">
+                <div class="panel">
+                  <div class="panelTitle">세트추천 및 설명</div>
+                  <div class="textBox setTextBox">${setLines}</div>
                 </div>
-              </div>
-            </div>
 
-            <div class="layoutBottom">
-              <div class="panel centerCol">
-                <div class="formationWrap">
-                  ${formationImgHtml || `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 64px; border-radius:12px;">없음</div>`}
-                  <div class="formationName">${escapeHtml(formationNameText)}</div>
+                <div class="panel small centerCol">
+                  <div class="panelTitle">진형</div>
+                  <div class="formationWrap">
+                    ${formationImgHtml}
+                    <div class="formationName">${escapeHtml(formationNameText)}</div>
+                    <div class="formationDesc">${escapeHtml(formationsComment)}</div>
+                  </div>
                 </div>
-              </div>
-
-              <div class="panel">
-                <div class="panelTitle">진형설명</div>
-                <div class="formationName">${escapeHtml(formationsComment || "없음")}</div>
               </div>
             </div>
           </div>
@@ -1715,20 +1563,6 @@
             renderSingleResult();
           }
         });
-
-        document.querySelectorAll(".clickableUnit").forEach(el => {
-          el.addEventListener("click", () => {
-            if(!hasAny) return;
-            const i = Number(el.getAttribute("data-atk-index"));
-            const rr = RESULTS[currentIndex];
-            if(!rr) return;
-
-            const atkUnit = rr.atk[i];
-            const setArr = rr.atk_sets?.[i] || [null, null, null];
-            const comment = rr.set_comment ?? "";
-            openSetModal(atkUnit, setArr, comment);
-          });
-        });
       }
 
       document.getElementById("btnReset").addEventListener("click", () => {
@@ -1743,11 +1577,9 @@
         e.preventDefault();
         e.stopPropagation();
 
-        // ✅ 검색 중 락 (강제체크 겹침 방지)
         IS_SEARCHING = true;
 
         try{
-          // ✅ 검색 시에도 권한 확인 (에러면 튕기지 않고 검색만 막음)
           const ok = await checkAccessByStored();
           if(ok === null){
             statusText.textContent = "서버 불안정";
@@ -1769,21 +1601,23 @@
             .map(s => s.id)
             .sort()
             .join("|");
-// 🔥 검색 로그 기록 (하루 1회만 카운트)
-try {
-  const id = Number(localStorage.getItem(LS_ACCOUNT_ID));
-  const code = Number(localStorage.getItem(LS_CODE));
 
-  if (Number.isInteger(id) && Number.isInteger(code)) {
-    await supabaseClient.rpc("log_guild_search", {
-      p_account_id: id,
-      p_code: code,
-      p_def_key: defKey
-    });
-  }
-} catch (e) {
-  console.error("검색 로그 기록 실패:", e);
-}
+          // 🔥 검색 로그 기록
+          try {
+            const id = Number(localStorage.getItem(LS_ACCOUNT_ID));
+            const code = Number(localStorage.getItem(LS_CODE));
+
+            if (Number.isInteger(id) && Number.isInteger(code)) {
+              await supabaseClient.rpc("log_guild_search", {
+                p_account_id: id,
+                p_code: code,
+                p_def_key: defKey
+              });
+            }
+          } catch (e) {
+            console.error("검색 로그 기록 실패:", e);
+          }
+
           statusText.textContent = "검색중...";
           resultBox.textContent = "잠시만...";
 
@@ -1912,14 +1746,12 @@ try {
         statusText.textContent = `유닛 ${UNITS.length}개 로드됨`;
         updateResultHint();
 
-        // ✅ 유닛 로드 후 TOP5 로드(이름/이미지 매핑 필요)
         loadTop5AllTime();
       }
 
       // ===============================
-      // ✅ NEW: TOP5(전체기간) 불러오기 + 슬라이드/랭킹표 렌더
+      // TOP5(전체기간)
       // ===============================
-
       function parseDefKeyToIds(defKey){
         return String(defKey || "")
           .split("|")
@@ -1928,14 +1760,8 @@ try {
           .slice(0,3);
       }
 
-      // ⚠️ DB 준비 필요:
-      // - view/table: defkey_alltime_counts
-      //   columns: def_key (text), total_count (int)
-      //
-      // 없다면 TOP영역은 "데이터 준비중"으로 표시하고 넘어감(UI는 유지)
       async function loadTop5AllTime(){
         try{
-          // 권한(게이트) 통과 상태에서만
           const ok = await checkAccessByStored();
           if(ok !== true) return;
 
@@ -1968,7 +1794,6 @@ try {
 
           TOP_ROWS = rows;
 
-          // 필요한 유닛 15개(최대)만 뽑아서 로드
           const need = new Set();
           TOP_ROWS.forEach(r => r.def_ids.forEach(id => need.add(id)));
 
@@ -1995,11 +1820,9 @@ try {
       }
 
       function renderTopEmpty(msg){
-        // 슬라이더 영역
         topTrackEl.innerHTML = `
           <div class="topSlideRow">
             <div class="rankCol"><div class="rankBadge is-1">1</div></div>
-
             <div style="min-width:0;display:flex;align-items:center;justify-content:center;color:#6b7280;font-weight:900;font-size:12px;">
               ${escapeHtml(msg || "없음")}
             </div>
@@ -2034,7 +1857,6 @@ try {
       }
 
       function renderTopSlider(){
-        // 무한루프용으로 첫 슬라이드 복제해서 마지막에 추가
         const slides = [...TOP_ROWS];
         slides.push({ ...TOP_ROWS[0], rank: TOP_ROWS[0].rank, __clone:true });
 
@@ -2049,7 +1871,6 @@ try {
           return `
             <div class="topSlideRow">
               <div class="rankCol"><div class="rankBadge is-${rank}">${rank}</div></div>
-
               <div class="midUnits">
                 ${topUnitCellHtml(u1)}
                 ${topUnitCellHtml(u2)}
@@ -2060,7 +1881,6 @@ try {
           `;
         }).join("");
 
-        // 초기 위치
         SLIDE_INDEX = 0;
         topTrackEl.style.transform = `translateY(0px)`;
       }
@@ -2096,13 +1916,11 @@ try {
           `;
         }).join("");
 
-        // 클릭 → 슬롯 자동 입력 → 바로 검색
         document.querySelectorAll(".rankRow").forEach(el => {
           el.addEventListener("click", async () => {
             const defKey = el.getAttribute("data-defkey");
             if(!defKey) return;
 
-            // 권한 체크(에러면 유지)
             const ok = await checkAccessByStored();
             if(ok === null){
               statusText.textContent = "서버 불안정";
@@ -2125,14 +1943,12 @@ try {
               return;
             }
 
-            // 슬롯 세팅
             slots[0] = a;
             slots[1] = b;
             slots[2] = c;
             renderSlots();
             updateResultHint();
 
-            // 바로 검색
             statusText.textContent = "랭킹으로 검색중...";
             document.getElementById("btnSearch").click();
           });
@@ -2150,13 +1966,11 @@ try {
           topTrackEl.style.transition = `transform ${SLIDE_TRANS_MS}ms cubic-bezier(0.4,0,0.2,1)`;
           topTrackEl.style.transform = `translateY(-${SLIDE_INDEX * rowH}px)`;
 
-          // 마지막(복제) 도달 시, transition 끝난 직후 0으로 순간 이동
           if(SLIDE_INDEX === TOP_ROWS.length){
             setTimeout(() => {
               topTrackEl.style.transition = "none";
               SLIDE_INDEX = 0;
               topTrackEl.style.transform = `translateY(0px)`;
-              // 다음 tick에서 transition 복구(부드럽게)
               requestAnimationFrame(() => {
                 topTrackEl.style.transition = `transform ${SLIDE_TRANS_MS}ms cubic-bezier(0.4,0,0.2,1)`;
               });
@@ -2176,7 +1990,6 @@ try {
       function closeModalOnEsc(e){
         if(e.key === "Escape"){
           if(modalBack.style.display === "flex") modalBack.style.display = "none";
-          if(setModalBack.style.display === "flex") setModalBack.style.display = "none";
         }
       }
       document.addEventListener("keydown", closeModalOnEsc);
@@ -2188,6 +2001,3 @@ try {
   </script>
 </body>
 </html>
-
-
-
