@@ -17,7 +17,7 @@
       --kakao:#FEE500;
       --kakaoText:#191600;
 
-      /* ✅ 오른쪽 박스(추천펫/공격순서/진형) 공통 높이 */
+      /* ✅ 모든 결과 박스(2~7) 공통 높이 */
       --panelH: 122px;
 
       /* ✅ 오른쪽 좁은 컬럼 고정폭 */
@@ -500,6 +500,12 @@
       gap:10px;
       margin-bottom:10px;
     }
+    .toolbarLeft{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+    }
     .pager{
       display:flex;
       align-items:center;
@@ -526,6 +532,59 @@
       text-align:center;
     }
 
+    /* ===== ✅ 툴바 순위 메달 배지 (리본 대체) ===== */
+    @keyframes medalGlow{
+      0%,100%{ filter: drop-shadow(0 0 0 rgba(0,0,0,0)); transform: translateY(0); }
+      50%{ filter: drop-shadow(0 0 10px rgba(239,68,68,.90)); transform: translateY(-0.5px); }
+    }
+    .rankMedal{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border:1px solid rgba(0,0,0,.08);
+      background:#fff;
+      font-weight: 1000;
+      font-size: 12px;
+      color:#111827;
+      white-space:nowrap;
+      user-select:none;
+    }
+    .rankMedal .dot{
+      width:8px;height:8px;border-radius:999px;
+      background:#ef4444;
+      box-shadow: 0 0 0 4px rgba(239,68,68,.12);
+    }
+    .rankMedal.r1{
+      background: linear-gradient(180deg, #fff5f5 0%, #ffffff 100%);
+      border-color:#fecaca;
+      animation: medalGlow 1.05s ease-in-out infinite;
+    }
+    .rankMedal.r1 .dot{ background:#ef4444; box-shadow:0 0 0 4px rgba(239,68,68,.12); }
+
+    .rankMedal.r2{
+      background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
+      border-color:#fed7aa;
+      filter: drop-shadow(0 0 6px rgba(249,115,22,.35));
+    }
+    .rankMedal.r2 .dot{ background:#f97316; box-shadow:0 0 0 4px rgba(249,115,22,.10); }
+
+    .rankMedal.r3{
+      background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+      border-color:#bfdbfe;
+      filter: drop-shadow(0 0 6px rgba(59,130,246,.28));
+    }
+    .rankMedal.r3 .dot{ background:#3b82f6; box-shadow:0 0 0 4px rgba(59,130,246,.10); }
+
+    .rankMedal.r4{
+      background: linear-gradient(180deg, #f5f3ff 0%, #ffffff 100%);
+      border-color:#ddd6fe;
+      filter: drop-shadow(0 0 6px rgba(139,92,246,.24));
+    }
+    .rankMedal.r4 .dot{ background:#8b5cf6; box-shadow:0 0 0 4px rgba(139,92,246,.10); }
+
     /* ===== 결과 카드 UI ===== */
     .card{
       border:1px solid var(--line);
@@ -533,47 +592,18 @@
       padding:12px;
       background: var(--card);
       color: var(--text);
-      position: relative;     /* ✅ 리본 배지용 */
-      overflow: hidden;       /* ✅ 리본 잘림 깔끔 */
+      position: relative;
+      overflow: hidden;
     }
 
-    /* ✅ atk_rank 리본 배지 */
-    @keyframes ribbonGlow{
-      0%,100%{ filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
-      50%{ filter: drop-shadow(0 0 10px rgba(239,68,68,.90)); }
-    }
-    .rankRibbon{
-      position:absolute;
-      top: 10px;
-      right: -44px;
-      width: 140px;
-      height: 30px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      transform: rotate(45deg);
-      color:#fff;
-      font-weight: 1000;
-      font-size: 12px;
-      letter-spacing: -0.2px;
-      box-shadow: 0 10px 18px rgba(0,0,0,.18);
-      border: 1px solid rgba(255,255,255,.22);
-      user-select:none;
-      pointer-events:none;
-    }
-    .rankRibbon.r1{ background:#ef4444; animation: ribbonGlow 1.05s ease-in-out infinite; }
-    .rankRibbon.r2{ background:#f97316; filter: drop-shadow(0 0 6px rgba(249,115,22,.55)); }
-    .rankRibbon.r3{ background:#3b82f6; filter: drop-shadow(0 0 6px rgba(59,130,246,.45)); }
-    .rankRibbon.r4{ background:#8b5cf6; filter: drop-shadow(0 0 6px rgba(139,92,246,.40)); }
-
-    /* ✅ 1번: 얇은 한줄 */
+    /* ✅ 1번: 얇은 한줄 (텍스트만 스크롤) */
     .importantBar{
       border:1px solid var(--line);
       border-radius:12px;
       background:#fff;
       padding: 8px 10px;
       display:flex;
-      align-items:center;
+      align-items:flex-start;            /* ✅ 텍스트 스크롤 대비 */
       gap:8px;
       min-height: 34px;
       line-height: 1.2;
@@ -588,15 +618,19 @@
       font-size: 15px;
       flex: 0 0 auto;
       animation: warnGlow 1.05s ease-in-out infinite;
+      margin-top: 1px;
     }
+    /* ✅ 주요사항 텍스트: 길면 이 영역에서만 스크롤 */
     .importantBar .txt{
       font-size: 12px;
       font-weight: 900;
       color:#111827;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
       width: 100%;
+      max-height: 34px;                 /* ✅ 바는 얇게 유지 */
+      overflow:auto;                    /* ✅ 여기만 스크롤 */
+      white-space:pre-wrap;             /* ✅ 줄바꿈 허용 */
+      padding-right: 6px;
+      box-sizing:border-box;
     }
 
     /* ✅ 패널 기본 */
@@ -610,11 +644,18 @@
       overflow:hidden;
     }
 
-    /* ✅ 오른쪽(좁은) 패널은 높이 고정 */
-    .panel.small{
+    /* ✅ 결과 카드 2~7 박스: 전부 높이 고정 + (제목 고정 / 내용 영역 flex) */
+    .panel.box{
       height: var(--panelH);
       min-height: var(--panelH);
       max-height: var(--panelH);
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* ✅ 오른쪽(좁은) 패널은 폭 컨셉 유지 (높이는 box가 담당) */
+    .panel.small{
+      /* 높이는 .panel.box에서 고정 */
     }
 
     /* ✅ C안: 제목 헤더(세로 컬러 바 + 헤더영역) */
@@ -628,13 +669,13 @@
       font-weight:1000;
       color:#0f172a;
 
-      /* 헤더 영역처럼 보이게 */
       padding: 8px 10px;
-      margin: -10px -10px 10px;       /* 패널 패딩을 덮어 넓게 */
+      margin: -10px -10px 10px;
       background:#f8fbff;
       border-bottom:1px solid #eef2ff;
       border-top-left-radius:12px;
       border-top-right-radius:12px;
+      flex: 0 0 auto;                 /* ✅ 제목은 고정 */
     }
     .panelTitle::before{
       content:"";
@@ -662,6 +703,8 @@
       display:grid;
       grid-template-columns: repeat(3, 1fr);
       gap:8px;
+      flex: 1 1 auto;                 /* ✅ 남는 높이 사용 */
+      align-content:flex-start;
     }
 
     .cell{
@@ -712,9 +755,9 @@
       justify-content:flex-start;
       text-align:center;
       min-width:0;
+      flex: 1 1 auto;
     }
 
-    /* ✅ centerCol에서도 panelTitle은 헤더영역이라 중앙정렬만 맞춤 */
     .centerCol .panelTitle{
       justify-content:center;
       text-align:center;
@@ -747,24 +790,23 @@
     .badge.blue{ background:#3b82f6; }
     .badge.gray{ background:#9ca3af; }
 
-    /* ✅ 텍스트 박스(스크롤) */
+    /* ✅ 텍스트 박스(기본) */
     .textBox{
       font-size:12px;
       line-height:1.45;
       color:#111827;
       white-space:pre-wrap;
-      overflow:auto;
       padding-right:6px;
       box-sizing:border-box;
     }
 
-    /* ✅ 세트추천(왼쪽 3행) : set_comment만 출력 */
+    /* ✅ 세트추천: 이 영역만 스크롤 (패널은 고정 높이) */
     .setTextBox{
-      max-height: 180px;
+      flex: 1 1 auto;
       overflow:auto;
     }
 
-    /* ✅ 진형(오른쪽 3행) : 이미지 > 이름 > 코멘트 */
+    /* ✅ 진형(오른쪽 3행) : 이미지 > 이름 > 코멘트 (스크롤 X) */
     .formationWrap{
       width:100%;
       display:flex;
@@ -772,6 +814,8 @@
       align-items:center;
       justify-content:flex-start;
       gap:6px;
+      flex: 1 1 auto;
+      overflow:hidden;
     }
     .formationImg{
       width: calc(var(--narrowW) - 20px);
@@ -801,7 +845,7 @@
       line-height:1.35;
       color:#111827;
       white-space:pre-wrap;
-      overflow:auto;
+      overflow:hidden;                 /* ✅ 스크롤 X */
       padding-right:6px;
       box-sizing:border-box;
       max-height: 40px;
@@ -819,8 +863,6 @@
       .rankBadge{ width:28px; height:28px; font-size:13px; }
       .rankUnit img{ width:21px; height:21px; }
       .formationDesc{ max-height: 38px; }
-
-      .rankRibbon{ right:-46px; width:138px; }
     }
 
     /* ===== modal(유닛 선택) ===== */
@@ -1421,11 +1463,18 @@
         `;
       }
 
-      function rankRibbonHtml(atkRank){
+      // ✅ 툴바 메달 배지(리본 대체)
+      function rankMedalHtml(atkRank){
         const r = Number(atkRank);
         if(!Number.isInteger(r) || r < 1 || r > 4) return "";
         const cls = r === 1 ? "r1" : r === 2 ? "r2" : r === 3 ? "r3" : "r4";
-        return `<div class="rankRibbon ${cls}">${r}순위</div>`;
+        const emoji = r === 1 ? "🥇" : r === 2 ? "🥈" : r === 3 ? "🥉" : "🏅";
+        return `
+          <div class="rankMedal ${cls}" title="${r}순위">
+            <span class="dot" aria-hidden="true"></span>
+            <span>${emoji} ${r}순위</span>
+          </div>
+        `;
       }
 
       function renderSingleResult(){
@@ -1460,11 +1509,14 @@
           ? `<img class="formationImg" src="${escapeHtml(formationUnit.image_url)}" alt="formation">`
           : `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 64px; border-radius:12px;">없음</div>`;
 
-        const ribbon = hasAny ? rankRibbonHtml(r?.atk_rank) : "";
+        const medal = hasAny ? rankMedalHtml(r?.atk_rank) : "";
 
         resultBox.innerHTML = `
           <div class="resultToolbar">
-            <div style="font-weight:900;color:#111827;">검색 결과</div>
+            <div class="toolbarLeft">
+              <div style="font-weight:900;color:#111827;">검색 결과</div>
+              ${medal}
+            </div>
             <div class="pager">
               <button class="pagerBtn" id="btnPrev" type="button" ${(!hasAny || idx===0) ? "disabled":""}>◀</button>
               <div class="pageInfo">${pageLabel}</div>
@@ -1473,8 +1525,6 @@
           </div>
 
           <div class="card">
-            ${ribbon}
-
             <div class="importantBar">
               <div class="ico">⚠️</div>
               <div class="txt">주요사항: ${escapeHtml(importantText)}</div>
@@ -1483,7 +1533,7 @@
             <div class="layoutRows">
               <!-- Row 1 -->
               <div class="row2col">
-                <div class="panel">
+                <div class="panel box">
                   <div class="panelTitle">공격유닛</div>
                   <div class="grid3">
                     ${cellHtml(atkArr[0])}
@@ -1492,7 +1542,7 @@
                   </div>
                 </div>
 
-                <div class="panel small centerCol">
+                <div class="panel box small centerCol">
                   <div class="panelTitle">추천 펫</div>
                   ${pet ? `
                     <div class="cell">
@@ -1510,7 +1560,7 @@
 
               <!-- Row 2 -->
               <div class="row2col">
-                <div class="panel">
+                <div class="panel box">
                   <div class="panelTitle">스킬순서</div>
                   <div class="grid3">
                     ${cellHtml(skArr[0])}
@@ -1519,9 +1569,9 @@
                   </div>
                 </div>
 
-                <div class="panel small centerCol" style="align-items:center;text-align:center;">
+                <div class="panel box small centerCol" style="align-items:center;text-align:center;">
                   <div class="panelTitle">공격순서</div>
-                  <div style="width:100%;display:flex;justify-content:center;">
+                  <div style="width:100%;display:flex;justify-content:center;flex:1;align-items:center;">
                     <span class="${badgeClass}">${escapeHtml(firstText)}</span>
                   </div>
                 </div>
@@ -1529,13 +1579,12 @@
 
               <!-- Row 3 -->
               <div class="row2col">
-                <div class="panel">
+                <div class="panel box">
                   <div class="panelTitle">세트추천 및 설명</div>
                   <div class="textBox setTextBox">${escapeHtml(setComment)}</div>
                 </div>
 
-                <!-- ✅ 진형 패널: 제목이 없으니 C안 헤더 적용 제외(유지) -->
-                <div class="panel small centerCol">
+                <div class="panel box small centerCol">
                   <div class="formationWrap">
                     ${formationImgHtml}
                     <div class="formationName">${escapeHtml(formationNameText)}</div>
@@ -1624,7 +1673,7 @@
             .from("guild_war_results")
             .select([
               "result_id",
-              "atk_rank",                 /* ✅ 추가 */
+              "atk_rank",
               "atk_1","atk_2","atk_3",
               "skill_1","skill_2","skill_3",
               "pet",
@@ -1636,8 +1685,8 @@
               "set_comment"
             ].join(", "))
             .eq("def_key", defKey)
-            .order("atk_rank", { ascending: true })     /* ✅ 1순위부터 */
-            .order("result_id", { ascending: true });   /* ✅ 동률 보조 */
+            .order("atk_rank", { ascending: true })
+            .order("result_id", { ascending: true });
 
           if(error){
             console.error(error);
@@ -1678,7 +1727,7 @@
 
             return {
               result_id: r.result_id,
-              atk_rank: r.atk_rank ?? null,     /* ✅ 저장 */
+              atk_rank: r.atk_rank ?? null,
               first: r.first ?? "없음",
               important: r.important ?? "",
               formations: r.formations ?? "",
