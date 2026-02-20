@@ -533,7 +533,38 @@
       padding:12px;
       background: var(--card);
       color: var(--text);
+      position: relative;     /* ✅ 리본 배지용 */
+      overflow: hidden;       /* ✅ 리본 잘림 깔끔 */
     }
+
+    /* ✅ atk_rank 리본 배지 */
+    @keyframes ribbonGlow{
+      0%,100%{ filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+      50%{ filter: drop-shadow(0 0 10px rgba(239,68,68,.90)); }
+    }
+    .rankRibbon{
+      position:absolute;
+      top: 10px;
+      right: -44px;
+      width: 140px;
+      height: 30px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transform: rotate(45deg);
+      color:#fff;
+      font-weight: 1000;
+      font-size: 12px;
+      letter-spacing: -0.2px;
+      box-shadow: 0 10px 18px rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.22);
+      user-select:none;
+      pointer-events:none;
+    }
+    .rankRibbon.r1{ background:#ef4444; animation: ribbonGlow 1.05s ease-in-out infinite; }
+    .rankRibbon.r2{ background:#f97316; filter: drop-shadow(0 0 6px rgba(249,115,22,.55)); }
+    .rankRibbon.r3{ background:#3b82f6; filter: drop-shadow(0 0 6px rgba(59,130,246,.45)); }
+    .rankRibbon.r4{ background:#8b5cf6; filter: drop-shadow(0 0 6px rgba(139,92,246,.40)); }
 
     /* ✅ 1번: 얇은 한줄 */
     .importantBar{
@@ -586,11 +617,32 @@
       max-height: var(--panelH);
     }
 
+    /* ✅ C안: 제목 헤더(세로 컬러 바 + 헤더영역) */
     .panelTitle{
+      position: relative;
+      display:flex;
+      align-items:center;
+      gap:8px;
+
       font-size:12px;
-      font-weight:900;
-      color:#111827;
-      margin-bottom:8px;
+      font-weight:1000;
+      color:#0f172a;
+
+      /* 헤더 영역처럼 보이게 */
+      padding: 8px 10px;
+      margin: -10px -10px 10px;       /* 패널 패딩을 덮어 넓게 */
+      background:#f8fbff;
+      border-bottom:1px solid #eef2ff;
+      border-top-left-radius:12px;
+      border-top-right-radius:12px;
+    }
+    .panelTitle::before{
+      content:"";
+      width:4px;
+      height:14px;
+      border-radius:999px;
+      background:#3b82f6;
+      flex: 0 0 auto;
     }
 
     /* ✅ NEW: 3행 2열 레이아웃 */
@@ -662,10 +714,10 @@
       min-width:0;
     }
 
+    /* ✅ centerCol에서도 panelTitle은 헤더영역이라 중앙정렬만 맞춤 */
     .centerCol .panelTitle{
-      width:100%;
+      justify-content:center;
       text-align:center;
-      margin-bottom:10px;
     }
 
     .petName{
@@ -708,7 +760,7 @@
 
     /* ✅ 세트추천(왼쪽 3행) : set_comment만 출력 */
     .setTextBox{
-      max-height: 180px;  /* 너무 길어지는 것 방지 */
+      max-height: 180px;
       overflow:auto;
     }
 
@@ -752,7 +804,6 @@
       overflow:auto;
       padding-right:6px;
       box-sizing:border-box;
-      /* ✅ 고정 높이 박스 안에서 안전하게: 너무 공격적인 calc 제거 */
       max-height: 40px;
     }
 
@@ -768,6 +819,8 @@
       .rankBadge{ width:28px; height:28px; font-size:13px; }
       .rankUnit img{ width:21px; height:21px; }
       .formationDesc{ max-height: 38px; }
+
+      .rankRibbon{ right:-46px; width:138px; }
     }
 
     /* ===== modal(유닛 선택) ===== */
@@ -1368,6 +1421,13 @@
         `;
       }
 
+      function rankRibbonHtml(atkRank){
+        const r = Number(atkRank);
+        if(!Number.isInteger(r) || r < 1 || r > 4) return "";
+        const cls = r === 1 ? "r1" : r === 2 ? "r2" : r === 3 ? "r3" : "r4";
+        return `<div class="rankRibbon ${cls}">${r}순위</div>`;
+      }
+
       function renderSingleResult(){
         const total = RESULTS.length;
         const hasAny = total > 0;
@@ -1400,6 +1460,8 @@
           ? `<img class="formationImg" src="${escapeHtml(formationUnit.image_url)}" alt="formation">`
           : `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 64px; border-radius:12px;">없음</div>`;
 
+        const ribbon = hasAny ? rankRibbonHtml(r?.atk_rank) : "";
+
         resultBox.innerHTML = `
           <div class="resultToolbar">
             <div style="font-weight:900;color:#111827;">검색 결과</div>
@@ -1411,6 +1473,8 @@
           </div>
 
           <div class="card">
+            ${ribbon}
+
             <div class="importantBar">
               <div class="ico">⚠️</div>
               <div class="txt">주요사항: ${escapeHtml(importantText)}</div>
@@ -1470,6 +1534,7 @@
                   <div class="textBox setTextBox">${escapeHtml(setComment)}</div>
                 </div>
 
+                <!-- ✅ 진형 패널: 제목이 없으니 C안 헤더 적용 제외(유지) -->
                 <div class="panel small centerCol">
                   <div class="formationWrap">
                     ${formationImgHtml}
@@ -1559,6 +1624,7 @@
             .from("guild_war_results")
             .select([
               "result_id",
+              "atk_rank",                 /* ✅ 추가 */
               "atk_1","atk_2","atk_3",
               "skill_1","skill_2","skill_3",
               "pet",
@@ -1570,7 +1636,8 @@
               "set_comment"
             ].join(", "))
             .eq("def_key", defKey)
-            .order("result_id", { ascending: true });
+            .order("atk_rank", { ascending: true })     /* ✅ 1순위부터 */
+            .order("result_id", { ascending: true });   /* ✅ 동률 보조 */
 
           if(error){
             console.error(error);
@@ -1611,6 +1678,7 @@
 
             return {
               result_id: r.result_id,
+              atk_rank: r.atk_rank ?? null,     /* ✅ 저장 */
               first: r.first ?? "없음",
               important: r.important ?? "",
               formations: r.formations ?? "",
@@ -1919,4 +1987,3 @@
   </script>
 </body>
 </html>
-
