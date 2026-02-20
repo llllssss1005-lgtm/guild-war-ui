@@ -706,35 +706,10 @@
       box-sizing:border-box;
     }
 
-    /* ✅ 세트추천(왼쪽 3행) 텍스트용 */
+    /* ✅ 세트추천(왼쪽 3행) 텍스트용: set_comment만 출력 */
     .setTextBox{
-      height: calc(var(--panelH) * 1); /* 기본은 우측 높이와 균형 맞추고 싶으면 1로 */
-      max-height: 180px;              /* 너무 길어지는 것 방지 */
+      max-height: 180px;
       overflow:auto;
-    }
-    .setLine{
-      display:flex;
-      gap:8px;
-      margin: 6px 0;
-      align-items:flex-start;
-    }
-    .setLine .k{
-      flex:0 0 auto;
-      font-size:12px;
-      font-weight:1000;
-      color:#111827;
-      white-space:nowrap;
-    }
-    .setLine .v{
-      min-width:0;
-      font-size:12px;
-      font-weight:800;
-      color:#374151;
-      white-space:pre-wrap;
-    }
-    .setDivider{
-      border-top: 1px dashed #e5e7eb;
-      margin: 10px 0;
     }
 
     /* ✅ 진형(오른쪽 3행) 한 박스에 합치기 */
@@ -778,7 +753,7 @@
       overflow:auto;
       padding-right:6px;
       box-sizing:border-box;
-      height: calc(var(--panelH) - 10px - 10px - 12px - 8px - 64px - 6px - 16px); /* 대략: 타이틀/패딩/이미지 영역 제외 */
+      height: calc(var(--panelH) - 10px - 10px - 12px - 8px - 64px - 6px - 16px);
       max-height: 54px;
     }
 
@@ -1235,7 +1210,7 @@
       let RESULTS = [];
       let currentIndex = 0;
 
-      let UNIT_MAP = new Map(); // 유닛/스킬/펫/세트/진형 공용
+      let UNIT_MAP = new Map(); // 유닛/스킬/펫/세트/진형 공용 (지금은 세트는 안씀)
 
       const modalBack = document.getElementById("modalBack");
       const unitListEl = document.getElementById("unitList");
@@ -1393,25 +1368,6 @@
         `;
       }
 
-      function parseSetIds(raw){
-        const s = String(raw ?? "").trim();
-        if(!s) return [];
-        return s
-          .split(/[,\.\s|]+/g)
-          .map(x => x.trim())
-          .filter(Boolean)
-          .slice(0,3);
-      }
-
-      function setNamesText(setArr){
-        // setArr: [unit|null, unit|null, unit|null]
-        const names = setArr.map((u, idx) => {
-          const label = (idx === 0 ? "1" : idx === 1 ? "2" : "3") + "순위";
-          return `${label} ${u?.name ? u.name : "없음"}`;
-        });
-        return names.join(" / ");
-      }
-
       function renderSingleResult(){
         const total = RESULTS.length;
         const hasAny = total > 0;
@@ -1444,26 +1400,10 @@
           ? `<img class="formationImg" src="${escapeHtml(formationUnit.image_url)}" alt="formation">`
           : `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 64px; border-radius:12px;">없음</div>`;
 
-        // 세트 텍스트(왼쪽 3행)
-        const setLines = hasAny ? `
-          <div class="setLine">
-            <div class="k">${escapeHtml(atkArr[0]?.name || "공격1")}</div>
-            <div class="v">${escapeHtml(setNamesText(r.atk_sets?.[0] || [null,null,null]))}</div>
-          </div>
-          <div class="setLine">
-            <div class="k">${escapeHtml(atkArr[1]?.name || "공격2")}</div>
-            <div class="v">${escapeHtml(setNamesText(r.atk_sets?.[1] || [null,null,null]))}</div>
-          </div>
-          <div class="setLine">
-            <div class="k">${escapeHtml(atkArr[2]?.name || "공격3")}</div>
-            <div class="v">${escapeHtml(setNamesText(r.atk_sets?.[2] || [null,null,null]))}</div>
-          </div>
-          <div class="setDivider"></div>
-          <div class="setLine">
-            <div class="k">설명</div>
-            <div class="v">${escapeHtml(setComment)}</div>
-          </div>
-        ` : `<div class="textBox">없음</div>`;
+        // ✅ 세트추천 및 설명: set_comment만 출력
+        const setBoxHtml = `
+          <div class="textBox setTextBox">${escapeHtml(setComment)}</div>
+        `;
 
         resultBox.innerHTML = `
           <div class="resultToolbar">
@@ -1532,7 +1472,7 @@
               <div class="row2col">
                 <div class="panel">
                   <div class="panelTitle">세트추천 및 설명</div>
-                  <div class="textBox setTextBox">${setLines}</div>
+                  ${setBoxHtml}
                 </div>
 
                 <div class="panel small centerCol">
@@ -1633,8 +1573,7 @@
               "important",
               "formations",
               "formations_comment",
-              "set_comment",
-              "atk_1_set","atk_2_set","atk_3_set"
+              "set_comment"
             ].join(", "))
             .eq("def_key", defKey)
             .order("result_id", { ascending: true });
@@ -1654,15 +1593,11 @@
             return;
           }
 
+          // 필요한 유닛id 수집 (atk/skill/pet + formations)
           const ids = new Set();
           rows.forEach(r => {
             [r.atk_1,r.atk_2,r.atk_3,r.skill_1,r.skill_2,r.skill_3,r.pet].forEach(x => { if(x) ids.add(x); });
             if (r.formations) ids.add(r.formations);
-
-            const s1 = parseSetIds(r.atk_1_set);
-            const s2 = parseSetIds(r.atk_2_set);
-            const s3 = parseSetIds(r.atk_3_set);
-            [...s1, ...s2, ...s3].forEach(x => { if(x) ids.add(x); });
           });
 
           const { data: unitRows, error: unitErr } = await supabaseClient
@@ -1680,16 +1615,6 @@
             const skill = [r.skill_1, r.skill_2, r.skill_3].map(id => unitMap.get(id) || null);
             const pet = unitMap.get(r.pet) || null;
 
-            const setIds1 = parseSetIds(r.atk_1_set);
-            const setIds2 = parseSetIds(r.atk_2_set);
-            const setIds3 = parseSetIds(r.atk_3_set);
-
-            const setArr1 = [setIds1[0], setIds1[1], setIds1[2]].map(id => unitMap.get(id) || null);
-            const setArr2 = [setIds2[0], setIds2[1], setIds2[2]].map(id => unitMap.get(id) || null);
-            const setArr3 = [setIds3[0], setIds3[1], setIds3[2]].map(id => unitMap.get(id) || null);
-
-            const atk_sets = [setArr1, setArr2, setArr3];
-
             return {
               result_id: r.result_id,
               first: r.first ?? "없음",
@@ -1699,8 +1624,7 @@
               set_comment: r.set_comment ?? "",
               atk,
               skill,
-              pet,
-              atk_sets
+              pet
             };
           });
 
