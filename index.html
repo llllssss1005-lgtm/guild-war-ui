@@ -1606,6 +1606,7 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
               <div style="font-weight:900;color:#111827;">검색 결과</div>
               ${medal}
             </div>
+            <button class="pagerBtn" id="btnSavePreset" type="button">+저장</button>
             <div class="pager">
               <button class="pagerBtn" id="btnPrev" type="button" ${(!hasAny || idx===0) ? "disabled":""}>◀</button>
               <div class="pageInfo">${pageLabel}</div>
@@ -2143,6 +2144,7 @@ if(btnGoAtk){
   </script>
 </body>
 </html>
+
 
 
 
