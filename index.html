@@ -1965,7 +1965,17 @@ async function renderAtkPage(){
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
     }
-
+function rankMedalHtml(atkRank){
+        const r = Number(atkRank);
+        if(!Number.isInteger(r) || r < 1 || r > 4) return "";
+        const cls = r === 1 ? "r1" : r === 2 ? "r2" : r === 3 ? "r3" : "r4";
+        const emoji = r === 1 ? "🥇" : r === 2 ? "🥈" : r === 3 ? "🥉" : "🏅";
+        return `
+          <div class="rankMedal ${cls}" title="${r}순위">
+            <span>${emoji} ${r}순위</span>
+          </div>
+        `;
+      }
     function initGuildWar(){
       if(window.__GUILD_INITED__) return;
       window.__GUILD_INITED__ = true;
@@ -2177,17 +2187,7 @@ async function renderAtkPage(){
         `;
       }
 
-      function rankMedalHtml(atkRank){
-        const r = Number(atkRank);
-        if(!Number.isInteger(r) || r < 1 || r > 4) return "";
-        const cls = r === 1 ? "r1" : r === 2 ? "r2" : r === 3 ? "r3" : "r4";
-        const emoji = r === 1 ? "🥇" : r === 2 ? "🥈" : r === 3 ? "🥉" : "🏅";
-        return `
-          <div class="rankMedal ${cls}" title="${r}순위">
-            <span>${emoji} ${r}순위</span>
-          </div>
-        `;
-      }
+     
 
       // ✅ 저장: CURRENT_RESULT + 선택된 방어 슬롯 + 자동 프리셋1~10 + 자동 A~F 태그
       function addPresetFromCurrent(){
@@ -2965,4 +2965,5 @@ if(saveBtn){
   </script>
 </body>
 </html>
+
 
