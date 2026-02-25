@@ -1327,6 +1327,8 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
   gateEl.style.display = "block";
   appEl.style.display = "none";
 }
+      const mainMenu = document.getElementById("mainMenu");
+  if(mainMenu) mainMenu.style.display = "none";
 
     function initGuildWar(){
       if(window.__GUILD_INITED__) return;
@@ -2162,6 +2164,7 @@ if(btnGoAtk){
   </script>
 </body>
 </html>
+
 
 
 
