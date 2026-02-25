@@ -1340,6 +1340,10 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
       let enforceLastSeconds = null;
       let IS_SEARCHING = false;
 
+// 👇 여기 추가
+let CURRENT_RESULT = null;
+const PRESET_KEY = (id) => `guild_my_atk_presets_v1_${id}`;
+
       async function runEnforceCheck(){
         if(IS_SEARCHING) return;
 
@@ -1394,7 +1398,15 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
       let RESULTS = [];
       let currentIndex = 0;
 
+      let CURRENT_RESULT = null;          // 지금 화면에 보여주는 결과 1개
+const PRESET_KEY = (id) => `guild_my_atk_presets_v1_${id}`;
+
       let UNIT_MAP = new Map(); // 유닛/스킬/펫/진형 공용
+      function loadMyPresets(){ ... }
+
+function saveMyPresets(list){ ... }
+
+function addPresetFromCurrent(){ ... }
 
       const modalBack = document.getElementById("modalBack");
       const unitListEl = document.getElementById("unitList");
@@ -1574,6 +1586,7 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
         currentIndex = idx;
 
         const r = hasAny ? RESULTS[idx] : null;
+        CURRENT_RESULT = r;
 
         const atkArr = r ? r.atk : [null, null, null];
         const skArr  = r ? r.skill : [null, null, null];
@@ -1685,7 +1698,12 @@ if(localStorage.getItem(SESSION_KEY) === "1"){
             </div>
           </div>
         `;
-
+const saveBtn = document.getElementById("btnSavePreset");
+if(saveBtn){
+  saveBtn.addEventListener("click", () => {
+    addPresetFromCurrent();
+  });
+}
         const prevBtn = document.getElementById("btnPrev");
         const nextBtn = document.getElementById("btnNext");
 
@@ -2144,6 +2162,7 @@ if(btnGoAtk){
   </script>
 </body>
 </html>
+
 
 
 
