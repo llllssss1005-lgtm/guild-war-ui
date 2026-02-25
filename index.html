@@ -1317,18 +1317,19 @@ appEl.style.display = "none";
 if(localStorage.getItem(SESSION_KEY) === "1"){
   gateEl.style.display = "none";
 
-  const mainMenu = document.getElementById("mainMenu");
-  if(mainMenu){
-    mainMenu.style.display = "block";
-  }
+
 
   appEl.style.display = "none";
 }else{
   gateEl.style.display = "block";
   appEl.style.display = "none";
+  
+    const mainMenu = document.getElementById("mainMenu");
+  if(mainMenu){
+    mainMenu.style.display = "none";
+  }
 }
-      const mainMenu = document.getElementById("mainMenu");
-  if(mainMenu) mainMenu.style.display = "none";
+    
 
     function initGuildWar(){
       if(window.__GUILD_INITED__) return;
@@ -1400,15 +1401,11 @@ const PRESET_KEY = (id) => `guild_my_atk_presets_v1_${id}`;
       let RESULTS = [];
       let currentIndex = 0;
 
-      let CURRENT_RESULT = null;          // 지금 화면에 보여주는 결과 1개
-const PRESET_KEY = (id) => `guild_my_atk_presets_v1_${id}`;
-
+      
       let UNIT_MAP = new Map(); // 유닛/스킬/펫/진형 공용
-      function loadMyPresets(){ ... }
-
-function saveMyPresets(list){ ... }
-
-function addPresetFromCurrent(){ ... }
+     function loadMyPresets(){ return []; }
+function saveMyPresets(list){ /* noop */ }
+function addPresetFromCurrent(){ alert("저장 기능은 아직 연결 전입니다."); }
 
       const modalBack = document.getElementById("modalBack");
       const unitListEl = document.getElementById("unitList");
@@ -2164,6 +2161,7 @@ if(btnGoAtk){
   </script>
 </body>
 </html>
+
 
 
 
