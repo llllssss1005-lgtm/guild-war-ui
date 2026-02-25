@@ -1313,21 +1313,16 @@ appEl.style.display = "none";
     });
 
     // ✅ 새로고침/재접속: 세션 있으면 진입
-    // ✅ 새로고침/재접속: 세션 있으면 진입
-if(localStorage.getItem(SESSION_KEY) === "1"){
+const mainMenuEl = document.getElementById("mainMenu");
+
+if (localStorage.getItem(SESSION_KEY) === "1") {
   gateEl.style.display = "none";
-
-
-
   appEl.style.display = "none";
-}else{
+  if (mainMenuEl) mainMenuEl.style.display = "block";
+} else {
   gateEl.style.display = "block";
   appEl.style.display = "none";
-  
-    const mainMenu = document.getElementById("mainMenu");
-  if(mainMenu){
-    mainMenu.style.display = "none";
-  }
+  if (mainMenuEl) mainMenuEl.style.display = "none";
 }
     
 
@@ -2161,6 +2156,7 @@ if(btnGoAtk){
   </script>
 </body>
 </html>
+
 
 
 
