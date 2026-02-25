@@ -1089,244 +1089,232 @@
       border-color: rgba(147,197,253,.55);
     }
 
-/* ===== ✅ 내 공격덱 페이지 UI (NEW: 리스트형 카드) ===== */
-.atkHead{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom: 10px;
-}
-.atkTitle{
-  font-weight: 1000;
-  font-size: 14px;
-}
-.atkHint{
-  color: var(--muted);
-  font-weight: 900;
-  font-size: 12px;
-  line-height: 1.35;
-  margin: 0 0 12px;
-}
+    /* ===== ✅ 내 공격덱 페이지 UI (NEW: 리스트형 카드) ===== */
+    .atkHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .atkTitle{
+      font-weight: 1000;
+      font-size: 14px;
+    }
+    .atkHint{
+      color: var(--muted);
+      font-weight: 900;
+      font-size: 12px;
+      line-height: 1.35;
+      margin: 0 0 12px;
+    }
 
-/* 리스트 래퍼 */
-.presetList{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
+    /* 리스트 래퍼 */
+    .presetList{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
 
-/* 카드 */
-.presetItem{
-  border:1px solid var(--line);
-  border-radius:14px;
-  background:#fff;
-  overflow:hidden;
-}
-.presetTopRow{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:10px 10px;
-  border-bottom:1px solid #eef2ff;
-  background:#f8fbff;
-}
-.presetLeft{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:0;
-}
-.starBtn{
-  width:34px;
-  height:34px;
-  border-radius:12px;
-  border:1px solid #e5e7eb;
-  background:#fff;
-  cursor:pointer;
-  font-weight:1000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  user-select:none;
-}
-.starBtn.on{
-  border-color:#fde68a;
-  background:#fffbeb;
-  color:#92400e;
-}
-.presetName{
-  font-weight:1000;
-  font-size:13px;
-  color:#111827;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.delBtn{
-  height:34px;
-  padding:0 12px;
-  border-radius:12px;
-  border:1px solid #fecaca;
-  background:#fff5f5;
-  color:#991b1b;
-  font-weight:1000;
-  cursor:pointer;
-}
+    /* 카드 */
+    .presetItem{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      overflow:hidden;
+    }
+    .presetTopRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 10px;
+      border-bottom:1px solid #eef2ff;
+      background:#f8fbff;
+    }
+    .presetLeft{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .starBtn{
+      width:34px;
+      height:34px;
+      border-radius:12px;
+      border:1px solid #e5e7eb;
+      background:#fff;
+      cursor:pointer;
+      font-weight:1000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      user-select:none;
+    }
+    .starBtn.on{
+      border-color:#fde68a;
+      background:#fffbeb;
+      color:#92400e;
+    }
+    .presetName{
+      font-weight:1000;
+      font-size:13px;
+      color:#111827;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .delBtn{
+      height:34px;
+      padding:0 12px;
+      border-radius:12px;
+      border:1px solid #fecaca;
+      background:#fff5f5;
+      color:#991b1b;
+      font-weight:1000;
+      cursor:pointer;
+    }
 
-/* 공격/방어 블록 */
-.presetBody{
-  padding:10px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-.deckRow{
-  display:grid;
-  grid-template-columns: 30px 1fr;
-  gap:10px;
-  align-items:stretch;
-}
-.sideLabel{
-  border-radius:12px;
-  border:1px solid #e5e7eb;
-  background:#fff;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  font-weight:1000;
-  line-height:1.05;
-  font-size:12px;
-}
-.sideLabel.atk{ border-color:#fecaca; background:#fff5f5; color:#ef4444; }
-.sideLabel.def{ border-color:#bfdbfe; background:#eff6ff; color:#3b82f6; }
+    /* 공격/방어 블록 */
+    .presetBody{
+      padding:10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .deckRow{
+      display:grid;
+      grid-template-columns: 30px 1fr;
+      gap:10px;
+      align-items:stretch;
+    }
+    .sideLabel{
+      border-radius:12px;
+      border:1px solid #e5e7eb;
+      background:#fff;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      font-weight:1000;
+      line-height:1.05;
+      font-size:12px;
+    }
+    .sideLabel.atk{ border-color:#fecaca; background:#fff5f5; color:#ef4444; }
+    .sideLabel.def{ border-color:#bfdbfe; background:#eff6ff; color:#3b82f6; }
 
-.unitGrid{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap:8px;
-}
-.uCell{
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:6px;
-}
-.uCell img{
-  width:46px;
-  height:46px;
-  border-radius:14px;
-  border:1px solid rgba(0,0,0,.06);
-  background:#f3f4f6;
-  object-fit:cover;
-  display:block;
-}
-.uCell .nm{
-  width:100%;
-  font-size:11px;
-  font-weight:900;
-  color:#374151;
-  text-align:center;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.uEmpty{
-  width:46px;height:46px;border-radius:14px;
-  background:#f3f4f6;border:1px solid rgba(0,0,0,.06);
-  display:flex;align-items:center;justify-content:center;
-  color:#9ca3af;font-weight:1000;font-size:11px;
-}
+    .unitGrid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:8px;
+    }
+    .uCell{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+    }
+    .uCell img{
+      width:46px;
+      height:46px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.06);
+      background:#f3f4f6;
+      object-fit:cover;
+      display:block;
+    }
+    .uCell .nm{
+      width:100%;
+      font-size:11px;
+      font-weight:900;
+      color:#374151;
+      text-align:center;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .uEmpty{
+      width:46px;height:46px;border-radius:14px;
+      background:#f3f4f6;border:1px solid rgba(0,0,0,.06);
+      display:flex;align-items:center;justify-content:center;
+      color:#9ca3af;font-weight:1000;font-size:11px;
+    }
 
-/* 펼치기 */
-.expandRow{
-  display:flex;
-  justify-content:flex-end;
-  padding: 0 10px 10px;
-}
-.expandBtn{
-  height:34px;
-  padding:0 12px;
-  border-radius:12px;
-  border:1px solid #e5e7eb;
-  background:#fff;
-  font-weight:1000;
-  cursor:pointer;
-  color:#111827;
-}
+    /* ✅ 펼치기: 중앙 정렬 + 동그란 화살표 느낌 */
+    .expandRow{
+      display:flex;
+      justify-content:center; /* ✅ 중앙 */
+      padding: 0 10px 12px;
+    }
+    .expandBtn{
+      height:36px;
+      padding:0 14px;
+      border-radius:999px; /* ✅ pill */
+      border:1px solid #e5e7eb;
+      background:#fff;
+      font-weight:1000;
+      cursor:pointer;
+      color:#111827;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      user-select:none;
+    }
+    .expandBtn:hover{
+      background:#f8fbff;
+      border-color:#bfdbfe;
+    }
+    .expandBtn:active{ transform: scale(.995); }
+    .expandBtn .chev{
+      width:22px;
+      height:22px;
+      border-radius:999px;
+      border:1px solid #dbeafe;
+      background:#eff6ff;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+      line-height:1;
+      color:#1d4ed8;
+      font-weight:1000;
+    }
 
-/* 펼친 상세 */
-.detailWrap{
-  display:none;
-  padding: 10px;
-  border-top:1px dashed #e5e7eb;
-  background:#fff;
-}
-.detailWrap.on{ display:block; }
-.detailLine{
-  font-size:12px;
-  font-weight:900;
-  color:#111827;
-  line-height:1.45;
-  white-space:pre-wrap;
-  margin: 0 0 8px;
-}
-.detailGrid{
-  display:grid;
-  grid-template-columns: 1fr;
-  gap:10px;
-}
-.detailBox{
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  padding:10px;
-  background:#fff;
-}
-.detailTitle{
-  font-size:12px;
-  font-weight:1000;
-  color:#0f172a;
-  margin-bottom:8px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.detailTitle::before{
-  content:"";
-  width:4px;height:14px;border-radius:999px;background:#3b82f6;
-}
-.detailSmall{
-  font-size:12px;
-  line-height:1.45;
-  white-space:pre-wrap;
-}
+    /* ✅ 펼친 상세: 검색 결과 카드 UI 그대로 출력 */
+    .detailWrap{
+      display:none;
+      padding: 10px 10px 12px;
+      border-top:1px dashed #e5e7eb;
+      background:#fff;
+    }
+    .detailWrap.on{ display:block; }
 
-/* 기존 토스트 유지 */
-.toast{
-  position: fixed;
-  left: 50%;
-  bottom: 16px;
-  transform: translateX(-50%);
-  background: rgba(17,24,39,.92);
-  color:#fff;
-  padding: 10px 12px;
-  border-radius: 12px;
-  font-weight: 900;
-  font-size: 12px;
-  z-index: 99999;
-  display:none;
-  max-width: min(420px, 92vw);
-  text-align:center;
-  line-height: 1.35;
-}
+    /* 기존 토스트 유지 */
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      background: rgba(17,24,39,.92);
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-weight: 900;
+      font-size: 12px;
+      z-index: 99999;
+      display:none;
+      max-width: min(420px, 92vw);
+      text-align:center;
+      line-height: 1.35;
+    }
 
-@media (max-width: 360px){
-  .uCell img, .uEmpty{ width:44px; height:44px; border-radius:13px; }
-  .uCell .nm{ font-size:10.5px; }
-}
+    @media (max-width: 360px){
+      .uCell img, .uEmpty{ width:44px; height:44px; border-radius:13px; }
+      .uCell .nm{ font-size:10.5px; }
+      .expandBtn{ height:34px; padding:0 12px; gap:8px; }
+      .expandBtn .chev{ width:20px; height:20px; font-size:13px; }
+    }
   </style>
 </head>
 
@@ -1410,8 +1398,6 @@
   <!-- ✅ 2) 길드전 검색 페이지 -->
   <div id="viewSearch" style="display:none;">
     <div id="app" class="wrap">
-      <!-- ✅ 요청: 여기 헤드 제목 '길드전' 문구 삭제 (h1 제거) -->
-
       <!-- TOP5 -->
       <div class="topSection">
         <div class="topLabel">실시간 검색 TOP5</div>
@@ -1462,22 +1448,22 @@
     </div>
   </div>
 
- <!-- ✅ 3) 내 공격덱 페이지 -->
-<div id="viewAtk" style="display:none;">
-  <div class="wrap">
-    <div class="atkHead">
-      <div class="atkTitle">내 공격덱</div>
-      <div style="font-size:12px;font-weight:900;color:#6b7280;">저장된 프리셋</div>
+  <!-- ✅ 3) 내 공격덱 페이지 -->
+  <div id="viewAtk" style="display:none;">
+    <div class="wrap">
+      <div class="atkHead">
+        <div class="atkTitle">내 공격덱</div>
+        <div style="font-size:12px;font-weight:900;color:#6b7280;">저장된 프리셋</div>
+      </div>
+
+      <p class="atkHint">
+        길드전 검색 결과에서 <b>+저장</b>을 누르면 프리셋이 저장됩니다.<br/>
+        ☆ 즐겨찾기는 위에 먼저 보여요.
+      </p>
+
+      <div id="presetList" class="presetList"></div>
     </div>
-
-    <p class="atkHint">
-      길드전 검색 결과에서 <b>+저장</b>을 누르면 프리셋이 저장됩니다.<br/>
-      ☆ 즐겨찾기는 위에 먼저 보여요.
-    </p>
-
-    <div id="presetList" class="presetList"></div>
   </div>
-</div>
 
   <!-- modal: 유닛 선택 -->
   <div class="modalBack" id="modalBack" role="dialog" aria-modal="true">
@@ -1521,7 +1507,6 @@
     const viewAtkEl = document.getElementById("viewAtk");
 
     const gateEl = document.getElementById("gate");
-    const appEl = document.getElementById("app");
     const gateMsgEl = document.getElementById("gateMsg");
     const mainMenuEl = document.getElementById("mainMenu");
 
@@ -1771,192 +1756,6 @@
       };
     }
 
-    function renderPresetThumbUnits(defUnits){
-      const arr = Array.isArray(defUnits) ? defUnits : [];
-      return arr.slice(0,3).map(u => {
-        if(!u || !u.image_url){
-          return `<div class="punit"><div class="emptyBox" style="width:28px;height:28px;border-radius:10px;">없음</div><span>없음</span></div>`;
-        }
-        return `<div class="punit"><img src="${escapeHtml(u.image_url)}" alt="${escapeHtml(u.name)}"><span>${escapeHtml(u.name)}</span></div>`;
-      }).join("");
-    }
-
-async function renderAtkPage(){
-  const listEl = document.getElementById("presetList");
-  const accountId = getStoredAccountId();
-  if(!accountId){
-    listEl.innerHTML = `<div class="rankEmpty" style="border:1px dashed #e5e7eb;border-radius:14px;background:#fff;">세션이 없습니다.</div>`;
-    return;
-  }
-
-  const presets = loadMyPresets();
-
-  if(!presets.length){
-    listEl.innerHTML = `<div class="rankEmpty" style="border:1px dashed #e5e7eb;border-radius:14px;background:#fff;">저장된 공격덱이 없습니다. (길드전 검색에서 +저장)</div>`;
-    return;
-  }
-
-  // 즐겨찾기 우선, 그 다음 최신순
-  const sorted = [...presets].sort((a,b) => {
-    const fa = !!a.isFavorite, fb = !!b.isFavorite;
-    if(fa !== fb) return fb - fa;
-    return (b.createdAt||0) - (a.createdAt||0);
-  });
-
-  // 렌더에 필요한 유닛 id 모으기
-  const need = new Set();
-  sorted.forEach(p => {
-    (p.defIds||[]).forEach(id => id && need.add(id));
-    (p.atkIds||[]).forEach(id => id && need.add(id));
-    (p.skillIds||[]).forEach(id => id && need.add(id));
-    if(p.petId) need.add(p.petId);
-    if(p.formationId) need.add(p.formationId);
-  });
-
-  // DB에서 이미지/이름 로딩
-  let map = new Map();
-  try{
-    const ids = Array.from(need);
-    if(ids.length){
-      const { data, error } = await supabaseClient
-        .from("units")
-        .select("id,name,image_url,kind")
-        .in("id", ids);
-
-      if(!error){
-        map = new Map((data||[]).map(u => [u.id, u]));
-      }
-    }
-  }catch(e){
-    console.warn("preset units load fail", e);
-  }
-
-  const unitCell = (id) => {
-    const u = id ? map.get(id) : null;
-    if(!u || !u.image_url){
-      return `<div class="uCell"><div class="uEmpty">없음</div><div class="nm">없음</div></div>`;
-    }
-    return `<div class="uCell"><img src="${escapeHtml(u.image_url)}" alt="${escapeHtml(u.name)}"><div class="nm">${escapeHtml(u.name)}</div></div>`;
-  };
-
-  const medalHtml = (rank) => rankMedalHtml(rank);
-
-  listEl.innerHTML = sorted.map(p => {
-    const slotNo = Number(p.slotNo || 0) || 1;
-    const fav = !!p.isFavorite;
-
-    const atkIds = (p.atkIds||[]).slice(0,3);
-    const defIds = (p.defIds||[]).slice(0,3);
-
-    const expandId = `detail_${slotNo}_${p.createdAt||0}`;
-    const btnId = `expand_${slotNo}_${p.createdAt||0}`;
-
-    return `
-      <div class="presetItem" data-slot="${slotNo}">
-        <div class="presetTopRow">
-          <div class="presetLeft">
-            <button class="starBtn ${fav ? "on":""}" type="button" data-act="fav" data-slot="${slotNo}">
-              ${fav ? "★" : "☆"}
-            </button>
-            <div class="presetName">프리셋 ${slotNo}</div>
-          </div>
-          <button class="delBtn" type="button" data-act="del" data-slot="${slotNo}">제거</button>
-        </div>
-
-        <div class="presetBody">
-          <div class="deckRow">
-            <div class="sideLabel atk"><div>공</div><div>격</div></div>
-            <div class="unitGrid">
-              ${unitCell(atkIds[0])}
-              ${unitCell(atkIds[1])}
-              ${unitCell(atkIds[2])}
-            </div>
-          </div>
-
-          <div class="deckRow">
-            <div class="sideLabel def"><div>방</div><div>어</div></div>
-            <div class="unitGrid">
-              ${unitCell(defIds[0])}
-              ${unitCell(defIds[1])}
-              ${unitCell(defIds[2])}
-            </div>
-          </div>
-        </div>
-
-        <div class="expandRow">
-          <button class="expandBtn" id="${btnId}" type="button" data-act="toggle" data-target="${expandId}">
-            공격내용 펼치기 ▽
-          </button>
-        </div>
-
-        <div class="detailWrap" id="${expandId}">
-          <div class="detailGrid">
-            <div class="detailBox">
-              <div class="detailTitle">요약</div>
-              ${medalHtml(p.atkRank)}
-              <div class="detailSmall">주요사항: ${escapeHtml((p.important||"").trim() || "없음")}</div>
-              <div class="detailSmall">공격순서: ${escapeHtml(p.first || "없음")}</div>
-            </div>
-
-            <div class="detailBox">
-              <div class="detailTitle">스킬/펫</div>
-              <div class="detailSmall">스킬: ${(p.skillIds||[]).slice(0,3).map(id => (map.get(id)?.name || "없음")).join(" / ")}</div>
-              <div class="detailSmall">펫: ${map.get(p.petId)?.name || "없음"}</div>
-            </div>
-
-            <div class="detailBox">
-              <div class="detailTitle">세트 설명</div>
-              <div class="detailSmall">${escapeHtml((p.setComment||"").trim() || "없음")}</div>
-            </div>
-
-            <div class="detailBox">
-              <div class="detailTitle">진형</div>
-              <div class="detailSmall">진형: ${escapeHtml(map.get(p.formationId)?.name || "없음")}</div>
-              <div class="detailSmall">${escapeHtml((p.formationsComment||"").trim() || "없음")}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  // 이벤트 바인딩
-  listEl.querySelectorAll("[data-act]").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      const act = btn.getAttribute("data-act");
-      const slotNo = Number(btn.getAttribute("data-slot"));
-
-      if(act === "toggle"){
-        const tid = btn.getAttribute("data-target");
-        const d = document.getElementById(tid);
-        const on = d.classList.toggle("on");
-        btn.textContent = on ? "공격내용 접기 △" : "공격내용 펼치기 ▽";
-        return;
-      }
-
-      const list = loadMyPresets();
-      const p = list.find(x => Number(x.slotNo) === slotNo);
-      if(!p) return;
-
-      if(act === "fav"){
-        p.isFavorite = !p.isFavorite; // 즐찾 토글(삭제 아님)
-        saveMyPresets(list);
-        renderAtkPage();
-        toast(p.isFavorite ? "즐겨찾기 추가" : "즐겨찾기 해제");
-      }
-
-      if(act === "del"){
-        const next = list.filter(x => Number(x.slotNo) !== slotNo);
-        saveMyPresets(next);
-        renderAtkPage();
-        toast(`프리셋 ${slotNo} 제거됨`);
-      }
-    });
-  });
-}
-    // ===============================
-    // ✅ 길드전 로직 (원본 유지 + 저장기능 연결)
-    // ===============================
     function escapeHtml(str) {
       return String(str ?? "")
         .replaceAll("&", "&amp;")
@@ -1965,17 +1764,304 @@ async function renderAtkPage(){
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
     }
-function rankMedalHtml(atkRank){
-        const r = Number(atkRank);
-        if(!Number.isInteger(r) || r < 1 || r > 4) return "";
-        const cls = r === 1 ? "r1" : r === 2 ? "r2" : r === 3 ? "r3" : "r4";
-        const emoji = r === 1 ? "🥇" : r === 2 ? "🥈" : r === 3 ? "🥉" : "🏅";
+
+    function rankMedalHtml(atkRank){
+      const r = Number(atkRank);
+      if(!Number.isInteger(r) || r < 1 || r > 4) return "";
+      const cls = r === 1 ? "r1" : r === 2 ? "r2" : r === 3 ? "r3" : "r4";
+      const emoji = r === 1 ? "🥇" : r === 2 ? "🥈" : r === 3 ? "🥉" : "🏅";
+      return `
+        <div class="rankMedal ${cls}" title="${r}순위">
+          <span>${emoji} ${r}순위</span>
+        </div>
+      `;
+    }
+
+    // ✅ 프리셋 펼침: "검색 카드 UI 그대로" 생성
+    function renderPresetExpandedCard(p, map){
+      const atkIds = (p.atkIds||[]).slice(0,3);
+      const skillIds = (p.skillIds||[]).slice(0,3);
+
+      const atkArr = atkIds.map(id => map.get(id) || null);
+      const skArr  = skillIds.map(id => map.get(id) || null);
+      const pet    = p.petId ? (map.get(p.petId) || null) : null;
+
+      const importantText = String(p.important || "").trim() || "없음";
+      const formationsComment = String(p.formationsComment || "").trim() || "없음";
+      const setComment = String(p.setComment || "").trim() || "없음";
+
+      const firstText = p.first || "없음";
+      const badgeClass =
+        firstText === "선공" ? "badge red" :
+        firstText === "후공" ? "badge blue" :
+        "badge gray";
+
+      const formationUnit = p.formationId ? (map.get(p.formationId) || null) : null;
+      const formationNameText = formationUnit?.name || "없음";
+      const formationImgHtml = formationUnit?.image_url
+        ? `<img class="formationImg" src="${escapeHtml(formationUnit.image_url)}" alt="formation">`
+        : `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 64px; border-radius:12px;">없음</div>`;
+
+      const medal = rankMedalHtml(p.atkRank);
+
+      const cellHtml = (unit) => {
+        if(!unit){
+          return `
+            <div class="cell">
+              <div class="emptyBox">없음</div>
+              <div class="cap">없음</div>
+            </div>
+          `;
+        }
         return `
-          <div class="rankMedal ${cls}" title="${r}순위">
-            <span>${emoji} ${r}순위</span>
+          <div class="cell">
+            <img src="${escapeHtml(unit.image_url)}" alt="${escapeHtml(unit.name)}">
+            <div class="cap">${escapeHtml(unit.name)}</div>
           </div>
         `;
+      };
+
+      return `
+        <div class="resultToolbar" style="margin-bottom:10px;">
+          <div class="toolbarLeft">
+            <div style="font-weight:900;color:#111827;">공격내용</div>
+            ${medal}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="importantBar">
+            <div class="ico">⚠️</div>
+            <div class="txt">주요사항: ${escapeHtml(importantText)}</div>
+          </div>
+
+          <div class="layoutRows">
+            <div class="row2col">
+              <div class="panel box">
+                <div class="panelTitle">공격유닛</div>
+                <div class="grid3">
+                  ${cellHtml(atkArr[0])}
+                  ${cellHtml(atkArr[1])}
+                  ${cellHtml(atkArr[2])}
+                </div>
+              </div>
+
+              <div class="panel box small centerCol">
+                <div class="panelTitle">추천 펫</div>
+                ${pet ? `
+                  <div class="cell">
+                    <img src="${escapeHtml(pet.image_url)}" alt="${escapeHtml(pet.name)}">
+                    <div class="petName">${escapeHtml(pet.name)}</div>
+                  </div>
+                ` : `
+                  <div class="cell">
+                    <div class="emptyBox">없음</div>
+                    <div class="petName">없음</div>
+                  </div>
+                `}
+              </div>
+            </div>
+
+            <div class="row2col">
+              <div class="panel box">
+                <div class="panelTitle">스킬순서</div>
+                <div class="grid3">
+                  ${cellHtml(skArr[0])}
+                  ${cellHtml(skArr[1])}
+                  ${cellHtml(skArr[2])}
+                </div>
+              </div>
+
+              <div class="panel box small centerCol" style="align-items:center;text-align:center;">
+                <div class="panelTitle">공격순서</div>
+                <div style="width:100%;display:flex;justify-content:center;flex:1;align-items:center;">
+                  <span class="${badgeClass}">${escapeHtml(firstText)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="row2col">
+              <div class="panel box">
+                <div class="panelTitle">세트추천 및 설명</div>
+                <div class="textBox setTextBox">${escapeHtml(setComment)}</div>
+              </div>
+
+              <div class="panel box small centerCol">
+                <div class="formationWrap">
+                  ${formationImgHtml}
+                  <div class="formationName">${escapeHtml(formationNameText)}</div>
+                  <div class="formationDesc">${escapeHtml(formationsComment)}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function renderAtkPage(){
+      const listEl = document.getElementById("presetList");
+      const accountId = getStoredAccountId();
+      if(!accountId){
+        listEl.innerHTML = `<div class="rankEmpty" style="border:1px dashed #e5e7eb;border-radius:14px;background:#fff;">세션이 없습니다.</div>`;
+        return;
       }
+
+      const presets = loadMyPresets();
+
+      if(!presets.length){
+        listEl.innerHTML = `<div class="rankEmpty" style="border:1px dashed #e5e7eb;border-radius:14px;background:#fff;">저장된 공격덱이 없습니다. (길드전 검색에서 +저장)</div>`;
+        return;
+      }
+
+      // 즐겨찾기 우선, 그 다음 최신순
+      const sorted = [...presets].sort((a,b) => {
+        const fa = !!a.isFavorite, fb = !!b.isFavorite;
+        if(fa !== fb) return fb - fa;
+        return (b.createdAt||0) - (a.createdAt||0);
+      });
+
+      // 렌더에 필요한 유닛 id 모으기
+      const need = new Set();
+      sorted.forEach(p => {
+        (p.defIds||[]).forEach(id => id && need.add(id));
+        (p.atkIds||[]).forEach(id => id && need.add(id));
+        (p.skillIds||[]).forEach(id => id && need.add(id));
+        if(p.petId) need.add(p.petId);
+        if(p.formationId) need.add(p.formationId);
+      });
+
+      // DB에서 이미지/이름 로딩
+      let map = new Map();
+      try{
+        const ids = Array.from(need);
+        if(ids.length){
+          const { data, error } = await supabaseClient
+            .from("units")
+            .select("id,name,image_url,kind")
+            .in("id", ids);
+
+          if(!error){
+            map = new Map((data||[]).map(u => [u.id, u]));
+          }
+        }
+      }catch(e){
+        console.warn("preset units load fail", e);
+      }
+
+      const unitCell = (id) => {
+        const u = id ? map.get(id) : null;
+        if(!u || !u.image_url){
+          return `<div class="uCell"><div class="uEmpty">없음</div><div class="nm">없음</div></div>`;
+        }
+        return `<div class="uCell"><img src="${escapeHtml(u.image_url)}" alt="${escapeHtml(u.name)}"><div class="nm">${escapeHtml(u.name)}</div></div>`;
+      };
+
+      listEl.innerHTML = sorted.map(p => {
+        const slotNo = Number(p.slotNo || 0) || 1;
+        const fav = !!p.isFavorite;
+
+        const atkIds = (p.atkIds||[]).slice(0,3);
+        const defIds = (p.defIds||[]).slice(0,3);
+
+        const expandId = `detail_${slotNo}_${p.createdAt||0}`;
+        const btnId = `expand_${slotNo}_${p.createdAt||0}`;
+
+        return `
+          <div class="presetItem" data-slot="${slotNo}">
+            <div class="presetTopRow">
+              <div class="presetLeft">
+                <button class="starBtn ${fav ? "on":""}" type="button" data-act="fav" data-slot="${slotNo}">
+                  ${fav ? "★" : "☆"}
+                </button>
+                <div class="presetName">프리셋 ${slotNo}</div>
+              </div>
+              <button class="delBtn" type="button" data-act="del" data-slot="${slotNo}">제거</button>
+            </div>
+
+            <div class="presetBody">
+              <div class="deckRow">
+                <div class="sideLabel atk"><div>공</div><div>격</div></div>
+                <div class="unitGrid">
+                  ${unitCell(atkIds[0])}
+                  ${unitCell(atkIds[1])}
+                  ${unitCell(atkIds[2])}
+                </div>
+              </div>
+
+              <div class="deckRow">
+                <div class="sideLabel def"><div>방</div><div>어</div></div>
+                <div class="unitGrid">
+                  ${unitCell(defIds[0])}
+                  ${unitCell(defIds[1])}
+                  ${unitCell(defIds[2])}
+                </div>
+              </div>
+            </div>
+
+            <div class="expandRow">
+              <button class="expandBtn" id="${btnId}" type="button" data-act="toggle" data-target="${expandId}">
+                <span class="chev">⌄</span>
+                공격내용 펼치기
+              </button>
+            </div>
+
+            <div class="detailWrap" id="${expandId}"></div>
+          </div>
+        `;
+      }).join("");
+
+      // 이벤트 바인딩
+      listEl.querySelectorAll("[data-act]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const act = btn.getAttribute("data-act");
+          const slotNo = Number(btn.getAttribute("data-slot"));
+
+          if(act === "toggle"){
+            const tid = btn.getAttribute("data-target");
+            const d = document.getElementById(tid);
+            const card = btn.closest(".presetItem");
+            const slot = Number(card?.getAttribute("data-slot") || slotNo);
+
+            const list = loadMyPresets();
+            const p = list.find(x => Number(x.slotNo) === slot);
+
+            const on = d.classList.toggle("on");
+            if(on){
+              // ✅ 펼칠 때 "검색 카드 UI 그대로" 내용 주입
+              d.innerHTML = renderPresetExpandedCard(p, map);
+              btn.innerHTML = `<span class="chev">⌃</span> 공격내용 접기`;
+            }else{
+              d.innerHTML = "";
+              btn.innerHTML = `<span class="chev">⌄</span> 공격내용 펼치기`;
+            }
+            return;
+          }
+
+          const list = loadMyPresets();
+          const p = list.find(x => Number(x.slotNo) === slotNo);
+          if(!p) return;
+
+          if(act === "fav"){
+            p.isFavorite = !p.isFavorite;
+            saveMyPresets(list);
+            renderAtkPage();
+            toast(p.isFavorite ? "즐겨찾기 추가" : "즐겨찾기 해제");
+          }
+
+          if(act === "del"){
+            const next = list.filter(x => Number(x.slotNo) !== slotNo);
+            saveMyPresets(next);
+            renderAtkPage();
+            toast(`프리셋 ${slotNo} 제거됨`);
+          }
+        });
+      });
+    }
+
+    // ===============================
+    // ✅ 길드전 로직 (원본 유지 + 저장기능 연결)
+    // ===============================
     function initGuildWar(){
       if(window.__GUILD_INITED__) return;
       window.__GUILD_INITED__ = true;
@@ -2187,22 +2273,22 @@ function rankMedalHtml(atkRank){
         `;
       }
 
-     
-
-      // ✅ 저장: CURRENT_RESULT + 선택된 방어 슬롯 + 자동 프리셋1~10 + 자동 A~F 태그
+      // ✅ 저장: CURRENT_RESULT + 선택된 방어 슬롯 + 자동 프리셋1~10
       function addPresetFromCurrent(){
         if(!CURRENT_RESULT){
           toast("저장할 결과가 없습니다.");
           return;
         }
+
         const existing = loadMyPresets();
-  const defIds = slots.map(s => (s && s.id) ? s.id : null).filter(Boolean).slice(0,3);
-  const atkIds = (CURRENT_RESULT.atk || []).map(u => u?.id).filter(Boolean).slice(0,3);
-  const sig = `${defIds.sort().join("|")}__${atkIds.sort().join("|")}`;
-  if(existing.some(p => (p.sig === sig))){
-    toast("이미 저장됨");
-    return;
-  }
+        const defIds = slots.map(s => (s && s.id) ? s.id : null).filter(Boolean).slice(0,3);
+        const atkIds = (CURRENT_RESULT.atk || []).map(u => u?.id).filter(Boolean).slice(0,3);
+        const sig = `${defIds.sort().join("|")}__${atkIds.sort().join("|")}`;
+        if(existing.some(p => (p.sig === sig))){
+          toast("이미 저장됨");
+          return;
+        }
+
         const accountId = getStoredAccountId();
         if(!accountId){
           toast("세션이 없습니다.");
@@ -2212,7 +2298,7 @@ function rankMedalHtml(atkRank){
         const now = Date.now();
         const list = loadMyPresets();
 
-        // 1) 빈 슬롯(1~10) 찾기, 없으면 "가장 오래된 것" 덮어쓰기
+        // 1) 빈 슬롯(1~10) 찾기, 없으면 가장 오래된 것 덮어쓰기
         let targetSlot = null;
         for(let i=1;i<=10;i++){
           if(!list.find(p => Number(p.slotNo) === i)){
@@ -2221,54 +2307,31 @@ function rankMedalHtml(atkRank){
           }
         }
         if(!targetSlot){
-          // 가장 오래된(즐찾 포함) 하나 덮어쓰기
           const sortedOld = [...list].sort((a,b) => (a.createdAt||0) - (b.createdAt||0));
           targetSlot = Number(sortedOld[0]?.slotNo || 1);
         }
 
-        // 2) 자동 태그 A~F (슬롯 기반)
-        const tag = lettersAuto(targetSlot - 1);
+        const preset = {
+          slotNo: targetSlot,
+          sig,
+          isFavorite: false,
+          createdAt: now,
 
-        // 3) 방어 유닛 텍스트
-        const defUnits = slots.map(s => normalizeUnit(s));
-        const defKeyText = defUnits.map(x => x?.name || "없음").join(" / ");
+          // ✅ 프리셋 핵심: 공격/방어
+          atkIds: (CURRENT_RESULT.atk || []).map(u => u?.id).filter(Boolean).slice(0,3),
+          defIds: slots.map(s => s?.id).filter(Boolean).slice(0,3),
 
-        // 4) 저장 당시 카드 그대로 렌더를 위해 "필요 데이터"를 스냅샷
-        const snap = {
-          result_id: CURRENT_RESULT.result_id ?? null,
-          atk_rank: CURRENT_RESULT.atk_rank ?? null,
+          // ✅ 펼치기용 상세(검색 카드와 동일 정보)
+          atkRank: CURRENT_RESULT.atk_rank ?? null,
           first: CURRENT_RESULT.first ?? "없음",
           important: CURRENT_RESULT.important ?? "",
-          formations_comment: CURRENT_RESULT.formations_comment ?? "",
-          set_comment: CURRENT_RESULT.set_comment ?? "",
-          formationUnit: normalizeUnit(CURRENT_RESULT.formationUnit || null),
-          atk: (CURRENT_RESULT.atk || []).map(normalizeUnit),
-          skill: (CURRENT_RESULT.skill || []).map(normalizeUnit),
-          pet: normalizeUnit(CURRENT_RESULT.pet || null),
+          setComment: CURRENT_RESULT.set_comment ?? "",
+          skillIds: (CURRENT_RESULT.skill || []).map(u => u?.id).filter(Boolean).slice(0,3),
+          petId: CURRENT_RESULT.pet?.id ?? null,
+          formationId: CURRENT_RESULT.formationUnit?.id ?? null,
+          formationsComment: CURRENT_RESULT.formations_comment ?? ""
         };
 
-       const preset = {
-  slotNo: targetSlot,
-  sig,
-  isFavorite: false,
-  createdAt: now,
-
-  // ✅ 프리셋 핵심: 공격/방어
-  atkIds: (CURRENT_RESULT.atk || []).map(u => u?.id).filter(Boolean).slice(0,3),
-  defIds: slots.map(s => s?.id).filter(Boolean).slice(0,3),
-
-  // ✅ 펼치기용 상세
-  atkRank: CURRENT_RESULT.atk_rank ?? null,
-  first: CURRENT_RESULT.first ?? "없음",
-  important: CURRENT_RESULT.important ?? "",
-  setComment: CURRENT_RESULT.set_comment ?? "",
-  skillIds: (CURRENT_RESULT.skill || []).map(u => u?.id).filter(Boolean).slice(0,3),
-  petId: CURRENT_RESULT.pet?.id ?? null,
-  formationId: CURRENT_RESULT.formationUnit?.id ?? null,
-  formationsComment: CURRENT_RESULT.formations_comment ?? ""
-};
-
-        // 5) 같은 슬롯 있으면 교체
         const next = list.filter(p => Number(p.slotNo) !== targetSlot);
         next.push(preset);
         saveMyPresets(next);
@@ -2320,16 +2383,15 @@ function rankMedalHtml(atkRank){
             </div>
 
             ${(() => {
-  // ✅ 저장 상태 계산(렌더 시점)
-  const list = loadMyPresets();
-  const defIds = slots.map(s => s?.id).filter(Boolean).slice(0,3);
-  const atkIds = (r?.atk || []).map(u => u?.id).filter(Boolean).slice(0,3);
-  const sig = `${defIds.sort().join("|")}__${atkIds.sort().join("|")}`;
-  const saved = list.some(p => p.sig === sig);
-  const txt = saved ? "추가됨" : "+저장";
-  const dis = saved ? "disabled" : "";
-  return `<button class="pagerBtn" id="btnSavePreset" type="button" ${dis}>${txt}</button>`;
-})()}
+              const list = loadMyPresets();
+              const defIds = slots.map(s => s?.id).filter(Boolean).slice(0,3);
+              const atkIds = (r?.atk || []).map(u => u?.id).filter(Boolean).slice(0,3);
+              const sig = `${defIds.sort().join("|")}__${atkIds.sort().join("|")}`;
+              const saved = list.some(p => p.sig === sig);
+              const txt = saved ? "추가됨" : "+저장";
+              const dis = saved ? "disabled" : "";
+              return `<button class="pagerBtn" id="btnSavePreset" type="button" ${dis}>${txt}</button>`;
+            })()}
 
             <div class="pager">
               <button class="pagerBtn" id="btnPrev" type="button" ${(!hasAny || idx===0) ? "disabled":""}>◀</button>
@@ -2407,14 +2469,14 @@ function rankMedalHtml(atkRank){
           </div>
         `;
 
-       
-const saveBtn = document.getElementById("btnSavePreset");
-if(saveBtn){
-  saveBtn.addEventListener("click", () => {
-    addPresetFromCurrent();
-    renderSingleResult();
-  });
-}
+        const saveBtn = document.getElementById("btnSavePreset");
+        if(saveBtn){
+          saveBtn.addEventListener("click", () => {
+            addPresetFromCurrent();
+            renderSingleResult();
+          });
+        }
+
         const prevBtn = document.getElementById("btnPrev");
         const nextBtn = document.getElementById("btnNext");
 
@@ -2431,118 +2493,6 @@ if(saveBtn){
           }
         });
       }
-
-      // ✅ 저장된 카드(내 공격덱 페이지) 렌더: "저장 당시 검색결과 카드 그대로"
-      window.renderResultCardFromSaved = function(p){
-        const snap = p?.snap || null;
-        if(!snap){
-          return `<div class="rankEmpty" style="border:1px solid #e5e7eb;border-radius:14px;background:#fff;">저장 데이터 없음</div>`;
-        }
-
-        const importantText = (snap.important ?? "").trim() || "없음";
-        const formationsComment = (snap.formations_comment ?? "").trim() || "없음";
-        const setComment = (snap.set_comment ?? "").trim() || "없음";
-
-        const firstText = snap.first ?? "없음";
-        const badgeClass =
-          firstText === "선공" ? "badge red" :
-          firstText === "후공" ? "badge blue" :
-          "badge gray";
-
-        const medal = rankMedalHtml(snap.atk_rank);
-
-        const formationUnit = snap.formationUnit || null;
-        const formationNameText = formationUnit?.name || "없음";
-        const formationImgHtml = formationUnit?.image_url
-          ? `<img class="formationImg" src="${escapeHtml(formationUnit.image_url)}" alt="formation">`
-          : `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 64px; border-radius:12px;">없음</div>`;
-
-        const atkArr = Array.isArray(snap.atk) ? snap.atk : [null,null,null];
-        const skArr = Array.isArray(snap.skill) ? snap.skill : [null,null,null];
-        const pet = snap.pet || null;
-
-        return `
-          <div class="resultBox" style="margin-top:8px;">
-            <div class="resultToolbar" style="margin-bottom:10px;">
-              <div class="toolbarLeft">
-                <div style="font-weight:900;color:#111827;">저장된 카드</div>
-                ${medal}
-              </div>
-              <div style="display:flex;gap:8px;align-items:center;">
-                <button class="pagerBtn" type="button" disabled>+저장</button>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="importantBar">
-                <div class="ico">⚠️</div>
-                <div class="txt">주요사항: ${escapeHtml(importantText)}</div>
-              </div>
-
-              <div class="layoutRows">
-                <div class="row2col">
-                  <div class="panel box">
-                    <div class="panelTitle">공격유닛</div>
-                    <div class="grid3">
-                      ${cellHtml(atkArr[0])}
-                      ${cellHtml(atkArr[1])}
-                      ${cellHtml(atkArr[2])}
-                    </div>
-                  </div>
-
-                  <div class="panel box small centerCol">
-                    <div class="panelTitle">추천 펫</div>
-                    ${pet ? `
-                      <div class="cell">
-                        <img src="${pet.image_url}" alt="${escapeHtml(pet.name)}">
-                        <div class="petName">${escapeHtml(pet.name)}</div>
-                      </div>
-                    ` : `
-                      <div class="cell">
-                        <div class="emptyBox">없음</div>
-                        <div class="petName">없음</div>
-                      </div>
-                    `}
-                  </div>
-                </div>
-
-                <div class="row2col">
-                  <div class="panel box">
-                    <div class="panelTitle">스킬순서</div>
-                    <div class="grid3">
-                      ${cellHtml(skArr[0])}
-                      ${cellHtml(skArr[1])}
-                      ${cellHtml(skArr[2])}
-                    </div>
-                  </div>
-
-                  <div class="panel box small centerCol" style="align-items:center;text-align:center;">
-                    <div class="panelTitle">공격순서</div>
-                    <div style="width:100%;display:flex;justify-content:center;flex:1;align-items:center;">
-                      <span class="${badgeClass}">${escapeHtml(firstText)}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row2col">
-                  <div class="panel box">
-                    <div class="panelTitle">세트추천 및 설명</div>
-                    <div class="textBox setTextBox">${escapeHtml(setComment)}</div>
-                  </div>
-
-                  <div class="panel box small centerCol">
-                    <div class="formationWrap">
-                      ${formationImgHtml}
-                      <div class="formationName">${escapeHtml(formationNameText)}</div>
-                      <div class="formationDesc">${escapeHtml(formationsComment)}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-      };
 
       document.getElementById("btnReset").addEventListener("click", () => {
         slots[0]=slots[1]=slots[2]=null;
@@ -2962,8 +2912,12 @@ if(saveBtn){
       updateResultHint();
       loadUnits();
     }
+
+    // ✅ 페이지 최초: 탭 전환은 대문에서
+    // (내 공격덱 진입했을 때 바로 렌더되도록 안전장치)
+    if(localStorage.getItem(SESSION_KEY) === "1"){
+      // nothing
+    }
   </script>
 </body>
 </html>
-
-
