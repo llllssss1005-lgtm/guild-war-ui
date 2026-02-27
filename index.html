@@ -1852,25 +1852,31 @@ function isNoneRing(v){
   const t = setTimeout(async () => {
     try{
       // ✅ DB에는 null로 저장 (none/""/null => null)
-      const ring_ids_to_save = (p.atk_ring_ids || []).slice(0,3).map(v => isNoneRing(v) ? null : v);
-      const ring_stars_to_save = (p.atk_ring_stars || []).slice(0,3).map(v => {
-        const n = Number(v || 4);
-        return Math.max(4, Math.min(6, n));
-      });
+      const ring_ids_to_save = (p.atk_ring_ids || []).slice(0,3).map(v => (v == null || v === "" || v === "none") ? "none" : v);
+const ring_stars_to_save = (p.atk_ring_stars || []).slice(0,3).map(x => {
+  const n = Number(x || 4);
+  return Math.max(4, Math.min(6, n));
+});
 
-      console.log("[SAVE ring_ids]", p.atk_ring_ids, "=>", ring_ids_to_save);
+console.log("[SAVE ring_ids]", p.atk_ring_ids, "=>", ring_ids_to_save);
 
-      await dbUpdatePresetRings(presetId, ring_ids_to_save, ring_stars_to_save);
-    }catch(e){
-      console.error("ring save fail", e);
-      const msg = String(e?.message || e || "");
-      if(msg.toLowerCase().includes("unauthorized")){
-        failGate("접근 권한이 없거나 비활성화된 코드입니다. 관리자에게 문의해주세요.");
-        return;
-      }
-      toast("반지 저장 실패");
+const t = setTimeout(async () => {
+  try{
+    console.log("[RING SAVE] sending", presetId, ring_ids_to_save, ring_stars_to_save);
+
+    const ok = await dbUpdatePresetRings(presetId, ring_ids_to_save, ring_stars_to_save);
+
+    console.log("[RING SAVE] done", ok);
+  }catch(e){
+    console.error("[RING SAVE] fail", e);
+    const msg = String(e?.message || e || "");
+    toast("반지 저장 실패: " + msg.slice(0,80));
+    if(msg.toLowerCase().includes("unauthorized")){
+      failGate("접근 권한이 없거나 비활성화된 코드입니다. 관리자에게 문의해주세요.");
+      return;
     }
-  }, 280);
+  }
+}, 280);
 
   RING_SAVE_TIMER.set(presetId, t);
 }
@@ -3167,6 +3173,7 @@ function isNoneRing(v){
   </script>
 </body>
 </html>
+
 
 
 
