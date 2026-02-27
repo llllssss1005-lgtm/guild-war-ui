@@ -1496,15 +1496,17 @@
 
     // ✅ 공용: DB 프리셋 목록
     async function dbListPresets(){
-      const creds = getStoredCreds();
-      if(!creds) throw new Error("no_session");
-      const { data, error } = await supabaseClient.rpc("list_guild_presets", {
-        p_account_id: creds.id,
-        p_code: creds.code
-      });
-      if(error) throw error;
-      return Array.isArray(data) ? data : [];
-    }
+  const creds = getStoredCreds();
+  if(!creds) throw new Error("no_session");
+
+  const { data, error } = await supabaseClient.rpc("list_guild_presets", {
+    p_account_id: creds.id,
+    p_code: creds.code
+  });
+
+  if(error) throw error;
+  return Array.isArray(data) ? data : [];
+}
 
     // ✅ 공용: DB 프리셋 삭제
     async function dbDeletePreset(presetId){
@@ -2053,7 +2055,7 @@
       try{
         presets = await dbListPresets();
       }catch(e){
-        console.error("list_guild_atk_presets error", e);
+        console.error("list_guild_presets error", e);
         listEl.innerHTML = `<div class="rankEmpty" style="border:1px dashed #e5e7eb;border-radius:14px;background:#fff;">프리셋을 불러오지 못했습니다.</div>`;
         return;
       }
@@ -3133,5 +3135,6 @@
   </script>
 </body>
 </html>
+
 
 
