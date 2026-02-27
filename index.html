@@ -1496,17 +1496,17 @@
 
     // ✅ 공용: DB 프리셋 목록
     async function dbListPresets(){
-  const creds = getStoredCreds();
-  if(!creds) throw new Error("no_session");
+      const creds = getStoredCreds();
+      if(!creds) throw new Error("no_session");
 
-  const { data, error } = await supabaseClient.rpc("list_guild_presets", {
-    p_account_id: creds.id,
-    p_code: creds.code
-  });
+      const { data, error } = await supabaseClient.rpc("list_guild_presets", {
+        p_account_id: creds.id,
+        p_code: creds.code
+      });
 
-  if(error) throw error;
-  return Array.isArray(data) ? data : [];
-}
+      if(error) throw error;
+      return Array.isArray(data) ? data : [];
+    }
 
     // ✅ 공용: DB 프리셋 삭제
     async function dbDeletePreset(presetId){
@@ -1535,16 +1535,12 @@
     }
 
     // ✅ NEW: 반지/별 자동 저장
-    // - 1순위: RPC update_guild_preset_rings 사용
-    // - RPC가 없어서 404면: 테이블 직접 update fallback (기본 테이블명: guild_atk_presets)
-    //   ⚠️ 만약 테이블명이 다르면 아래 TABLE_PRESETS만 바꿔줘.
     const TABLE_PRESETS = "guild_atk_presets";
 
     async function dbUpdatePresetRings(presetId, ringIds, ringStars){
       const creds = getStoredCreds();
       if(!creds) throw new Error("no_session");
 
-      // 1) RPC 시도
       try{
         const { data, error } = await supabaseClient.rpc("update_guild_preset_rings", {
           p_account_id: creds.id,
@@ -1556,13 +1552,10 @@
         if(error) throw error;
         return data === true;
       }catch(e){
-        // 404 / Not Found / function not found 계열이면 fallback
         const msg = String(e?.message || e || "");
         const isNotFound = msg.includes("404") || msg.toLowerCase().includes("not found") || msg.toLowerCase().includes("function");
         if(!isNotFound) throw e;
 
-        // 2) 테이블 직접 update fallback
-        // (RLS 때문에 실패할 수도 있음. 그래도 RPC가 없을 때 가능한 최선)
         const { error: uerr } = await supabaseClient
           .from(TABLE_PRESETS)
           .update({
@@ -1667,18 +1660,16 @@
     let PRESET_ID_TO_SIG = new Map();
 
     // ✅ 반지 마스터(Units.kind=ring)
-    let RINGS = [];          // [{id,name,image_url}]
-    let RING_MAP = new Map();// id -> ring
+    let RINGS = [];
+    let RING_MAP = new Map();
     let RINGS_LOADED = false;
 
     const ringModalBack = document.getElementById("ringModalBack");
     const ringListEl = document.getElementById("ringList");
     const btnRingClose = document.getElementById("btnRingClose");
 
-    // 현재 어떤 preset/idx 편집중인지
     let RING_EDIT = { presetId:null, idx:0 };
 
-    // ✅ presetId별 저장 디바운스
     const RING_SAVE_TIMER = new Map();
 
     function makeSig(defIds, atkIds){
@@ -1771,7 +1762,6 @@
     });
 
     function renderRingModalList(){
-      // 없음 + ring 3개(가능한 만큼)
       const picks = (RINGS || []).slice(0,3);
 
       const noneHtml = `
@@ -1822,35 +1812,6 @@
       }
     }
 
-    function updateAtkCellDom(presetId, idx){
-      const root = document.querySelector(`.presetItem[data-preset="${CSS.escape(String(presetId))}"]`);
-      if(!root) return;
-
-      const ringBox = root.querySelector(`.atkRingBox[data-preset="${CSS.escape(String(presetId))}"][data-i="${idx}"]`);
-      const starsEl = root.querySelector(`.atkStars[data-preset="${CSS.escape(String(presetId))}"][data-i="${idx}"]`);
-      if(!ringBox || !starsEl) return;
-
-      const p = findPreset(presetId);
-      if(!p) return;
-      ensureRingArrays(p);
-
-      const ringId = p.atk_ring_ids[idx] || null;
-      const star = p.atk_ring_stars[idx] || 4;
-
-      if(!ringId){
-        ringBox.innerHTML = `<span style="font-weight:1000;color:#2563eb;">+</span>`;
-        starsEl.innerHTML = starsHtml(4);
-        starsEl.classList.add("off");
-      }else{
-        const ring = RING_MAP.get(ringId) || null;
-        ringBox.innerHTML = ring?.image_url
-          ? `<img src="${escapeHtml(ring.image_url)}" alt="ring" onerror="this.style.display='none'">`
-          : `<span style="font-weight:1000;color:#6b7280;">R</span>`;
-        starsEl.innerHTML = starsHtml(star);
-        starsEl.classList.remove("off");
-      }
-    }
-
     function scheduleRingSave(presetId){
       const p = findPreset(presetId);
       if(!p) return;
@@ -1884,7 +1845,7 @@
       ensureRingArrays(p);
 
       p.atk_ring_ids[idx] = ringIdOrNull || null;
-      p.atk_ring_stars[idx] = 4; // 기본 4
+      p.atk_ring_stars[idx] = 4;
 
       updateAtkCellDom(presetId, idx);
       scheduleRingSave(presetId);
@@ -1895,7 +1856,7 @@
       if(!p) return;
       ensureRingArrays(p);
 
-      if(!p.atk_ring_ids[idx]) return; // 반지 없으면 별 변경 X
+      if(!p.atk_ring_ids[idx]) return;
 
       const cur = Math.max(4, Math.min(6, Number(p.atk_ring_stars[idx] || 4)));
       const next = cur === 4 ? 5 : cur === 5 ? 6 : 4;
@@ -1903,6 +1864,35 @@
 
       updateAtkCellDom(presetId, idx);
       scheduleRingSave(presetId);
+    }
+
+    function updateAtkCellDom(presetId, idx){
+      const root = document.querySelector(`.presetItem[data-preset="${CSS.escape(String(presetId))}"]`);
+      if(!root) return;
+
+      const ringBox = root.querySelector(`.atkRingBox[data-id="${CSS.escape(String(presetId))}"][data-i="${idx}"]`);
+      const starsEl = root.querySelector(`.atkStars[data-preset="${CSS.escape(String(presetId))}"][data-i="${idx}"]`);
+      if(!ringBox || !starsEl) return;
+
+      const p = findPreset(presetId);
+      if(!p) return;
+      ensureRingArrays(p);
+
+      const ringId = p.atk_ring_ids[idx] || null;
+      const star = p.atk_ring_stars[idx] || 4;
+
+      if(!ringId){
+        ringBox.innerHTML = `<span style="font-weight:1000;color:#2563eb;">+</span>`;
+        starsEl.innerHTML = starsHtml(4);
+        starsEl.classList.add("off");
+      }else{
+        const ring = RING_MAP.get(ringId) || null;
+        ringBox.innerHTML = ring?.image_url
+          ? `<img src="${escapeHtml(ring.image_url)}" alt="ring" onerror="this.style.display='none'">`
+          : `<span style="font-weight:1000;color:#6b7280;">R</span>`;
+        starsEl.innerHTML = starsHtml(star);
+        starsEl.classList.remove("off");
+      }
     }
 
     function rankMedalHtml(atkRank){
@@ -1917,7 +1907,6 @@
       `;
     }
 
-    // ✅ 프리셋 펼침: "검색 카드 UI 그대로" (원본 유지)
     function renderPresetExpandedCard(p, map){
       const atkIds = (p.atk_ids||[]).slice(0,3);
       const skillIds = (p.skill_ids||[]).slice(0,3);
@@ -2075,7 +2064,6 @@
         PRESET_ID_TO_SIG.set(p.preset_id, sig);
       });
 
-      // 렌더에 필요한 유닛 id 모으기
       const need = new Set();
       presets.forEach(p => {
         (p.def_ids||[]).forEach(id => id && need.add(id));
@@ -2102,7 +2090,6 @@
         console.warn("preset units load fail", e);
       }
 
-      // 공통(방어) 셀
       const unitCellDef = (id) => {
         const u = id ? map.get(id) : null;
         if(!u || !u.image_url){
@@ -2111,7 +2098,6 @@
         return `<div class="uCell"><img src="${escapeHtml(u.image_url)}" alt="${escapeHtml(u.name)}" onerror="this.style.display='none'"><div class="nm">${escapeHtml(u.name)}</div></div>`;
       };
 
-      // 공격 셀(세로형): 유닛이미지 / 이름 / 반지이미지 / 별6개
       const atkCell = (presetId, idx, unitId, ringId, starCnt) => {
         const u = unitId ? map.get(unitId) : null;
         const ring = ringId ? (RING_MAP.get(ringId) || null) : null;
@@ -2121,10 +2107,10 @@
           : `<div class="atkUnitImg"><span style="font-weight:1000;color:#9ca3af;">없음</span></div>`;
 
         const ringHtml = ring && ring.image_url
-          ? `<div class="atkRingBox" title="반지 변경" data-act="ring" data-id="${escapeHtml(presetId)}" data-i="${idx}">
+          ? `<div class="atkRingBox" title="반지 변경" data-id="${escapeHtml(presetId)}" data-i="${idx}">
               <img src="${escapeHtml(ring.image_url)}" alt="ring" onerror="this.style.display='none'">
             </div>`
-          : `<div class="atkRingBox" title="반지 선택" data-act="ring" data-id="${escapeHtml(presetId)}" data-i="${idx}">
+          : `<div class="atkRingBox" title="반지 선택" data-id="${escapeHtml(presetId)}" data-i="${idx}">
               <span style="font-weight:1000;color:#2563eb;">+</span>
             </div>`;
 
@@ -2139,7 +2125,6 @@
             ${ringHtml}
             <div class="atkStars ${hasRing ? "" : "off"}"
                  title="성급 변경"
-                 data-act="star"
                  data-preset="${escapeHtml(presetId)}"
                  data-i="${idx}">${stars}</div>
           </div>
@@ -2205,85 +2190,81 @@
         `;
       }).join("");
 
-     
-    // ✅ 통합 클릭 이벤트 (이것만 남겨)
-listEl.addEventListener("click", async (e) => {
+      // ✅ [FIX] renderAtkPage 호출될 때마다 addEventListener 중복 방지
+      listEl.onclick = async (e) => {
+        const ringBtn = e.target.closest(".atkRingBox");
+        if (ringBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          const presetId = ringBtn.getAttribute("data-id");
+          const idx = Number(ringBtn.getAttribute("data-i") || 0);
+          await loadRingsOnce();
+          openRingModal(presetId, idx);
+          return;
+        }
 
-  // 1) ✅ 반지 먼저 처리 (data-act="ring" 이든 뭐든 상관없이 .atkRingBox 우선)
-  const ringBtn = e.target.closest(".atkRingBox");
-  if (ringBtn) {
-    e.preventDefault();
-    e.stopPropagation();
-    const presetId = ringBtn.getAttribute("data-id");
-    const idx = Number(ringBtn.getAttribute("data-i") || 0);
-    await loadRingsOnce();
-    openRingModal(presetId, idx);
-    return;
-  }
+        const starBtn = e.target.closest(".atkStars");
+        if (starBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          const presetId = starBtn.getAttribute("data-preset");
+          const idx = Number(starBtn.getAttribute("data-i") || 0);
+          cycleStars(presetId, idx);
+          return;
+        }
 
-  // 2) ✅ 별 먼저 처리
-  const starBtn = e.target.closest(".atkStars");
-  if (starBtn) {
-    e.preventDefault();
-    e.stopPropagation();
-    const presetId = starBtn.getAttribute("data-preset");
-    const idx = Number(starBtn.getAttribute("data-i") || 0);
-    cycleStars(presetId, idx);
-    return;
-  }
+        const btn = e.target.closest("[data-act]");
+        if (!btn) return;
 
-  // 3) 나머지 버튼(toggle/fav/del) 처리
-  const btn = e.target.closest("[data-act]");
-  if (!btn) return;
+        const act = btn.getAttribute("data-act");
+        const presetId = btn.getAttribute("data-id");
 
-  const act = btn.getAttribute("data-act");
-  const presetId = btn.getAttribute("data-id");
+        if (act === "toggle") {
+          const tid = btn.getAttribute("data-target");
+          const d = document.getElementById(tid);
+          const on = d.classList.toggle("on");
 
-  if (act === "toggle") {
-    const tid = btn.getAttribute("data-target");
-    const d = document.getElementById(tid);
-    const on = d.classList.toggle("on");
+          if (on) {
+            const p = ATK_PRESETS_CACHE.find(x => String(x.preset_id) === String(presetId));
+            d.innerHTML = renderPresetExpandedCard(p, map);
+            btn.innerHTML = `<span class="chev">⌃</span> 공격내용 접기`;
+          } else {
+            d.innerHTML = "";
+            btn.innerHTML = `<span class="chev">⌄</span> 공격내용 펼치기`;
+          }
+          return;
+        }
 
-    if (on) {
-      const p = ATK_PRESETS_CACHE.find(x => String(x.preset_id) === String(presetId));
-      d.innerHTML = renderPresetExpandedCard(p, map);
-      btn.innerHTML = `<span class="chev">⌃</span> 공격내용 접기`;
-    } else {
-      d.innerHTML = "";
-      btn.innerHTML = `<span class="chev">⌄</span> 공격내용 펼치기`;
-    }
-    return;
-  }
+        if (act === "fav") {
+          if (!presetId) return;
+          try {
+            await dbToggleFavorite(presetId);
+            toast("즐겨찾기 변경");
+            renderAtkPage();
+          } catch (e2) {
+            console.error("toggle fav fail", e2);
+            toast("즐겨찾기 실패");
+          }
+          return;
+        }
 
-  // fav/del 은 presetId 필요할 때만 체크
-  if (act === "fav") {
-    if (!presetId) return;
-    try {
-      await dbToggleFavorite(presetId);
-      toast("즐겨찾기 변경");
-      renderAtkPage();
-    } catch (e2) {
-      console.error("toggle fav fail", e2);
-      toast("즐겨찾기 실패");
-    }
-    return;
-  }
+        if (act === "del") {
+          if (!presetId) return;
+          try {
+            await dbDeletePreset(presetId);
+            const sig = PRESET_ID_TO_SIG.get(presetId);
+            if (sig) PRESET_SIG_SET.delete(sig);
+            toast("삭제 완료");
+            renderAtkPage();
+          } catch (e2) {
+            console.error("delete fail", e2);
+            toast("삭제 실패");
+          }
+          return;
+        }
+      };
+    } // ✅ [FIX] renderAtkPage 제대로 닫기
 
-  if (act === "del") {
-    if (!presetId) return;
-    try {
-      await dbDeletePreset(presetId);
-      const sig = PRESET_ID_TO_SIG.get(presetId);
-      if (sig) PRESET_SIG_SET.delete(sig);
-      toast("삭제 완료");
-      renderAtkPage();
-    } catch (e2) {
-      console.error("delete fail", e2);
-      toast("삭제 실패");
-    }
-    return;
-  }
-});
     // ===============================
     // ✅ 길드전 로직 (원본 유지 + DB 저장기능 연결)
     // ===============================
@@ -2358,7 +2339,6 @@ listEl.addEventListener("click", async (e) => {
       const statusText = document.getElementById("statusText");
       const resultBox = document.getElementById("resultBox");
 
-      // TOP5
       const topTrackEl = document.getElementById("topTrack");
       const rankListEl = document.getElementById("rankList");
 
@@ -2499,7 +2479,6 @@ listEl.addEventListener("click", async (e) => {
         `;
       }
 
-      // ✅ DB 저장: CURRENT_RESULT + 선택된 방어 슬롯
       async function savePresetFromCurrentDB(){
         const creds = getStoredCreds();
         if(!creds){
@@ -2757,7 +2736,6 @@ listEl.addEventListener("click", async (e) => {
             .sort()
             .join("|");
 
-          // 🔥 검색 로그 기록
           try {
             const creds = getStoredCreds();
             if (creds) {
@@ -2829,8 +2807,6 @@ listEl.addEventListener("click", async (e) => {
             const skill = [r.skill_1, r.skill_2, r.skill_3].map(id => unitMap.get(id) || null);
             const pet = unitMap.get(r.pet) || null;
 
-            const formationUnit = r.formations ? (unitMap.get(r.formations) || null) : null;
-
             return {
               result_id: r.result_id,
               atk_rank: r.atk_rank ?? null,
@@ -2842,7 +2818,6 @@ listEl.addEventListener("click", async (e) => {
               atk,
               skill,
               pet,
-              formationUnit,
               def_key: r.def_key ?? defKey
             };
           });
@@ -3141,8 +3116,3 @@ listEl.addEventListener("click", async (e) => {
   </script>
 </body>
 </html>
-
-
-
-
-
