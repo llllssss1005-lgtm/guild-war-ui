@@ -960,6 +960,19 @@
   border-radius: 16px;
   padding: 12px;
 }
+    /* ✅ 세로 라벨(공격/방어) 원래대로 복구 */
+.sideLabel{
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: .06em;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+}
     .presetTopRow{
       display:flex; align-items:center; justify-content:space-between;
       gap:10px; padding:10px 10px;
@@ -3138,4 +3151,5 @@
   </script>
 </body>
 </html>
+
 
