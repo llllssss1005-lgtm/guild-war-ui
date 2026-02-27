@@ -2254,30 +2254,79 @@
         });
       });
 
-      // ✅ 반지 클릭
-      listEl.querySelectorAll('.atkRingBox[data-act="ring"]').forEach(el => {
-        el.addEventListener("click", async (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const presetId = el.getAttribute("data-id");
-          const idx = Number(el.getAttribute("data-i") || 0);
-          await loadRingsOnce();
-          openRingModal(presetId, idx);
-        });
-      });
+     // 🔥 통합 클릭 이벤트 (이걸로 교체)
+listEl.addEventListener("click", async (e) => {
 
-      // ✅ 별 클릭
-      listEl.querySelectorAll('.atkStars[data-act="star"]').forEach(el => {
-        el.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const presetId = el.getAttribute("data-preset");
-          const idx = Number(el.getAttribute("data-i") || 0);
-          cycleStars(presetId, idx);
-        });
-      });
+  const btn = e.target.closest("[data-act]");
+  if (btn) {
+    const act = btn.getAttribute("data-act");
+    const presetId = btn.getAttribute("data-id");
+
+    if (act === "toggle") {
+      const tid = btn.getAttribute("data-target");
+      const d = document.getElementById(tid);
+      const on = d.classList.toggle("on");
+
+      if (on) {
+        const p = ATK_PRESETS_CACHE.find(x => String(x.preset_id) === String(presetId));
+        d.innerHTML = renderPresetExpandedCard(p, map);
+        btn.innerHTML = `<span class="chev">⌃</span> 공격내용 접기`;
+      } else {
+        d.innerHTML = "";
+        btn.innerHTML = `<span class="chev">⌄</span> 공격내용 펼치기`;
+      }
+      return;
     }
 
+    if (!presetId) return;
+
+    if (act === "fav") {
+      try {
+        await dbToggleFavorite(presetId);
+        toast("즐겨찾기 변경");
+        renderAtkPage();
+      } catch (e2) {
+        console.error("toggle fav fail", e2);
+        toast("즐겨찾기 실패");
+      }
+      return;
+    }
+
+    if (act === "del") {
+      try {
+        await dbDeletePreset(presetId);
+        const sig = PRESET_ID_TO_SIG.get(presetId);
+        if (sig) PRESET_SIG_SET.delete(sig);
+        toast("삭제 완료");
+        renderAtkPage();
+      } catch (e2) {
+        console.error("delete fail", e2);
+        toast("삭제 실패");
+      }
+      return;
+    }
+  }
+
+  // ✅ 반지 클릭
+  const ringBtn = e.target.closest(".atkRingBox");
+  if (ringBtn) {
+    const presetId = ringBtn.getAttribute("data-id");
+    const idx = Number(ringBtn.getAttribute("data-i") || 0);
+    await loadRingsOnce();
+    openRingModal(presetId, idx);
+    return;
+  }
+
+  // ✅ 별 클릭
+  const starBtn = e.target.closest(".atkStars");
+  if (starBtn) {
+    const presetId = starBtn.getAttribute("data-preset");
+    const idx = Number(starBtn.getAttribute("data-i") || 0);
+    cycleStars(presetId, idx);
+    return;
+  }
+
+});
     // ===============================
     // ✅ 길드전 로직 (원본 유지 + DB 저장기능 연결)
     // ===============================
@@ -3135,6 +3184,7 @@
   </script>
 </body>
 </html>
+
 
 
 
