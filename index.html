@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>길드전</title>
 
-  
   <style>
     :root{
       --bg:#ffffff;
@@ -1495,9 +1494,6 @@
     const LS_ACCOUNT_ID = "guild_account_id";
     const LS_CODE = "guild_code";
 
-    // ✅ preset 저장 키(계정별)
-    const PRESET_KEY = (accountId) => `guild_my_atk_presets_v2_${accountId}`;
-
     // ✅ 페이지(뷰) 전환
     const tabBarEl = document.getElementById("tabBar");
     const tabSearchEl = document.getElementById("tabSearch");
@@ -1542,9 +1538,11 @@
       localStorage.removeItem(LS_CODE);
     }
 
-    function getStoredAccountId(){
+    function getStoredCreds(){
       const id = Number(localStorage.getItem(LS_ACCOUNT_ID));
-      return Number.isInteger(id) ? id : null;
+      const code = Number(localStorage.getItem(LS_CODE));
+      if(!Number.isInteger(id) || !Number.isInteger(code)) return null;
+      return { id, code };
     }
 
     function showTabs(){
@@ -1586,7 +1584,7 @@
       viewAtkEl.style.display = "block";
       showTabs();
       setActiveTab("atk");
-      renderAtkPage();
+      renderAtkPage(); // ✅ DB에서 프리셋 불러오기
     }
 
     tabSearchEl.addEventListener("click", showSearchView);
@@ -1625,19 +1623,27 @@
       return { ok:true, id, code };
     }
 
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
     btnKakao.addEventListener("click", () => {
       window.open(KAKAO_LINK, "_blank", "noopener");
     });
 
     // ✅ 공용: 현재 저장된 계정으로 접근권한 확인 (RPC)
     async function checkAccessByStored(){
-      const id = Number(localStorage.getItem(LS_ACCOUNT_ID));
-      const code = Number(localStorage.getItem(LS_CODE));
-      if(!Number.isInteger(id) || !Number.isInteger(code)) return false;
+      const creds = getStoredCreds();
+      if(!creds) return false;
 
       const { data, error } = await supabaseClient.rpc("check_guild_access_code", {
-        p_account_id: id,
-        p_code: code
+        p_account_id: creds.id,
+        p_code: creds.code
       });
 
       if(error){
@@ -1645,6 +1651,57 @@
         return null;
       }
       return data === true;
+    }
+
+    // ✅ 공용: DB 프리셋 목록
+    async function dbListPresets(){
+      const creds = getStoredCreds();
+      if(!creds) throw new Error("no_session");
+      const { data, error } = await supabaseClient.rpc("list_guild_presets", {
+        p_account_id: creds.id,
+        p_code: creds.code
+      });
+      if(error) throw error;
+      return Array.isArray(data) ? data : [];
+    }
+
+    // ✅ 공용: DB 프리셋 삭제
+    async function dbDeletePreset(presetId){
+      const creds = getStoredCreds();
+      if(!creds) throw new Error("no_session");
+      const { data, error } = await supabaseClient.rpc("delete_guild_preset", {
+        p_account_id: creds.id,
+        p_code: creds.code,
+        p_preset_id: presetId
+      });
+      if(error) throw error;
+      return data === true;
+    }
+
+    // ✅ 공용: 즐겨찾기 토글
+    async function dbToggleFavorite(presetId){
+      const creds = getStoredCreds();
+      if(!creds) throw new Error("no_session");
+      const { data, error } = await supabaseClient.rpc("toggle_guild_preset_favorite", {
+        p_account_id: creds.id,
+        p_code: creds.code,
+        p_preset_id: presetId
+      });
+      if(error) throw error;
+      return data;
+    }
+
+    // ✅ 공용: 프리셋 저장
+    async function dbSavePresetFromResult(payload){
+      const creds = getStoredCreds();
+      if(!creds) throw new Error("no_session");
+      const { data, error } = await supabaseClient.rpc("save_guild_preset_from_result", {
+        p_account_id: creds.id,
+        p_code: creds.code,
+        p_payload: payload
+      });
+      if(error) throw error;
+      return data;
     }
 
     btnGateEnter.addEventListener("click", async () => {
@@ -1718,52 +1775,33 @@
     }
 
     // ===============================
-    // ✅ 프리셋(내 공격덱) 저장/렌더
+    // ✅ 내 공격덱(프리셋) DB 렌더
     // ===============================
-    function loadMyPresets(){
-      const accountId = getStoredAccountId();
-      if(!accountId) return [];
+    let ATK_PRESETS_CACHE = [];
+    let PRESET_SIG_SET = new Set();     // 검색화면 "+저장" 상태에 사용
+    let PRESET_ID_TO_SIG = new Map();   // 삭제 시 시그니처 제거용
+
+    function makeSig(defIds, atkIds){
+      const d = (defIds || []).slice(0,3).filter(Boolean).sort().join("|");
+      const a = (atkIds || []).slice(0,3).filter(Boolean).sort().join("|");
+      return `${d}__${a}`;
+    }
+
+    async function warmPresetSigSet(){
       try{
-        const raw = localStorage.getItem(PRESET_KEY(accountId));
-        const list = raw ? JSON.parse(raw) : [];
-        return Array.isArray(list) ? list : [];
+        const list = await dbListPresets();
+        ATK_PRESETS_CACHE = list;
+        PRESET_SIG_SET = new Set();
+        PRESET_ID_TO_SIG = new Map();
+        list.forEach(p => {
+          const sig = makeSig(p.def_ids, p.atk_ids);
+          PRESET_SIG_SET.add(sig);
+          if(p.preset_id) PRESET_ID_TO_SIG.set(p.preset_id, sig);
+        });
       }catch(e){
-        console.warn("loadMyPresets parse error", e);
-        return [];
+        // 조용히 무시(검색은 동작해야 함)
+        console.warn("warmPresetSigSet fail", e);
       }
-    }
-
-    function saveMyPresets(list){
-      const accountId = getStoredAccountId();
-      if(!accountId) return;
-      try{
-        localStorage.setItem(PRESET_KEY(accountId), JSON.stringify(list || []));
-      }catch(e){
-        console.warn("saveMyPresets error", e);
-      }
-    }
-
-    function lettersAuto(i){
-      const letters = ["A","B","C","D","E","F"];
-      return letters[i % letters.length];
-    }
-
-    function normalizeUnit(u){
-      if(!u) return null;
-      return {
-        id: u.id ?? "",
-        name: u.name ?? "없음",
-        image_url: u.image_url ?? ""
-      };
-    }
-
-    function escapeHtml(str) {
-      return String(str ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
     }
 
     function rankMedalHtml(atkRank){
@@ -1778,18 +1816,28 @@
       `;
     }
 
+    function normalizeUnitRow(u){
+      if(!u) return null;
+      return {
+        id: u.id ?? "",
+        name: u.name ?? "없음",
+        image_url: u.image_url ?? "",
+        kind: u.kind ?? ""
+      };
+    }
+
     // ✅ 프리셋 펼침: "검색 카드 UI 그대로" 생성
     function renderPresetExpandedCard(p, map){
-      const atkIds = (p.atkIds||[]).slice(0,3);
-      const skillIds = (p.skillIds||[]).slice(0,3);
+      const atkIds = (p.atk_ids||[]).slice(0,3);
+      const skillIds = (p.skill_ids||[]).slice(0,3);
 
       const atkArr = atkIds.map(id => map.get(id) || null);
       const skArr  = skillIds.map(id => map.get(id) || null);
-      const pet    = p.petId ? (map.get(p.petId) || null) : null;
+      const pet    = p.pet_id ? (map.get(p.pet_id) || null) : null;
 
       const importantText = String(p.important || "").trim() || "없음";
-      const formationsComment = String(p.formationsComment || "").trim() || "없음";
-      const setComment = String(p.setComment || "").trim() || "없음";
+      const formationsComment = String(p.formations_comment || "").trim() || "없음";
+      const setComment = String(p.set_comment || "").trim() || "없음";
 
       const firstText = p.first || "없음";
       const badgeClass =
@@ -1797,13 +1845,13 @@
         firstText === "후공" ? "badge blue" :
         "badge gray";
 
-      const formationUnit = p.formationId ? (map.get(p.formationId) || null) : null;
+      const formationUnit = p.formations ? (map.get(p.formations) || null) : null;
       const formationNameText = formationUnit?.name || "없음";
       const formationImgHtml = formationUnit?.image_url
         ? `<img class="formationImg" src="${escapeHtml(formationUnit.image_url)}" alt="formation">`
         : `<div class="emptyBox" style="width: calc(var(--narrowW) - 20px); height: 64px; border-radius:12px;">없음</div>`;
 
-      const medal = rankMedalHtml(p.atkRank);
+      const medal = rankMedalHtml(p.atk_rank);
 
       const cellHtml = (unit) => {
         if(!unit){
@@ -1902,34 +1950,47 @@
 
     async function renderAtkPage(){
       const listEl = document.getElementById("presetList");
-      const accountId = getStoredAccountId();
-      if(!accountId){
+      const creds = getStoredCreds();
+      if(!creds){
         listEl.innerHTML = `<div class="rankEmpty" style="border:1px dashed #e5e7eb;border-radius:14px;background:#fff;">세션이 없습니다.</div>`;
         return;
       }
 
-      const presets = loadMyPresets();
+      listEl.innerHTML = `<div class="rankEmpty" style="border:1px dashed #e5e7eb;border-radius:14px;background:#fff;">불러오는 중...</div>`;
+
+      let presets = [];
+      try{
+        presets = await dbListPresets();
+      }catch(e){
+        console.error("list_guild_presets error", e);
+        listEl.innerHTML = `<div class="rankEmpty" style="border:1px dashed #e5e7eb;border-radius:14px;background:#fff;">프리셋을 불러오지 못했습니다.</div>`;
+        return;
+      }
+
+      ATK_PRESETS_CACHE = presets;
 
       if(!presets.length){
         listEl.innerHTML = `<div class="rankEmpty" style="border:1px dashed #e5e7eb;border-radius:14px;background:#fff;">저장된 공격덱이 없습니다. (길드전 검색에서 +저장)</div>`;
         return;
       }
 
-      // 즐겨찾기 우선, 그 다음 최신순
-      const sorted = [...presets].sort((a,b) => {
-        const fa = !!a.isFavorite, fb = !!b.isFavorite;
-        if(fa !== fb) return fb - fa;
-        return (b.createdAt||0) - (a.createdAt||0);
+      // ✅ 검색화면 저장표시를 위한 시그니처 캐시 업데이트
+      PRESET_SIG_SET = new Set();
+      PRESET_ID_TO_SIG = new Map();
+      presets.forEach(p => {
+        const sig = makeSig(p.def_ids, p.atk_ids);
+        PRESET_SIG_SET.add(sig);
+        PRESET_ID_TO_SIG.set(p.preset_id, sig);
       });
 
       // 렌더에 필요한 유닛 id 모으기
       const need = new Set();
-      sorted.forEach(p => {
-        (p.defIds||[]).forEach(id => id && need.add(id));
-        (p.atkIds||[]).forEach(id => id && need.add(id));
-        (p.skillIds||[]).forEach(id => id && need.add(id));
-        if(p.petId) need.add(p.petId);
-        if(p.formationId) need.add(p.formationId);
+      presets.forEach(p => {
+        (p.def_ids||[]).forEach(id => id && need.add(id));
+        (p.atk_ids||[]).forEach(id => id && need.add(id));
+        (p.skill_ids||[]).forEach(id => id && need.add(id));
+        if(p.pet_id) need.add(p.pet_id);
+        if(p.formations) need.add(p.formations);
       });
 
       // DB에서 이미지/이름 로딩
@@ -1943,7 +2004,7 @@
             .in("id", ids);
 
           if(!error){
-            map = new Map((data||[]).map(u => [u.id, u]));
+            map = new Map((data||[]).map(u => [u.id, normalizeUnitRow(u)]));
           }
         }
       }catch(e){
@@ -1958,26 +2019,27 @@
         return `<div class="uCell"><img src="${escapeHtml(u.image_url)}" alt="${escapeHtml(u.name)}"><div class="nm">${escapeHtml(u.name)}</div></div>`;
       };
 
-      listEl.innerHTML = sorted.map(p => {
-        const slotNo = Number(p.slotNo || 0) || 1;
-        const fav = !!p.isFavorite;
+      listEl.innerHTML = presets.map(p => {
+        const slotNo = Number(p.slot_no || 0) || 1;
+        const fav = !!p.favorite;
+        const presetId = p.preset_id;
 
-        const atkIds = (p.atkIds||[]).slice(0,3);
-        const defIds = (p.defIds||[]).slice(0,3);
+        const atkIds = (p.atk_ids||[]).slice(0,3);
+        const defIds = (p.def_ids||[]).slice(0,3);
 
-        const expandId = `detail_${slotNo}_${p.createdAt||0}`;
-        const btnId = `expand_${slotNo}_${p.createdAt||0}`;
+        const expandId = `detail_${slotNo}_${presetId}`;
+        const btnId = `expand_${slotNo}_${presetId}`;
 
         return `
-          <div class="presetItem" data-slot="${slotNo}">
+          <div class="presetItem" data-preset="${escapeHtml(presetId)}">
             <div class="presetTopRow">
               <div class="presetLeft">
-                <button class="starBtn ${fav ? "on":""}" type="button" data-act="fav" data-slot="${slotNo}">
+                <button class="starBtn ${fav ? "on":""}" type="button" data-act="fav" data-id="${escapeHtml(presetId)}">
                   ${fav ? "★" : "☆"}
                 </button>
                 <div class="presetName">프리셋 ${slotNo}</div>
               </div>
-              <button class="delBtn" type="button" data-act="del" data-slot="${slotNo}">제거</button>
+              <button class="delBtn" type="button" data-act="del" data-id="${escapeHtml(presetId)}">제거</button>
             </div>
 
             <div class="presetBody">
@@ -2001,7 +2063,7 @@
             </div>
 
             <div class="expandRow">
-              <button class="expandBtn" id="${btnId}" type="button" data-act="toggle" data-target="${expandId}">
+              <button class="expandBtn" id="${btnId}" type="button" data-act="toggle" data-target="${expandId}" data-id="${escapeHtml(presetId)}">
                 <span class="chev">⌄</span>
                 공격내용 펼치기
               </button>
@@ -2016,20 +2078,14 @@
       listEl.querySelectorAll("[data-act]").forEach(btn => {
         btn.addEventListener("click", async () => {
           const act = btn.getAttribute("data-act");
-          const slotNo = Number(btn.getAttribute("data-slot"));
+          const presetId = btn.getAttribute("data-id");
 
           if(act === "toggle"){
             const tid = btn.getAttribute("data-target");
             const d = document.getElementById(tid);
-            const card = btn.closest(".presetItem");
-            const slot = Number(card?.getAttribute("data-slot") || slotNo);
-
-            const list = loadMyPresets();
-            const p = list.find(x => Number(x.slotNo) === slot);
-
             const on = d.classList.toggle("on");
             if(on){
-              // ✅ 펼칠 때 "검색 카드 UI 그대로" 내용 주입
+              const p = ATK_PRESETS_CACHE.find(x => x.preset_id === presetId);
               d.innerHTML = renderPresetExpandedCard(p, map);
               btn.innerHTML = `<span class="chev">⌃</span> 공격내용 접기`;
             }else{
@@ -2039,29 +2095,38 @@
             return;
           }
 
-          const list = loadMyPresets();
-          const p = list.find(x => Number(x.slotNo) === slotNo);
-          if(!p) return;
+          if(!presetId) return;
 
           if(act === "fav"){
-            p.isFavorite = !p.isFavorite;
-            saveMyPresets(list);
-            renderAtkPage();
-            toast(p.isFavorite ? "즐겨찾기 추가" : "즐겨찾기 해제");
+            try{
+              await dbToggleFavorite(presetId);
+              toast("즐겨찾기 변경");
+              renderAtkPage();
+            }catch(e){
+              console.error("toggle fav fail", e);
+              toast("즐겨찾기 실패");
+            }
           }
 
           if(act === "del"){
-            const next = list.filter(x => Number(x.slotNo) !== slotNo);
-            saveMyPresets(next);
-            renderAtkPage();
-            toast(`프리셋 ${slotNo} 제거됨`);
+            try{
+              await dbDeletePreset(presetId);
+              // 검색 저장상태도 같이 반영
+              const sig = PRESET_ID_TO_SIG.get(presetId);
+              if(sig) PRESET_SIG_SET.delete(sig);
+              toast("삭제 완료");
+              renderAtkPage();
+            }catch(e){
+              console.error("delete fail", e);
+              toast("삭제 실패");
+            }
           }
         });
       });
     }
 
     // ===============================
-    // ✅ 길드전 로직 (원본 유지 + 저장기능 연결)
+    // ✅ 길드전 로직 (원본 유지 + DB 저장기능 연결)
     // ===============================
     function initGuildWar(){
       if(window.__GUILD_INITED__) return;
@@ -2074,6 +2139,9 @@
 
       // ✅ 저장용: 현재 페이지 결과
       let CURRENT_RESULT = null;
+
+      // ✅ 최초 1회 프리셋 시그니처 캐시(저장버튼 상태)
+      warmPresetSigSet();
 
       async function runEnforceCheck(){
         if(IS_SEARCHING) return;
@@ -2274,70 +2342,73 @@
         `;
       }
 
-      // ✅ 저장: CURRENT_RESULT + 선택된 방어 슬롯 + 자동 프리셋1~10
-      function addPresetFromCurrent(){
+      // ✅ DB 저장: CURRENT_RESULT + 선택된 방어 슬롯
+      async function savePresetFromCurrentDB(){
+        const creds = getStoredCreds();
+        if(!creds){
+          toast("세션이 없습니다.");
+          return { ok:false };
+        }
         if(!CURRENT_RESULT){
           toast("저장할 결과가 없습니다.");
-          return;
+          return { ok:false };
         }
 
-        const existing = loadMyPresets();
-        const defIds = slots.map(s => (s && s.id) ? s.id : null).filter(Boolean).slice(0,3);
+        const defIds = slots.map(s => s?.id).filter(Boolean).slice(0,3);
         const atkIds = (CURRENT_RESULT.atk || []).map(u => u?.id).filter(Boolean).slice(0,3);
-        const sig = `${defIds.sort().join("|")}__${atkIds.sort().join("|")}`;
-        if(existing.some(p => (p.sig === sig))){
+        const sig = makeSig(defIds, atkIds);
+
+        if(PRESET_SIG_SET.has(sig)){
           toast("이미 저장됨");
-          return;
+          return { ok:false, already:true };
         }
 
-        const accountId = getStoredAccountId();
-        if(!accountId){
-          toast("세션이 없습니다.");
-          return;
-        }
+        const payload = {
+          def_key: String(CURRENT_RESULT.def_key || "").trim() || defIds.slice().sort().join("|"),
+          def_ids: defIds,
 
-        const now = Date.now();
-        const list = loadMyPresets();
+          result_id: CURRENT_RESULT.result_id ?? null,
+          atk_rank: CURRENT_RESULT.atk_rank ?? null,
 
-        // 1) 빈 슬롯(1~10) 찾기, 없으면 가장 오래된 것 덮어쓰기
-        let targetSlot = null;
-        for(let i=1;i<=10;i++){
-          if(!list.find(p => Number(p.slotNo) === i)){
-            targetSlot = i;
-            break;
-          }
-        }
-        if(!targetSlot){
-          const sortedOld = [...list].sort((a,b) => (a.createdAt||0) - (b.createdAt||0));
-          targetSlot = Number(sortedOld[0]?.slotNo || 1);
-        }
+          atk_ids: atkIds,
+          skill_ids: (CURRENT_RESULT.skill || []).map(u => u?.id).filter(Boolean).slice(0,3),
+          pet_id: CURRENT_RESULT.pet?.id ?? null,
 
-        const preset = {
-          slotNo: targetSlot,
-          sig,
-          isFavorite: false,
-          createdAt: now,
+          first: CURRENT_RESULT.first ?? null,
+          formations: CURRENT_RESULT.formations ?? null,
 
-          // ✅ 프리셋 핵심: 공격/방어
-          atkIds: (CURRENT_RESULT.atk || []).map(u => u?.id).filter(Boolean).slice(0,3),
-          defIds: slots.map(s => s?.id).filter(Boolean).slice(0,3),
-
-          // ✅ 펼치기용 상세(검색 카드와 동일 정보)
-          atkRank: CURRENT_RESULT.atk_rank ?? null,
-          first: CURRENT_RESULT.first ?? "없음",
           important: CURRENT_RESULT.important ?? "",
-          setComment: CURRENT_RESULT.set_comment ?? "",
-          skillIds: (CURRENT_RESULT.skill || []).map(u => u?.id).filter(Boolean).slice(0,3),
-          petId: CURRENT_RESULT.pet?.id ?? null,
-          formationId: CURRENT_RESULT.formationUnit?.id ?? null,
-          formationsComment: CURRENT_RESULT.formations_comment ?? ""
+          set_comment: CURRENT_RESULT.set_comment ?? "",
+          formations_comment: CURRENT_RESULT.formations_comment ?? ""
         };
 
-        const next = list.filter(p => Number(p.slotNo) !== targetSlot);
-        next.push(preset);
-        saveMyPresets(next);
+        try{
+          const row = await dbSavePresetFromResult(payload);
+          // 캐시 갱신(즉시 "추가됨" 표시)
+          PRESET_SIG_SET.add(sig);
+          if(row?.preset_id) PRESET_ID_TO_SIG.set(row.preset_id, sig);
+          toast(`Preset ${row?.slot_no ?? ""} 저장됨`);
+          return { ok:true, row };
+        }catch(e){
+          const msg = String(e?.message || e || "");
+          console.error("save preset fail", e);
 
-        toast(`Preset ${targetSlot} 저장됨`);
+          if(msg.includes("duplicate_preset")){
+            PRESET_SIG_SET.add(sig);
+            toast("이미 저장됨");
+            return { ok:false, already:true };
+          }
+          if(msg.includes("preset_full")){
+            toast("프리셋이 가득 찼습니다 (최대 10개)");
+            return { ok:false, full:true };
+          }
+          if(msg.includes("unauthorized")){
+            failGate("접근 권한이 없거나 비활성화된 코드입니다. 관리자에게 문의해주세요.");
+            return { ok:false, unauthorized:true };
+          }
+          toast("저장 실패");
+          return { ok:false, error:true };
+        }
       }
 
       function renderSingleResult(){
@@ -2376,6 +2447,14 @@
 
         const medal = hasAny ? rankMedalHtml(r?.atk_rank) : "";
 
+        // ✅ DB 저장상태(캐시)로 버튼 표시
+        const defIds = slots.map(s => s?.id).filter(Boolean).slice(0,3);
+        const atkIds = (r?.atk || []).map(u => u?.id).filter(Boolean).slice(0,3);
+        const sig = makeSig(defIds, atkIds);
+        const saved = PRESET_SIG_SET.has(sig);
+        const txt = saved ? "추가됨" : "+저장";
+        const dis = saved ? "disabled" : "";
+
         resultBox.innerHTML = `
           <div class="resultToolbar">
             <div class="toolbarLeft">
@@ -2383,16 +2462,7 @@
               ${medal}
             </div>
 
-            ${(() => {
-              const list = loadMyPresets();
-              const defIds = slots.map(s => s?.id).filter(Boolean).slice(0,3);
-              const atkIds = (r?.atk || []).map(u => u?.id).filter(Boolean).slice(0,3);
-              const sig = `${defIds.sort().join("|")}__${atkIds.sort().join("|")}`;
-              const saved = list.some(p => p.sig === sig);
-              const txt = saved ? "추가됨" : "+저장";
-              const dis = saved ? "disabled" : "";
-              return `<button class="pagerBtn" id="btnSavePreset" type="button" ${dis}>${txt}</button>`;
-            })()}
+            <button class="pagerBtn" id="btnSavePreset" type="button" ${dis}>${txt}</button>
 
             <div class="pager">
               <button class="pagerBtn" id="btnPrev" type="button" ${(!hasAny || idx===0) ? "disabled":""}>◀</button>
@@ -2471,9 +2541,12 @@
         `;
 
         const saveBtn = document.getElementById("btnSavePreset");
-        if(saveBtn){
-          saveBtn.addEventListener("click", () => {
-            addPresetFromCurrent();
+        if(saveBtn && !saved){
+          saveBtn.addEventListener("click", async () => {
+            saveBtn.disabled = true;
+            saveBtn.textContent = "저장중...";
+            const res = await savePresetFromCurrentDB();
+            // 저장 성공/중복 처리 후 UI 갱신
             renderSingleResult();
           });
         }
@@ -2534,13 +2607,11 @@
 
           // 🔥 검색 로그 기록
           try {
-            const id = Number(localStorage.getItem(LS_ACCOUNT_ID));
-            const code = Number(localStorage.getItem(LS_CODE));
-
-            if (Number.isInteger(id) && Number.isInteger(code)) {
+            const creds = getStoredCreds();
+            if (creds) {
               await supabaseClient.rpc("log_guild_search", {
-                p_account_id: id,
-                p_code: code,
+                p_account_id: creds.id,
+                p_code: creds.code,
                 p_def_key: defKey
               });
             }
@@ -2598,7 +2669,7 @@
 
           if(unitErr) console.error(unitErr);
 
-          const unitMap = new Map((unitRows || []).map(u => [u.id, u]));
+          const unitMap = new Map((unitRows || []).map(u => [u.id, normalizeUnitRow(u)]));
           UNIT_MAP = unitMap;
 
           RESULTS = rows.map(r => {
@@ -2619,7 +2690,8 @@
               atk,
               skill,
               pet,
-              formationUnit
+              formationUnit,
+              def_key: r.def_key ?? defKey
             };
           });
 
@@ -2724,7 +2796,7 @@
             return;
           }
 
-          TOP_UNIT_MAP = new Map((urows || []).map(u => [u.id, u]));
+          TOP_UNIT_MAP = new Map((urows || []).map(u => [u.id, normalizeUnitRow(u)]));
 
           renderTopSlider();
           renderTopRankList();
@@ -2913,13 +2985,6 @@
       updateResultHint();
       loadUnits();
     }
-
-    // ✅ 페이지 최초: 탭 전환은 대문에서
-    // (내 공격덱 진입했을 때 바로 렌더되도록 안전장치)
-    if(localStorage.getItem(SESSION_KEY) === "1"){
-      // nothing
-    }
   </script>
 </body>
 </html>
-
