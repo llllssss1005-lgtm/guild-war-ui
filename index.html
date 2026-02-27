@@ -947,6 +947,19 @@
 
     .presetList{ display:flex; flex-direction:column; gap:12px; }
     .presetItem{ border:1px solid var(--line); border-radius:14px; background:#fff; overflow:hidden; }
+    .atkBox{
+  border: 1px solid #fecaca;
+  background: #fff5f5;
+  border-radius: 16px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.defBox{
+  border: 1px solid #bfdbfe;   /* 파란톤 */
+  background: #eff6ff;
+  border-radius: 16px;
+  padding: 12px;
+}
     .presetTopRow{
       display:flex; align-items:center; justify-content:space-between;
       gap:10px; padding:10px 10px;
@@ -1033,7 +1046,7 @@
 
     /* 별 6개가 가로로 꽉 차되 박스 밖으로 절대 안 나가게 */
     .atkStars{
-      width:100%;
+      width: var(--ringSize);
       display:flex;
       align-items:center;
       justify-content:center;
@@ -1046,11 +1059,11 @@
     .atkStars.off{ opacity: 0; pointer-events:none; } /* 반지 없으면 별 안보이게(틀만 유지) */
 
     .starSvg{
-      width: 11px;
-      height: 11px;
-      flex: 0 0 auto;
-      display:block;
-    }
+  flex: 1 1 0;      /* 균등 분배 */
+  max-width: 100%;
+  height: 12px;
+  display:block;
+}
     .starSvg .on{ fill: var(--starColor); }
     .starSvg .off{ fill: var(--starOff); }
 
@@ -1714,13 +1727,18 @@
     }
 
     function starsHtml(n){
-      const k = Math.max(4, Math.min(6, Number(n || 4)));
-      let out = "";
-      for(let i=1;i<=6;i++){
-        out += svgStar(i <= k);
-      }
-      return out;
-    }
+  const k = Math.max(4, Math.min(6, Number(n || 4)));
+  let out = "";
+  for(let i=0; i<k; i++){
+    out += `
+      <svg class="starSvg" viewBox="0 0 24 24">
+        <path fill="var(--starColor)"
+          d="M12 2.7l2.94 6.02 6.64.97-4.79 4.67 1.13 6.61L12 17.98 6.08 20.97l1.13-6.61-4.79-4.67 6.64-.97L12 2.7z"/>
+      </svg>
+    `;
+  }
+  return out;
+}
 
     async function loadRingsOnce(){
       if(RINGS_LOADED) return;
@@ -2159,18 +2177,22 @@
             </div>
 
             <div class="presetBody">
-              <div class="deckRow">
-                <div class="sideLabel atk"><div>공</div><div>격</div></div>
-                <div class="unitGrid">
+
+  <div class="atkBox">
+    <div class="deckRow">
+      <div class="sideLabel atk">...</div>
+      <div class="unitGrid">
                   ${atkCell(presetId, 0, atkIds[0], ringIds[0], ringStars[0])}
                   ${atkCell(presetId, 1, atkIds[1], ringIds[1], ringStars[1])}
                   ${atkCell(presetId, 2, atkIds[2], ringIds[2], ringStars[2])}
                 </div>
               </div>
+            </div>
 
-              <div class="deckRow">
-                <div class="sideLabel def"><div>방</div><div>어</div></div>
-                <div class="unitGrid">
+             <div class="defBox">
+  <div class="deckRow">
+    <div class="sideLabel def">...</div>
+    <div class="unitGrid">
                   ${unitCellDef(defIds[0])}
                   ${unitCellDef(defIds[1])}
                   ${unitCellDef(defIds[2])}
@@ -3116,3 +3138,4 @@
   </script>
 </body>
 </html>
+
