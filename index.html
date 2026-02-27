@@ -964,7 +964,7 @@
 .sideLabel{
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 900;
   letter-spacing: .06em;
   line-height: 1;
@@ -2193,7 +2193,10 @@
 
   <div class="atkBox">
     <div class="deckRow">
-      <div class="sideLabel atk">...</div>
+     <div class="sideLabel atk">
+  <div>공</div>
+  <div>격</div>
+</div>
       <div class="unitGrid">
                   ${atkCell(presetId, 0, atkIds[0], ringIds[0], ringStars[0])}
                   ${atkCell(presetId, 1, atkIds[1], ringIds[1], ringStars[1])}
@@ -2204,7 +2207,10 @@
 
              <div class="defBox">
   <div class="deckRow">
-    <div class="sideLabel def">...</div>
+    <div class="sideLabel def">
+  <div>방</div>
+  <div>어</div>
+</div>
     <div class="unitGrid">
                   ${unitCellDef(defIds[0])}
                   ${unitCellDef(defIds[1])}
@@ -3151,5 +3157,6 @@
   </script>
 </body>
 </html>
+
 
 
