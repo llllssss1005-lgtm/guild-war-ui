@@ -1785,7 +1785,7 @@
       const picks = (RINGS || []).slice(0,3);
 
       const noneHtml = `
-        <div class="ringItem" data-act="pickRing" data-ring="">
+        <div class="ringItem" data-act="pickRing" data-ring="none">
           <div class="ringThumb">없음</div>
           <div class="ringName">없음</div>
         </div>
@@ -1804,8 +1804,8 @@
 
       ringListEl.querySelectorAll('[data-act="pickRing"]').forEach(el => {
         el.addEventListener("click", () => {
-          const ringId = el.getAttribute("data-ring") || "";
-          applyRingPick(RING_EDIT.presetId, RING_EDIT.idx, ringId || null);
+          const ringId = el.getAttribute("data-ring"); // "u180" 또는 "none"
+applyRingPick(RING_EDIT.presetId, RING_EDIT.idx, ringId ?? "none");
           closeRingModal();
         });
       });
@@ -1819,7 +1819,7 @@
       if(!Array.isArray(p.atk_ring_ids) || p.atk_ring_ids.length !== 3){
         p.atk_ring_ids = [null, null, null];
       }else{
-        p.atk_ring_ids = p.atk_ring_ids.slice(0,3).map(x => x || null);
+       p.atk_ring_ids = p.atk_ring_ids.slice(0,3).map(x => (x ?? "none"));
       }
 
       if(!Array.isArray(p.atk_ring_stars) || p.atk_ring_stars.length !== 3){
@@ -3146,6 +3146,7 @@
   </script>
 </body>
 </html>
+
 
 
 
