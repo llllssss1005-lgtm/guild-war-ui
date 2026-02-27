@@ -1817,11 +1817,11 @@ applyRingPick(RING_EDIT.presetId, RING_EDIT.idx, ringId ?? "none");
 
     function ensureRingArrays(p){
   if(!Array.isArray(p.atk_ring_ids) || p.atk_ring_ids.length !== 3){
-    p.atk_ring_ids = ["none","none","none"];
+    p.atk_ring_ids = [null,null,null];
   }else{
     p.atk_ring_ids = p.atk_ring_ids
-      .slice(0,3)
-      .map(x => (x ?? "none"));
+  .slice(0,3)
+  .map(x => (isNoneRing(x) ? null : x));
   }
 
   if(!Array.isArray(p.atk_ring_stars) || p.atk_ring_stars.length !== 3){
@@ -1835,33 +1835,45 @@ applyRingPick(RING_EDIT.presetId, RING_EDIT.idx, ringId ?? "none");
       });
   }
 }
-
+    
+function isNoneRing(v){
+  return (v == null) || (v === "") || (v === "none");
+}
     function scheduleRingSave(presetId){
-      const p = findPreset(presetId);
-      if(!p) return;
-      ensureRingArrays(p);
+  const p = findPreset(presetId);
+  if(!p) return;
+  ensureRingArrays(p);
 
-      if(RING_SAVE_TIMER.has(presetId)){
-        clearTimeout(RING_SAVE_TIMER.get(presetId));
-        RING_SAVE_TIMER.delete(presetId);
+  if(RING_SAVE_TIMER.has(presetId)){
+    clearTimeout(RING_SAVE_TIMER.get(presetId));
+    RING_SAVE_TIMER.delete(presetId);
+  }
+
+  const t = setTimeout(async () => {
+    try{
+      // ✅ DB에는 null로 저장 (none/""/null => null)
+      const ring_ids_to_save = (p.atk_ring_ids || []).slice(0,3).map(v => isNoneRing(v) ? null : v);
+      const ring_stars_to_save = (p.atk_ring_stars || []).slice(0,3).map(v => {
+        const n = Number(v || 4);
+        return Math.max(4, Math.min(6, n));
+      });
+
+      console.log("[SAVE ring_ids]", p.atk_ring_ids, "=>", ring_ids_to_save);
+
+      await dbUpdatePresetRings(presetId, ring_ids_to_save, ring_stars_to_save);
+    }catch(e){
+      console.error("ring save fail", e);
+      const msg = String(e?.message || e || "");
+      if(msg.toLowerCase().includes("unauthorized")){
+        failGate("접근 권한이 없거나 비활성화된 코드입니다. 관리자에게 문의해주세요.");
+        return;
       }
-
-      const t = setTimeout(async () => {
-        try{
-          await dbUpdatePresetRings(presetId, p.atk_ring_ids, p.atk_ring_stars);
-        }catch(e){
-          console.error("ring save fail", e);
-          const msg = String(e?.message || e || "");
-          if(msg.toLowerCase().includes("unauthorized")){
-            failGate("접근 권한이 없거나 비활성화된 코드입니다. 관리자에게 문의해주세요.");
-            return;
-          }
-          toast("반지 저장 실패");
-        }
-      }, 280);
-
-      RING_SAVE_TIMER.set(presetId, t);
+      toast("반지 저장 실패");
     }
+  }, 280);
+
+  RING_SAVE_TIMER.set(presetId, t);
+}
 
     function applyRingPick(presetId, idx, ringIdOrNull){
   // ✅ 디버그 로그(나중에 필요 없으면 이 줄만 지우면 됨)
@@ -1872,7 +1884,7 @@ applyRingPick(RING_EDIT.presetId, RING_EDIT.idx, ringId ?? "none");
   ensureRingArrays(p);
 
   // ✅ "없음"도 값으로 유지: null/undefined만 none으로
-  const ringId = (ringIdOrNull ?? "none");
+  const ringId = isNoneRing(ringIdOrNull) ? null : ringIdOrNull;
 
   p.atk_ring_ids[idx] = ringId;
   p.atk_ring_stars[idx] = 4;
@@ -1885,7 +1897,7 @@ applyRingPick(RING_EDIT.presetId, RING_EDIT.idx, ringId ?? "none");
       if(!p) return;
       ensureRingArrays(p);
 
-      if(!p.atk_ring_ids[idx]) return;
+      if(isNoneRing(p.atk_ring_ids[idx])) return;
 
       const cur = Math.max(4, Math.min(6, Number(p.atk_ring_stars[idx] || 4)));
       const next = cur === 4 ? 5 : cur === 5 ? 6 : 4;
@@ -1907,7 +1919,7 @@ applyRingPick(RING_EDIT.presetId, RING_EDIT.idx, ringId ?? "none");
       if(!p) return;
       ensureRingArrays(p);
 
-      const ringId = p.atk_ring_ids[idx] || null;
+      const ringId = isNoneRing(p.atk_ring_ids[idx]) ? null : p.atk_ring_ids[idx];
       const star = p.atk_ring_stars[idx] || 4;
 
       if(!ringId){
@@ -3155,6 +3167,7 @@ applyRingPick(RING_EDIT.presetId, RING_EDIT.idx, ringId ?? "none");
   </script>
 </body>
 </html>
+
 
 
 
