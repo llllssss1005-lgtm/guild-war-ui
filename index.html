@@ -1860,17 +1860,22 @@ applyRingPick(RING_EDIT.presetId, RING_EDIT.idx, ringId ?? "none");
     }
 
     function applyRingPick(presetId, idx, ringIdOrNull){
-      const p = findPreset(presetId);
-      if(!p) return;
-      ensureRingArrays(p);
+  // ✅ 디버그 로그(나중에 필요 없으면 이 줄만 지우면 됨)
+  console.log("[applyRingPick]", { presetId, idx, ringIdOrNull });
 
-      p.atk_ring_ids[idx] = ringIdOrNull || null;
-      p.atk_ring_stars[idx] = 4;
+  const p = findPreset(presetId);
+  if(!p) return;
+  ensureRingArrays(p);
 
-      updateAtkCellDom(presetId, idx);
-      scheduleRingSave(presetId);
-    }
+  // ✅ "없음"도 값으로 유지: null/undefined만 none으로
+  const ringId = (ringIdOrNull ?? "none");
 
+  p.atk_ring_ids[idx] = ringId;
+  p.atk_ring_stars[idx] = 4;
+
+  updateAtkCellDom(presetId, idx);
+  scheduleRingSave(presetId);
+}
     function cycleStars(presetId, idx){
       const p = findPreset(presetId);
       if(!p) return;
@@ -3146,6 +3151,7 @@ applyRingPick(RING_EDIT.presetId, RING_EDIT.idx, ringId ?? "none");
   </script>
 </body>
 </html>
+
 
 
 
