@@ -1498,7 +1498,7 @@
     async function dbListPresets(){
       const creds = getStoredCreds();
       if(!creds) throw new Error("no_session");
-      const { data, error } = await supabaseClient.rpc("list_guild_atk_presets", {
+      const { data, error } = await supabaseClient.rpc("list_guild_presets", {
         p_account_id: creds.id,
         p_code: creds.code
       });
@@ -3133,4 +3133,5 @@
   </script>
 </body>
 </html>
+
 
