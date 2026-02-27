@@ -1816,21 +1816,25 @@ applyRingPick(RING_EDIT.presetId, RING_EDIT.idx, ringId ?? "none");
     }
 
     function ensureRingArrays(p){
-      if(!Array.isArray(p.atk_ring_ids) || p.atk_ring_ids.length !== 3){
-        p.atk_ring_ids = [null, null, null];
-      }else{
-       p.atk_ring_ids = p.atk_ring_ids.slice(0,3).map(x => (x ?? "none"));
-      }
+  if(!Array.isArray(p.atk_ring_ids) || p.atk_ring_ids.length !== 3){
+    p.atk_ring_ids = ["none","none","none"];
+  }else{
+    p.atk_ring_ids = p.atk_ring_ids
+      .slice(0,3)
+      .map(x => (x ?? "none"));
+  }
 
-      if(!Array.isArray(p.atk_ring_stars) || p.atk_ring_stars.length !== 3){
-        p.atk_ring_stars = [4,4,4];
-      }else{
-        p.atk_ring_stars = p.atk_ring_stars.slice(0,3).map(x => {
-          const n = Number(x || 4);
-          return Math.max(4, Math.min(6, n));
-        });
-      }
-    }
+  if(!Array.isArray(p.atk_ring_stars) || p.atk_ring_stars.length !== 3){
+    p.atk_ring_stars = [4,4,4];
+  }else{
+    p.atk_ring_stars = p.atk_ring_stars
+      .slice(0,3)
+      .map(x => {
+        const n = Number(x || 4);
+        return Math.max(4, Math.min(6, n));
+      });
+  }
+}
 
     function scheduleRingSave(presetId){
       const p = findPreset(presetId);
@@ -3151,6 +3155,7 @@ applyRingPick(RING_EDIT.presetId, RING_EDIT.idx, ringId ?? "none");
   </script>
 </body>
 </html>
+
 
 
 
